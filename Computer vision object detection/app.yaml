@@ -1,0 +1,16 @@
+name: Computer vision object detection
+language: python
+variables:
+  - name: input
+    inputType: InputTopic
+    description: This is the input topic for raw images
+    defaultValue: image-raw
+    required: true
+  - name: output
+    inputType: OutputTopic
+    description: This is the output for images augmented with the recognized objects
+    defaultValue: image-processed
+    required: true
+dockerfile: build/dockerfile
+runEntryPoint: main.py
+defaultFile: quix_function.py

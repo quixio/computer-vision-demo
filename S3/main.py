@@ -148,6 +148,9 @@ def save(stream_id: str, data: qx.TimeseriesData):
                                     fd.write(str(ts.parameters[param].numeric_value))
                                     batch.count += 1
                                     fd.write(",")
+                            # if something has been written, write a new line
+                            if ts_written:
+                                    fd.write("\n")
                 if is_new_batch(batch):
                     if batch.count > 0:
                         upload(stream_id, batch.fname)

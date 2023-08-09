@@ -22,6 +22,7 @@ bucket = os.environ["s3_bucket"]
 s3_folder = os.environ["s3_folder"]
 # if set to true, new folders will be created in s3 for each stream using stream id as name 
 s3_folder_per_stream = os.environ["s3_folder_per_stream"].lower() == "true"
+separator = os.environ["separator"]
 
 # files created in s3 will have this prefix
 prefix = os.environ["prefix"]
@@ -123,6 +124,11 @@ def save(stream_id: str, data: qx.TimeseriesData):
                         if ts.parameters[param].string_value is not None:
                             fd.write(ts.parameters[param].string_value)
                             batch.count += 1
+                            fd.write(separator)
+                        if ts.parameters[param].numeric_value is not None:
+                            fd.write(str(ts.parameters[param].numeric_value))
+                            batch.count += 1
+                            fd.write(separator)
                 if is_new_batch(batch):
                     if batch.count > 0:
                         upload(stream_id, batch.fname)

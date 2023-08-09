@@ -127,9 +127,9 @@ def save(stream_id: str, data: qx.TimeseriesData):
                         ts_written = False
                         for param in params_to_write:
                             # save only string and numeric data
-                            print("ts has these parameters=" + ts.parameters.keys())
+                            print("ts has these parameters")
                             if param in ts.parameters.keys():
-
+                                print(param)
                                 # write the timestamp once per row
                                 if not ts_written:
                                     fd.write(str(ts.timestamp_nanoseconds))

@@ -14,6 +14,7 @@ run = True
 param_csv = os.environ["parameter"]
 # split and trim the entries
 params_to_write = [x.strip() for x in param_csv.split(',')]
+print(params_to_write)
 
 bucket = os.environ["s3_bucket"]
 s3_folder = os.environ["s3_folder"]
@@ -126,6 +127,7 @@ def save(stream_id: str, data: qx.TimeseriesData):
                         ts_written = False
                         for param in params_to_write:
                             # save only string and numeric data
+                            print("ts has these parameters=" + ts.parameters.keys())
                             if param in ts.parameters.keys():
 
                                 # write the timestamp once per row

@@ -10,11 +10,6 @@ import boto3
 # keep the main loop running
 run = True
 
-client = qx.QuixStreamingClient()
-commit_settings = qx.models.CommitOptions()
-commit_settings.auto_commit_enabled = False
-topic = client.get_topic_consumer(os.environ["input"], "s3-sink", 
-                                  commit_settings = commit_settings, auto_offset_reset = qx.AutoOffsetReset.Latest)
 
 # name of the parameter that contains formatted data to save to s3
 param = os.environ["parameter"]
@@ -23,6 +18,12 @@ s3_folder = os.environ["s3_folder"]
 # if set to true, new folders will be created in s3 for each stream using stream id as name 
 s3_folder_per_stream = os.environ["s3_folder_per_stream"].lower() == "true"
 separator = os.environ["separator"]
+
+client = qx.QuixStreamingClient()
+commit_settings = qx.models.CommitOptions()
+commit_settings.auto_commit_enabled = False
+topic = client.get_topic_consumer(os.environ["input"], "s3-sink-" + param, 
+                                  commit_settings = commit_settings, auto_offset_reset = qx.AutoOffsetReset.Latest)
 
 # files created in s3 will have this prefix
 prefix = os.environ["prefix"]

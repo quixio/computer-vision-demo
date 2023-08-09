@@ -9,7 +9,9 @@ import boto3
 
 v = ""
 for name, value in os.environ.items():
-    v = v + ("{0}={1};".format(name, value))
+    a = ("{0}={1};".format(name, value))
+    v = v + a
+    print(a)
 print(v)
 
 # keep the main loop running

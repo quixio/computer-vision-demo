@@ -158,7 +158,7 @@ deployments:
         inputType: FreeText
         description: File name prefix
         required: false
-        value: car
+        value: car_
       - name: s3_folder
         inputType: FreeText
         description: Name of the S3 folder to save to

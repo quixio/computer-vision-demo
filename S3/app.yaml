@@ -39,7 +39,7 @@ variables:
   - name: prefix
     inputType: FreeText
     description: File name prefix
-    defaultValue: ''
+    defaultValue: demo_
     required: false
   - name: s3_folder
     inputType: FreeText

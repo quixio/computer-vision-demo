@@ -14,6 +14,7 @@ deployments:
       cpu: 8000
       memory: 10240
       replicas: 1
+    libraryItemId: 86195d34-be00-4f0d-a303-c1e95cdb1c32
     desiredStatus: Running
     variables:
       - name: output
@@ -29,11 +30,11 @@ deployments:
   - name: Computer vision object detection
     application: Computer vision object detection
     deploymentType: Service
-    version: 5fa551de81bb87d10f73404eaaec0fb5a9c8b9c2
     resources:
       cpu: 8000
       memory: 16000
       replicas: 1
+    libraryItemId: bfee7144-49f1-411d-b5c3-0d8396e2c946
     desiredStatus: Running
     variables:
       - name: input
@@ -54,6 +55,7 @@ deployments:
       cpu: 8000
       memory: 8000
       replicas: 1
+    libraryItemId: f36c1fdd-b900-4ac5-808c-1ea1320471e7
     desiredStatus: Running
     variables:
       - name: input
@@ -77,6 +79,7 @@ deployments:
     publicAccess:
       enabled: true
       urlPrefix: tfl-image-processing-ui
+    libraryItemId: 5976fcd9-2ed6-407c-bc5f-795891340bb5
     desiredStatus: Running
     variables:
       - name: processed
@@ -92,6 +95,7 @@ deployments:
       cpu: 8000
       memory: 10240
       replicas: 1
+    libraryItemId: eec165e1-f648-4e58-9fd3-9af475a840e8
     desiredStatus: Running
     variables:
       - name: input
@@ -143,12 +147,12 @@ deployments:
         inputType: HiddenText
         description: AWS S3 access key id
         required: false
-        value: AKIA5JJJFC76H52H62WO
+        value: xxx
       - name: aws_access_key
         inputType: HiddenText
         description: AWS S3 access key
         required: false
-        value: BQla1KEQr5WoptF9TsDxTFeP48Wa+Sh8H7gR2ji5
+        value: xxx
       - name: s3_bucket
         inputType: FreeText
         description: AWS S3 bucket name
@@ -182,7 +186,13 @@ deployments:
 
 # This section describes the Topics of the data pipeline
 topics:
-  - name: tfl-cameras
+  - name: image-processed-merged
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
     persisted: false
     configuration:
       partitions: 2
@@ -196,7 +206,6 @@ topics:
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
-  - name: image-processed
     persisted: false
     configuration:
       partitions: 2

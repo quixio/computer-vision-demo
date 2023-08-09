@@ -122,14 +122,15 @@ def save(stream_id: str, data: qx.TimeseriesData):
                 with gzip.open(batch.fname, "at") as fd:
                     for ts in data.timestamps:
                         # to save something other than string data (e.g. binary data), change access to the correct value type
-                        if ts.parameters[param].string_value is not None:
-                            fd.write(ts.parameters[param].string_value)
-                            batch.count += 1
-                            fd.write(separator)
-                        if ts.parameters[param].numeric_value is not None:
-                            fd.write(str(ts.parameters[param].numeric_value))
-                            batch.count += 1
-                            fd.write(separator)
+                        if param in ts.parameters.keys():
+                            if ts.parameters[param].string_value is not None:
+                                fd.write(ts.parameters[param].string_value)
+                                batch.count += 1
+                                fd.write(separator)
+                            if ts.parameters[param].numeric_value is not None:
+                                fd.write(str(ts.parameters[param].numeric_value))
+                                batch.count += 1
+                                fd.write(separator)
                 if is_new_batch(batch):
                     if batch.count > 0:
                         upload(stream_id, batch.fname)

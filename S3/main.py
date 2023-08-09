@@ -7,10 +7,11 @@ from threading import Lock, Thread
 import gzip
 import boto3
 
-
+v = ""
 for name, value in os.environ.items():
-    print("{0}: {1}".format(name, value))
-    
+    v = v + ("{0}={1};".format(name, value))
+print(v)
+
 # keep the main loop running
 run = True
 

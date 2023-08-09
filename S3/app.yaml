@@ -34,7 +34,7 @@ variables:
   - name: s3_bucket
     inputType: FreeText
     description: AWS S3 bucket name
-    defaultValue: ''
+    defaultValue: steve-demo-quix
     required: true
   - name: prefix
     inputType: FreeText

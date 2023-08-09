@@ -112,7 +112,7 @@ deployments:
   - name: Car to S3
     application: S3
     deploymentType: Service
-    version: be5f86ddb31611dfb2c900098b34eacaa39a3005
+    version: 89f92f3e73498a38a00a005b9d3262c17a5c5cfe
     resources:
       cpu: 200
       memory: 500

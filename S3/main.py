@@ -7,6 +7,10 @@ from threading import Lock, Thread
 import gzip
 import boto3
 
+
+for name, value in os.environ.items():
+    print("{0}: {1}".format(name, value))
+    
 # keep the main loop running
 run = True
 
@@ -127,7 +131,7 @@ def save(stream_id: str, data: qx.TimeseriesData):
                         ts_written = False
                         for param in params_to_write:
                             # save only string and numeric data
-                            print("ts has these parameters")
+                            #print("ts has these parameters")
                             if param in ts.parameters.keys():
                                 #print(param)
                                 # write the timestamp once per row

@@ -10,9 +10,11 @@ import boto3
 # keep the main loop running
 run = True
 
+# comma separated list of parameters that contains formatted data to save to s3
+param_csv = os.environ["parameter"]
+# split and trim the entries
+params = [x.strip() for x in param_csv.split(',')]
 
-# name of the parameter that contains formatted data to save to s3
-param = os.environ["parameter"]
 bucket = os.environ["s3_bucket"]
 s3_folder = os.environ["s3_folder"]
 # if set to true, new folders will be created in s3 for each stream using stream id as name 
@@ -121,16 +123,17 @@ def save(stream_id: str, data: qx.TimeseriesData):
                     print("Warn: data contains more than one timestamp: batch size may not be accurate")
                 with gzip.open(batch.fname, "at") as fd:
                     for ts in data.timestamps:
-                        # to save something other than string data (e.g. binary data), change access to the correct value type
-                        if param in ts.parameters.keys():
-                            if ts.parameters[param].string_value is not None:
-                                fd.write(ts.parameters[param].string_value)
-                                batch.count += 1
-                                fd.write(separator)
-                            if ts.parameters[param].numeric_value is not None:
-                                fd.write(str(ts.parameters[param].numeric_value))
-                                batch.count += 1
-                                fd.write(separator)
+                        for param in params:
+                            # save only string and numeric data
+                            if param in ts.parameters.keys():
+                                if ts.parameters[param].string_value is not None:
+                                    fd.write(ts.parameters[param].string_value)
+                                    batch.count += 1
+                                    fd.write(",")
+                                if ts.parameters[param].numeric_value is not None:
+                                    fd.write(str(ts.parameters[param].numeric_value))
+                                    batch.count += 1
+                                    fd.write(",")
                 if is_new_batch(batch):
                     if batch.count > 0:
                         upload(stream_id, batch.fname)

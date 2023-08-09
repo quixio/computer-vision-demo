@@ -61,6 +61,11 @@ variables:
     description: Timezone from the IANA Time Zone Database (e.g. Asia/Singapore) for orchestrating time-based batching and file naming.
     defaultValue: GMT
     required: true
+  - name: separator
+    inputType: FreeText
+    description: ''
+    defaultValue: ','
+    required: false
 dockerfile: build/dockerfile
 runEntryPoint: main.py
 defaultFile: main.py

@@ -184,7 +184,7 @@ deployments:
         description: ''
         required: false
         value: ','
-  - name: Bus to S3
+  - name: Truck to S3
     application: S3
     deploymentType: Service
     version: 89f92f3e73498a38a00a005b9d3262c17a5c5cfe
@@ -213,7 +213,7 @@ deployments:
         inputType: FreeText
         description: Name of the parameter to save to S3
         required: true
-        value: bus
+        value: truck
       - name: aws_access_key_id
         inputType: HiddenText
         description: AWS S3 access key id
@@ -233,7 +233,7 @@ deployments:
         inputType: FreeText
         description: File name prefix
         required: false
-        value: bus_
+        value: truck_
       - name: s3_folder
         inputType: FreeText
         description: Name of the S3 folder to save to

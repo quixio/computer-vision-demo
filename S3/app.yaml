@@ -24,22 +24,22 @@ variables:
   - name: aws_access_key_id
     inputType: HiddenText
     description: AWS S3 access key id
-    defaultValue: AKIA5JJJFC76PNETJKUS
+    defaultValue: ''
     required: false
   - name: aws_access_key
     inputType: HiddenText
     description: AWS S3 access key
-    defaultValue: YN0OO2f/ywQWVY6kQZvVjGYK3tPtsL8ACiOnc3eD
+    defaultValue: ''
     required: false
   - name: s3_bucket
     inputType: FreeText
     description: AWS S3 bucket name
-    defaultValue: steve-demo-quix
+    defaultValue: ''
     required: true
   - name: prefix
     inputType: FreeText
     description: File name prefix
-    defaultValue: demo_
+    defaultValue: ''
     required: false
   - name: s3_folder
     inputType: FreeText

@@ -128,7 +128,7 @@ deployments:
         inputType: FreeText
         description: Time interval in seconds to save data to S3 (set -1 to disable batching based on time)
         required: false
-        value: 3600
+        value: 60
       - name: batch_msg_count
         inputType: FreeText
         description: Message count in the batch (0 saves data as they arrive, -1 disables batching based on message count)

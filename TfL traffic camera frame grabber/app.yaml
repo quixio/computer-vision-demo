@@ -1,4 +1,4 @@
-name: TfL traffic camera frame grabber - old
+name: TfL traffic camera frame grabber
 language: python
 variables: []
 dockerfile: build/dockerfile

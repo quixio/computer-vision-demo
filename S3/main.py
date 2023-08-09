@@ -130,7 +130,7 @@ def save(stream_id: str, data: qx.TimeseriesData):
 
                                 # write the timestamp once per row
                                 if not ts_written:
-                                    fd.write(ts.timestamp_nanoseconds)
+                                    fd.write(str(ts.timestamp_nanoseconds))
                                     ts_written = True
 
                                     for tag in ts.tags:

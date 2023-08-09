@@ -44,7 +44,7 @@ variables:
   - name: s3_folder
     inputType: FreeText
     description: Name of the S3 folder to save to
-    defaultValue: ''
+    defaultValue: computer_vision_demo
     required: false
   - name: s3_folder_per_stream
     inputType: FreeText

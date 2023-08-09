@@ -1,0 +1,6 @@
+name: TfL traffic camera frame grabber - old
+language: python
+variables: []
+dockerfile: build/dockerfile
+runEntryPoint: main.py
+defaultFile: quix_function.py

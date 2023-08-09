@@ -14,7 +14,6 @@ deployments:
       cpu: 8000
       memory: 10240
       replicas: 1
-    libraryItemId: 86195d34-be00-4f0d-a303-c1e95cdb1c32
     desiredStatus: Running
     variables:
       - name: output
@@ -35,7 +34,6 @@ deployments:
       cpu: 8000
       memory: 16000
       replicas: 1
-    libraryItemId: bfee7144-49f1-411d-b5c3-0d8396e2c946
     desiredStatus: Running
     variables:
       - name: input
@@ -56,7 +54,6 @@ deployments:
       cpu: 8000
       memory: 8000
       replicas: 1
-    libraryItemId: f36c1fdd-b900-4ac5-808c-1ea1320471e7
     desiredStatus: Running
     variables:
       - name: input
@@ -80,7 +77,6 @@ deployments:
     publicAccess:
       enabled: true
       urlPrefix: tfl-image-processing-ui
-    libraryItemId: 5976fcd9-2ed6-407c-bc5f-795891340bb5
     desiredStatus: Running
     variables:
       - name: processed
@@ -96,7 +92,6 @@ deployments:
       cpu: 8000
       memory: 10240
       replicas: 1
-    libraryItemId: eec165e1-f648-4e58-9fd3-9af475a840e8
     desiredStatus: Running
     variables:
       - name: input
@@ -114,17 +109,85 @@ deployments:
         description: The numer of images per second
         required: true
         value: 100
+  - name: Car to S3
+    application: S3
+    deploymentType: Service
+    version: 6cea57fecb2727a0d30ed58744dea106c1947fc1
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    desiredStatus: Running
+    variables:
+      - name: input
+        inputType: InputTopic
+        description: Input topic
+        required: true
+        value: image-processed
+      - name: batch_time_interval
+        inputType: FreeText
+        description: Time interval in seconds to save data to S3 (set -1 to disable batching based on time)
+        required: false
+        value: 3600
+      - name: batch_msg_count
+        inputType: FreeText
+        description: Message count in the batch (0 saves data as they arrive, -1 disables batching based on message count)
+        required: false
+        value: 0
+      - name: parameter
+        inputType: FreeText
+        description: Name of the parameter to save to S3
+        required: true
+        value: car
+      - name: aws_access_key_id
+        inputType: HiddenText
+        description: AWS S3 access key id
+        required: false
+        value: 5feeeab7ea73d4e83c3639591b5ec803AKIA5JJJFC76PNETJKUS
+      - name: aws_access_key
+        inputType: HiddenText
+        description: AWS S3 access key
+        required: false
+        value: YN0OO2f/ywQWVY6kQZvVjGYK3tPtsL8ACiOnc3eD
+      - name: s3_bucket
+        inputType: FreeText
+        description: AWS S3 bucket name
+        required: true
+        value: steve-demo-quix
+      - name: prefix
+        inputType: FreeText
+        description: File name prefix
+        required: false
+        value: demo_
+      - name: s3_folder
+        inputType: FreeText
+        description: Name of the S3 folder to save to
+        required: false
+        value: computer_vision_demo
+      - name: s3_folder_per_stream
+        inputType: FreeText
+        description: Flag to save different streams to different S3 folders.
+        required: false
+        value: false
+      - name: suffix
+        inputType: FreeText
+        description: File suffix (e.g. file type extension)
+        required: false
+        value: .csv
+      - name: timezone
+        inputType: FreeText
+        description: Timezone from the IANA Time Zone Database (e.g. Asia/Singapore) for orchestrating time-based batching and file naming.
+        required: true
+        value: GMT
+      - name: separator
+        inputType: FreeText
+        description: ''
+        required: false
+        value: ','
 
 # This section describes the Topics of the data pipeline
 topics:
-  - name: image-processed-merged
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: image-processed
+  - name: tfl-cameras
     persisted: false
     configuration:
       partitions: 2
@@ -138,7 +201,14 @@ topics:
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
-  - name: tfl-cameras
+  - name: image-processed
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: image-processed-merged
     persisted: false
     configuration:
       partitions: 2

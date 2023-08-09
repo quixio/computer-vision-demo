@@ -9,7 +9,7 @@ deployments:
   - name: TFL Camera Feed
     application: TFL Camera Feed
     deploymentType: Service
-    version: 5a83bd854ebb324f8606959703d4eba7aa1f0fa6
+    version: v1
     resources:
       cpu: 8000
       memory: 10240
@@ -30,7 +30,7 @@ deployments:
   - name: Computer vision object detection
     application: Computer vision object detection
     deploymentType: Service
-    version: 9ef9a631bf9495f29022077a5a43d5f722cf9e33
+    version: v1
     resources:
       cpu: 8000
       memory: 16000
@@ -51,7 +51,7 @@ deployments:
   - name: Stream merge
     application: Stream merge
     deploymentType: Service
-    version: cd7434afe782eb3f61c23503146de9e6ad076698
+    version: v1
     resources:
       cpu: 8000
       memory: 8000
@@ -72,7 +72,7 @@ deployments:
   - name: TfL image processing UI
     application: TfL image processing UI
     deploymentType: Service
-    version: 5bcd7d61c9a213cd45ae7fae0f9cfa855e4974a9
+    version: v1
     resources:
       cpu: 200
       memory: 200
@@ -88,10 +88,10 @@ deployments:
         description: The topic to read from
         required: true
         value: image-processed-merged
-  - name: TfL traffic camera frame grabber - broken
-    application: TfL traffic camera frame grabber - broken
+  - name: TfL traffic camera frame grabber
+    application: TfL traffic camera frame grabber
     deploymentType: Service
-    version: cd4c497950a7c06bb2ba58ef2956ccf32d582f38
+    version: v1
     resources:
       cpu: 8000
       memory: 10240

@@ -13,7 +13,7 @@ run = True
 # comma separated list of parameters that contains formatted data to save to s3
 param_csv = os.environ["parameter"]
 # split and trim the entries
-params = [x.strip() for x in param_csv.split(',')]
+params_to_write = [x.strip() for x in param_csv.split(',')]
 
 bucket = os.environ["s3_bucket"]
 s3_folder = os.environ["s3_folder"]
@@ -123,9 +123,19 @@ def save(stream_id: str, data: qx.TimeseriesData):
                     print("Warn: data contains more than one timestamp: batch size may not be accurate")
                 with gzip.open(batch.fname, "at") as fd:
                     for ts in data.timestamps:
-                        for param in params:
+                        ts_written = False
+                        for param in params_to_write:
                             # save only string and numeric data
                             if param in ts.parameters.keys():
+
+                                # write the timestamp once per row
+                                if not ts_written:
+                                    fd.write(ts.timestamp_nanoseconds)
+                                    ts_written = True
+
+                                    for tag in ts.tags:
+                                        print(tag)
+
                                 if ts.parameters[param].string_value is not None:
                                     fd.write(ts.parameters[param].string_value)
                                     batch.count += 1

@@ -187,7 +187,7 @@ deployments:
   - name: Bus to S3
     application: S3
     deploymentType: Service
-    version: c4016bbcd6a7e746b691d5c2d685a7f7754e86d8
+    version: be5f86ddb31611dfb2c900098b34eacaa39a3005
     resources:
       cpu: 200
       memory: 500

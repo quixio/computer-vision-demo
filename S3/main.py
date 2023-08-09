@@ -24,7 +24,7 @@ separator = os.environ["separator"]
 client = qx.QuixStreamingClient()
 commit_settings = qx.models.CommitOptions()
 commit_settings.auto_commit_enabled = False
-topic = client.get_topic_consumer(os.environ["input"], "s3-sink-" + param, 
+topic = client.get_topic_consumer(os.environ["input"], "s3-sink", 
                                   commit_settings = commit_settings, auto_offset_reset = qx.AutoOffsetReset.Latest)
 
 # files created in s3 will have this prefix

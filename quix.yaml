@@ -336,13 +336,12 @@ deployments:
         value: ','
   - name: S3 new
     application: S3
-    deploymentType: Service
+    deploymentType: Job
     version: 9ee73e9a6b141170506ca8ead1553f622e8d0cb1
     resources:
       cpu: 200
       memory: 500
       replicas: 1
-    desiredStatus: Stopped
     variables:
       - name: input
         inputType: InputTopic

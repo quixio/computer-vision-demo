@@ -336,8 +336,8 @@ deployments:
         value: ','
   - name: S3 new
     application: S3
-    deploymentType: Job
-    version: 9ee73e9a6b141170506ca8ead1553f622e8d0cb1
+    deploymentType: Service
+    version: 2c22e9ce20355dcdd327efa46dd4ad83ea0d05a2
     resources:
       cpu: 200
       memory: 500

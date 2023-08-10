@@ -18,10 +18,10 @@ print(v)
 run = True
 
 # comma separated list of parameters that contains formatted data to save to s3
-param_csv = os.environ["parameter"]
+param_csv = os.environ["parameters"]
 # split and trim the entries
 params_to_write = [x.strip() for x in param_csv.split(',')]
-print(params_to_write)
+headers += params_to_write
 
 bucket = os.environ["s3_bucket"]
 s3_folder = os.environ["s3_folder"]
@@ -66,12 +66,17 @@ BatchMode = Enum("BatchMode", "NONE TIME COUNT TIME_OR_COUNT")
 batch_mode = BatchMode.NONE
 if max_count > 0 and max_interval.total_seconds() > 0:
     batch_mode = BatchMode.TIME_OR_COUNT
+    print(f"Files will be uploaded approx. every {max_interval.total_seconds()} seconds or {max_count} records. Whichever is soonest.")
 elif max_count > 0:
     batch_mode = BatchMode.COUNT
+    print(f"Files will be uploaded every {max_count} records")
 elif max_interval.total_seconds() > 0:
     batch_mode = BatchMode.TIME
+    print(f"Files will be uploaded approx. every {max_interval.total_seconds()} seconds.")
 else:
     batch_mode = BatchMode.NONE
+    print(f"Files will be uploaded for every record. Time and Count parameters will be ignored.")
+
 batches = {}
 
 s3 = boto3.client(
@@ -99,6 +104,7 @@ def upload(stream_id: str, fname: str):
             print("Error: upload(): " + str(e))
         finally:
             os.remove(fname)
+            headers_written_for_file.remove(fname)
     else:
         print("Error: file " + fname + " not found")
 
@@ -116,9 +122,12 @@ def is_new_batch(batch: Batch):
         return interval >= max_interval or batch.count >= max_count
     raise Exception("Unknown batch mode")
 
+
 # modify this function, if you prefer a different file naming logic.
 def file_name(start: datetime):
     return prefix + start.astimezone(tz).isoformat(timespec='milliseconds').replace(":", "").replace("+", "_plus_") + suffix + ".gz"
+
+headers_written_for_file = []
 
 def save(stream_id: str, data: qx.TimeseriesData):
     global batches
@@ -130,34 +139,38 @@ def save(stream_id: str, data: qx.TimeseriesData):
                 if len(data.timestamps) > 1 and (batch_mode == BatchMode.COUNT or batch_mode == BatchMode.TIME_OR_COUNT):
                     print("Warn: data contains more than one timestamp: batch size may not be accurate")
                 with gzip.open(batch.fname, "at") as fd:
+                    output_data = ""
                     for ts in data.timestamps:
-                        ts_written = False
-                        for param in params_to_write:
-                            # save only string and numeric data
-                            #print("ts has these parameters")
-                            if param in ts.parameters.keys():
-                                #print(param)
-                                # write the timestamp once per row
-                                if not ts_written:
-                                    print("writing ts")
-                                    fd.write(str(ts.timestamp_nanoseconds))
-                                    ts_written = True
-                                    print("writing tags")
+                        output_rows = ""
 
-                                    for tag in ts.tags:
-                                        print(tag)
+                        for f in params_to_write:
+                            comma = ""
+                            if output_rows != "":
+                                comma = ","
 
-                                if ts.parameters[param].string_value is not None:
-                                    fd.write(ts.parameters[param].string_value)
-                                    batch.count += 1
-                                    fd.write(",")
-                                if ts.parameters[param].numeric_value is not None:
-                                    fd.write(str(ts.parameters[param].numeric_value))
-                                    batch.count += 1
-                                    fd.write(",")
-                            # if something has been written, write a new line
-                            if ts_written:
-                                    fd.write("\n")
+                            if f in ts.parameters.keys():
+                                if ts.parameters[f].string_value is not None:
+                                    output_rows += f"{comma}{ts.parameters[f].string_value}"
+                                elif ts.parameters[f].numeric_value is not None:
+                                    output_rows += f"{comma}{ts.parameters[f].numeric_value}"
+                                else:
+                                    output_rows += f"{comma}{0}"
+                            else:
+                                output_rows += f"{comma}{0}"
+
+                        output_rows += "\n"
+                        output_rows = f"{ts.timestamp_nanoseconds},{output_rows}"
+                        output_data += output_rows
+
+                    if output_data != "":
+                        if batch.fname not in headers_written_for_file:
+                            fd.write(",".join(headers))
+                            fd.write("\n")
+                            headers_written_for_file.append(batch.fname)
+
+                        batch.count += 1
+                        fd.write(output_data)
+
                 if is_new_batch(batch):
                     if batch.count > 0:
                         upload(stream_id, batch.fname)

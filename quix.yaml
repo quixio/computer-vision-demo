@@ -148,7 +148,7 @@ deployments:
         inputType: FreeText
         description: Comma separated list of parameters to look for in the received data
         required: true
-        value: bicycle, car, truck, person
+        value: car, truck, bus
       - name: aws_access_key_id
         inputType: HiddenText
         description: AWS S3 access key id
@@ -192,7 +192,7 @@ deployments:
 
 # This section describes the Topics of the data pipeline
 topics:
-  - name: image-processed-merged
+  - name: image-processed
     persisted: false
     configuration:
       partitions: 2
@@ -206,8 +206,7 @@ topics:
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
-  - name: image-raw
-    persisted: false
+  - name: tfl-cameras
     configuration:
       partitions: 2
       replicationFactor: 2

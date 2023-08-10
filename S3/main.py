@@ -202,9 +202,9 @@ topic.on_stream_received = stream_received_handler
 def job():
     while run:
         print("Debug: started batch job at " + str(datetime.now()))
-        for key in batches.keys():
-            mutex.acquire()
-            try:
+        mutex.acquire()
+        try:
+            for key in batches.keys():
                 now = datetime.now()
                 batch = batches[key]
                 if is_new_batch(batch):
@@ -213,8 +213,8 @@ def job():
                         print("Info: job() uploaded batch " + batch.fname + " with " + str(batch.count) + " records to S3")
                     fname = file_name(now)
                     batches[key] = Batch(0, now, fname)
-            finally:
-                mutex.release()
+        finally:
+            mutex.release()
         interval = max_interval.total_seconds() / 2
         print("Debug: scheduled next batch job to run at " + str(datetime.now() + timedelta(seconds = interval)))
         time.sleep(interval)

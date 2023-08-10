@@ -7,12 +7,7 @@ from threading import Lock, Thread
 import gzip
 import boto3
 
-v = ""
-for name, value in os.environ.items():
-    a = ("{0}={1}".format(name, value))
-    v = v + a + ";"
-    print(a)
-print(v)
+headers = ["timestamp"]
 
 # keep the main loop running
 run = True

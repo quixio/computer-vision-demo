@@ -22,7 +22,6 @@ bucket = os.environ["s3_bucket"]
 s3_folder = os.environ["s3_folder"]
 # if set to true, new folders will be created in s3 for each stream using stream id as name 
 s3_folder_per_stream = os.environ["s3_folder_per_stream"].lower() == "true"
-separator = os.environ["separator"]
 
 client = qx.QuixStreamingClient()
 commit_settings = qx.models.CommitOptions()

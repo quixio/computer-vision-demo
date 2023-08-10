@@ -70,7 +70,7 @@ elif max_interval.total_seconds() > 0:
     print(f"Files will be uploaded approx. every {max_interval.total_seconds()} seconds.")
 else:
     batch_mode = BatchMode.NONE
-    print(f"Files will be uploaded for every record. Time and Count parameters will be ignored.")
+    print("Files will be uploaded for every record. Time and Count parameters will be ignored.")
 
 batches = {}
 

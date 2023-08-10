@@ -16,9 +16,9 @@ variables:
     description: Message count in the batch (0 saves data as they arrive, -1 disables batching based on message count)
     defaultValue: 0
     required: false
-  - name: parameter
+  - name: parameters
     inputType: FreeText
-    description: Name of the parameter to save to S3
+    description: Comma separated list of parameters to look for in the received data
     defaultValue: ''
     required: true
   - name: aws_access_key_id
@@ -61,11 +61,6 @@ variables:
     description: Timezone from the IANA Time Zone Database (e.g. Asia/Singapore) for orchestrating time-based batching and file naming.
     defaultValue: GMT
     required: true
-  - name: separator
-    inputType: FreeText
-    description: ''
-    defaultValue: ','
-    required: false
 dockerfile: build/dockerfile
 runEntryPoint: main.py
 defaultFile: main.py

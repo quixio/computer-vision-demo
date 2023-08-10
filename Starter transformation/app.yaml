@@ -1,6 +1,0 @@
-name: Object counter
-language: python
-variables: []
-dockerfile: build/dockerfile
-runEntryPoint: main.py
-defaultFile: main.py

@@ -26,7 +26,7 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
     hourly_average = resampled_data.groupby(['lat', 'lon', resampled_data['timestamp'].dt.hour])['car'].mean().reset_index()
 
     # Print the DataFrame with all columns displayed
-    print(hourly_average)
+    print(f'avg={hourly_average}')
 
 
     # stream_producer = topic_producer.get_or_create_stream(stream_id = stream_consumer.stream_id)

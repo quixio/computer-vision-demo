@@ -112,7 +112,7 @@ deployments:
   - name: S3 new
     application: S3
     deploymentType: Service
-    version: 8a90fa1589fffb2186d461766c35ea336a65541d
+    version: 75b6abfe2842349b1fc13453e07bc30e4d7a2747
     resources:
       cpu: 200
       memory: 500
@@ -143,12 +143,12 @@ deployments:
         inputType: HiddenText
         description: AWS S3 access key id
         required: false
-        value: AKIA5JJJFC76PNETJKUS
+        value: AKIA5JJJFC76H52H62WO
       - name: aws_access_key
         inputType: HiddenText
         description: AWS S3 access key
         required: false
-        value: YN0OO2f/ywQWVY6kQZvVjGYK3tPtsL8ACiOnc3eD
+        value: BQla1KEQr5WoptF9TsDxTFeP48Wa+Sh8H7gR2ji5
       - name: s3_bucket
         inputType: FreeText
         description: AWS S3 bucket name

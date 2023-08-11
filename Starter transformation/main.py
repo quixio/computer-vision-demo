@@ -2,6 +2,7 @@ import quixstreams as qx
 import os
 import pandas as pd
 import time
+from io import StringIO
 
 
 client = qx.QuixStreamingClient()

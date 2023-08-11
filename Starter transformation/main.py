@@ -47,7 +47,7 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
 
     a = pd.DataFrame(hourly_average)
     
-    stream_producer = topic_producer.get_or_create_stream(stream_id = stream_consumer.stream_id)
+    stream_producer = topic_producer.get_or_create_stream("cars")
     stream_producer.timeseries.buffer.publish(a)
 
 

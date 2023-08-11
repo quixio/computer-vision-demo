@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { AgmCoreModule } from '@agm/core';
+import { AgmMarkerClustererModule } from '@agm/markerclusterer';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { AgmCoreModule } from '@agm/core';
     MaterialModule,
     FlexLayoutModule,
     AgmCoreModule.forRoot(),
+    AgmMarkerClustererModule
   ],
   providers: [],
   bootstrap: [AppComponent]

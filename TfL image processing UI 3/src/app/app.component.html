@@ -10,18 +10,19 @@
     </header>
     <main>
       <div fxFlex fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap.xs="0" fxLayoutGap.gt-xs="40">
-        
+
         <!-- Live feed Section -->
         <div fxLayout="column" fxFlex.gt-xs="50" fxFlex.gt-sm="400px">
           <div fxLayout="row" fxLayoutAlign="space-between center">
             <div class="mat-h2 m-0">Image Feed</div>
-            <button mat-raised-button class="toggle-feed" [color]="!showImages ? 'primary' : undefined" (click)="toggleFeed()">{{ showImages ? 'Pause feed' : 'Resume feed' }}</button>
+            <button mat-raised-button class="toggle-feed" [color]="!showImages ? 'primary' : undefined"
+              (click)="toggleFeed()">{{ showImages ? 'Pause feed' : 'Resume feed' }}</button>
           </div>
           <img class="img" [src]="last_image" width="100%">
 
           <mat-form-field appearance="outline" class="mt-2">
             <mat-label>Select object</mat-label>
-            <mat-select [value]="selectedObject" (selectionChange)="selectedObjectChanged($event)">
+            <mat-select [value]="parameterId" (selectionChange)="selectedObjectChanged($event.value)">
               <mat-option class="select-title" disabled>Popular objects</mat-option>
               <mat-option *ngFor="let type of popularObjectTypes" [value]="type">
                 {{ type | titlecase }}
@@ -34,16 +35,19 @@
             </mat-select>
           </mat-form-field>
 
-          <div [style.fontSize.px]="14" [style.marginBottom.px]="40">Searching for {{ selectedObject }}...</div>
+          <div [style.fontSize.px]="14" [style.marginBottom.px]="40">Searching for {{ parameterId }}...</div>
         </div>
 
         <!-- Map Section -->
         <div fxFlex.gt-xs="50" fxFlex.gt-sm="100" fxFlex fxLayout="column" class="map-container">
-          <agm-map #map [zoom]="10" [maxZoom]="25" [fitBounds]="false" [latitude]="latitude" [longitude]="longitude"
-            (mapReady)="onMapReady($event)">
+          <agm-map #map [zoom]="10" [maxZoom]="25" [fitBounds]="false" [latitude]="latitude" [longitude]="longitude">
+            <agm-marker-cluster [imagePath]="clusterIcon" [calculator]="calculateFunction" [averageCenter]="true" [gridSize]="50">
+              <agm-marker *ngFor="let m of markers; let i = index" [latitude]="m.latitude" [longitude]="m.longitude"
+                [label]="m.label" [iconUrl]="m.icon">
+              </agm-marker>
+            </agm-marker-cluster>
           </agm-map>
         </div>
-        
       </div>
     </main>
   </mat-drawer-content>

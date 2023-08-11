@@ -1,6 +1,7 @@
 import quixstreams as qx
 import os
 import pandas as pd
+import time
 
 
 client = qx.QuixStreamingClient()
@@ -44,9 +45,10 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
     print("avg=================")
     print(f'{hourly_average}')
     print("======================")
+    current_time_ns = time.time_ns()
 
     a = pd.DataFrame(hourly_average)
-    a["timestamp"] = df["timestamp"]
+    a["timestamp"] = current_time_ns
     stream_producer = topic_producer.get_or_create_stream("cars")
     stream_producer.timeseries.buffer.publish(a)
 

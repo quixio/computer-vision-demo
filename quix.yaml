@@ -197,6 +197,21 @@ deployments:
         description: The topic to read from
         required: true
         value: image-processed-merged
+  - name: TfL image processing UI 3
+    application: TfL image processing UI 3
+    deploymentType: Service
+    version: 9ce9fff3479e0649588fec740fcfb539da56d814
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    desiredStatus: Running
+    variables:
+      - name: processed
+        inputType: InputTopic
+        description: The topic to read from
+        required: true
+        value: image-processed-merged
 
 # This section describes the Topics of the data pipeline
 topics:

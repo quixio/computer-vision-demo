@@ -44,20 +44,10 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
     #data = df
     #print(df)
 
-    # Create an in-memory file-like object
-    csv_buffer = StringIO()
+    df_string = data.to_string(index=False)
 
-    # Save the DataFrame to the in-memory CSV buffer
-    df.to_csv(csv_buffer, index=False)
-
-    # Get the contents of the CSV buffer as a string
-    csv_data = csv_buffer.getvalue()
-
-    # Print the CSV data (or do whatever you want with it)
-    print(csv_data)
-    
-    # Close the in-memory buffer
-    csv_buffer.close()
+    # Print the human-readable DataFrame string
+    print(df_string)
 
     hourly_average = update_data_and_average(df)
 

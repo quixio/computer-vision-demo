@@ -32,7 +32,7 @@ def update_data_and_average(new_data):
     resampled_data = data.groupby(['lat', 'lon', pd.Grouper(key='timestamp', freq='1H')]).sum().reset_index()
     
     # Calculate average for each hour of the day
-    hourly_average = resampled_data.groupby(['lat', 'lon', resampled_data['timestamp'].dt.hour])['car'].mean().reset_index()
+    hourly_average = resampled_data.groupby(['lat', 'lon', resampled_data['hour'].dt.hour])['car'].mean().reset_index()
     
     return hourly_average
 

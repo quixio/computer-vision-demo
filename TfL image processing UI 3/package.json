@@ -11,6 +11,7 @@
   "private": true,
   "dependencies": {
     "@agm/core": "^3.0.0-beta.0",
+    "@agm/markerclusterer": "^3.0.0-beta.0",
     "@angular/animations": "^14.2.0",
     "@angular/cdk": "^14.2.7",
     "@angular/common": "^14.2.0",

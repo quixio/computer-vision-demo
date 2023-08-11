@@ -179,17 +179,28 @@ deployments:
         description: Timezone from the IANA Time Zone Database (e.g. Asia/Singapore) for orchestrating time-based batching and file naming.
         required: true
         value: GMT
+  - name: TfL image processing UI 2
+    application: TfL image processing UI 2
+    deploymentType: Service
+    version: 45e06a3c0f43d06a03797a66c6422d7c901638fa
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    publicAccess:
+      enabled: true
+      urlPrefix: tflimageprocessingui2-45e06a3
+    desiredStatus: Running
+    variables:
+      - name: processed
+        inputType: InputTopic
+        description: The topic to read from
+        required: true
+        value: image-processed-merged
 
 # This section describes the Topics of the data pipeline
 topics:
-  - name: tfl-cameras
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: image-raw
+  - name: image-processed-merged
     persisted: false
     configuration:
       partitions: 2
@@ -203,7 +214,14 @@ topics:
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
-  - name: image-processed-merged
+  - name: image-raw
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: tfl-cameras
     persisted: false
     configuration:
       partitions: 2

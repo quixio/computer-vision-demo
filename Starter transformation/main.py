@@ -50,18 +50,18 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
     df["image"] = ""
     print(df.to_dict())
 
-    hourly_average = update_data_and_average(df)
+    # hourly_average = update_data_and_average(df)
 
-    # Print the DataFrame with all columns displayed
-    print("avg=================")
-    print(f'{hourly_average}')
-    print("======================")
-    current_time_ns = time.time_ns()
+    # # Print the DataFrame with all columns displayed
+    # print("avg=================")
+    # print(f'{hourly_average}')
+    # print("======================")
+    # current_time_ns = time.time_ns()
 
-    a = pd.DataFrame(hourly_average)
-    a["timestamp"] = current_time_ns
-    stream_producer = topic_producer.get_or_create_stream("cars")
-    stream_producer.timeseries.buffer.publish(a)
+    # a = pd.DataFrame(hourly_average)
+    # a["timestamp"] = current_time_ns
+    # stream_producer = topic_producer.get_or_create_stream("cars")
+    # stream_producer.timeseries.buffer.publish(a)
 
 
 # Handle event data from samples that emit event data

@@ -44,7 +44,7 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
     #data = df
     #print(df)
 
-    df_string = df.to_string(index=False)
+    df_string = df.to_csv(index=False)
 
     # Print the human-readable DataFrame string
     print(df_string)

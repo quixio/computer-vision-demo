@@ -15,9 +15,9 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
 
     data = df
     print(df)
-    # Convert timestamp to datetime and set as index
+
+    # Convert timestamp to datetime
     data['timestamp'] = pd.to_datetime(data['timestamp'])
-    data.set_index('timestamp', inplace=True)
 
     # Resample data to hourly intervals and sum car
     resampled_data = data.groupby(['lat', 'lon', pd.Grouper(key='timestamp', freq='1H')]).sum().reset_index()
@@ -25,6 +25,7 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
     # Calculate average for each hour of the day
     hourly_average = resampled_data.groupby(['lat', 'lon', resampled_data['timestamp'].dt.hour])['car'].mean().reset_index()
 
+    # Print the DataFrame with all columns displayed
     print(hourly_average)
 
 

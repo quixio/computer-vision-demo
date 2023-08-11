@@ -20,11 +20,11 @@ data = pd.DataFrame(columns=['timestamp', 'lat', 'lon', 'car'])
 def update_data_and_average(new_data):
     global data
     
-    print(new_data['timestamp'][0])
+    #print(new_data['timestamp'][0])
 
     # Convert timestamp to datetime
     new_data['timestamp'] = pd.to_datetime(new_data['timestamp'])
-    print(new_data['timestamp'][0])
+    #print(new_data['timestamp'][0])
     
     # Append new data to the DataFrame
     data = data.append(new_data, ignore_index=True)
@@ -44,10 +44,10 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
     #data = df
     #print(df)
 
-    df_string = df.to_csv(index=False)
+    #df_string = df.to_csv(index=False)
 
     # Print the human-readable DataFrame string
-    print(df_string)
+    #print(df_string)
 
     hourly_average = update_data_and_average(df)
 

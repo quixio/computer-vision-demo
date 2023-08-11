@@ -11,12 +11,23 @@ topic_producer = client.get_topic_producer(os.environ["output"])
 
 def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
 
-    # Transform data frame here in this method. You can filter data or add new features.
-    # Pass modified data frame to output stream using stream producer.
-    # Set the output stream id to the same as the input stream or change it,
-    # if you grouped or merged data with different key.
-    stream_producer = topic_producer.get_or_create_stream(stream_id = stream_consumer.stream_id)
-    stream_producer.timeseries.buffer.publish(df)
+    data = df
+    
+    # Convert timestamp to datetime and set as index
+    data['timestamp'] = pd.to_datetime(data['timestamp'])
+    data.set_index('timestamp', inplace=True)
+
+    # Resample data to hourly intervals and sum num_vehicles
+    resampled_data = data.groupby(['lat', 'lon']).resample('1H').sum()
+
+    # Calculate average for each hour of the day
+    hourly_average = resampled_data.groupby(['lat', 'lon', resampled_data.index.hour])['car'].mean().reset_index()
+
+    print(hourly_average)
+
+
+    # stream_producer = topic_producer.get_or_create_stream(stream_id = stream_consumer.stream_id)
+    # stream_producer.timeseries.buffer.publish(df)
 
 
 # Handle event data from samples that emit event data

@@ -48,7 +48,7 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
     #print(json_data)
 
     df["image"] = ""
-    print(df.to_dict())
+    print(df.to_dict(orient='records'))
 
     # hourly_average = update_data_and_average(df)
 

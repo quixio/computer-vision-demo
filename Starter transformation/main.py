@@ -45,8 +45,10 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
     print(f'{hourly_average}')
     print("======================")
 
-    # stream_producer = topic_producer.get_or_create_stream(stream_id = stream_consumer.stream_id)
-    # stream_producer.timeseries.buffer.publish(df)
+    a = pd.DataFrame(hourly_average)
+    
+    stream_producer = topic_producer.get_or_create_stream(stream_id = stream_consumer.stream_id)
+    stream_producer.timeseries.buffer.publish(df)
 
 
 # Handle event data from samples that emit event data

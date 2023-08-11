@@ -8,11 +8,13 @@ client = qx.QuixStreamingClient()
 topic_consumer = client.get_topic_consumer(os.environ["input"], consumer_group = "empty-transformation")
 topic_producer = client.get_topic_producer(os.environ["output"])
 
+pd.set_option('display.max_columns', None)
+
 
 def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
 
     data = df
-    
+    print(df)
     # Convert timestamp to datetime and set as index
     data['timestamp'] = pd.to_datetime(data['timestamp'])
     data.set_index('timestamp', inplace=True)

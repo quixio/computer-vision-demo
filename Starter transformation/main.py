@@ -23,6 +23,7 @@ def update_data_and_average(new_data):
 
     # Convert timestamp to datetime
     new_data['timestamp'] = pd.to_datetime(new_data['timestamp'])
+    print(new_data['timestamp'][0])
     
     # Append new data to the DataFrame
     data = data.append(new_data, ignore_index=True)

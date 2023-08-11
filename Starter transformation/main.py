@@ -21,6 +21,7 @@ def update_data_and_average(new_data):
     global data
     
     #print(new_data['timestamp'][0])
+    new_data["image"] = []
     print(new_data.to_dict())
     # Convert timestamp to datetime
     new_data['timestamp'] = pd.to_datetime(new_data['timestamp'])
@@ -44,10 +45,8 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
     #data = df
     #print(df)
 
-    #json_data = df.to_dict()
-
-    # Print the human-readable DataFrame string
-    #print(json_data)
+    json_data = df.to_dict()
+    print(json_data)
 
     hourly_average = update_data_and_average(df)
 

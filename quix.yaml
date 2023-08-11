@@ -138,7 +138,7 @@ deployments:
         inputType: FreeText
         description: Comma separated list of parameters to look for in the received data
         required: true
-        value: bicycle, car,truck, traffic light
+        value: bicycle, car, truck, person
       - name: aws_access_key_id
         inputType: HiddenText
         description: AWS S3 access key id
@@ -163,7 +163,7 @@ deployments:
         inputType: FreeText
         description: Name of the S3 folder to save to
         required: false
-        value: computer_vision_demo_new
+        value: computer_vision_demo_data
       - name: s3_folder_per_stream
         inputType: FreeText
         description: Flag to save different streams to different S3 folders.

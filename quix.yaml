@@ -179,24 +179,6 @@ deployments:
         description: Timezone from the IANA Time Zone Database (e.g. Asia/Singapore) for orchestrating time-based batching and file naming.
         required: true
         value: GMT
-  - name: TfL image processing UI 2
-    application: TfL image processing UI 2
-    deploymentType: Service
-    version: 45e06a3c0f43d06a03797a66c6422d7c901638fa
-    resources:
-      cpu: 200
-      memory: 500
-      replicas: 1
-    publicAccess:
-      enabled: true
-      urlPrefix: tflimageprocessingui2-45e06a3
-    desiredStatus: Running
-    variables:
-      - name: processed
-        inputType: InputTopic
-        description: The topic to read from
-        required: true
-        value: image-processed-merged
   - name: TfL image processing UI 3
     application: TfL image processing UI 3
     deploymentType: Service

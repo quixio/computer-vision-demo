@@ -10,20 +10,35 @@ topic_producer = client.get_topic_producer(os.environ["output"])
 
 pd.set_option('display.max_columns', None)
 
+# Initialize an empty DataFrame to store the data
+data = pd.DataFrame(columns=['timestamp', 'lat', 'lon', 'car'])
+
+
+# Function to update data and calculate average
+def update_data_and_average(new_data):
+    global data
+    
+    # Convert timestamp to datetime
+    new_data['timestamp'] = pd.to_datetime(new_data['timestamp'])
+    
+    # Append new data to the DataFrame
+    data = data.append(new_data, ignore_index=True)
+    
+    # Resample data to hourly intervals and sum car
+    resampled_data = data.groupby(['lat', 'lon', pd.Grouper(key='timestamp', freq='1H')]).sum().reset_index()
+    
+    # Calculate average for each hour of the day
+    hourly_average = resampled_data.groupby(['lat', 'lon', resampled_data['timestamp'].dt.hour])['car'].mean().reset_index()
+    
+    return hourly_average
+
 
 def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
 
-    data = df
-    print(df)
+    #data = df
+    #print(df)
 
-    # Convert timestamp to datetime
-    data['timestamp'] = pd.to_datetime(data['timestamp'])
-
-    # Resample data to hourly intervals and sum car
-    resampled_data = data.groupby(['lat', 'lon', pd.Grouper(key='timestamp', freq='1H')]).sum().reset_index()
-
-    # Calculate average for each hour of the day
-    hourly_average = resampled_data.groupby(['lat', 'lon', resampled_data['timestamp'].dt.hour])['car'].mean().reset_index()
+    hourly_average = update_data_and_average(df)
 
     # Print the DataFrame with all columns displayed
     print("avg=================")

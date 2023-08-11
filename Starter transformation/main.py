@@ -21,7 +21,7 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
     resampled_data = data.groupby(['lat', 'lon']).resample('1H').sum()
 
     # Calculate average for each hour of the day
-    hourly_average = resampled_data.groupby(['lat', 'lon', resampled_data.index.hour])['car'].mean().reset_index()
+    hourly_average = resampled_data.groupby(['lat', 'lon', resampled_data.index.get_level_values('timestamp').hour])['car'].mean().reset_index()
 
     print(hourly_average)
 

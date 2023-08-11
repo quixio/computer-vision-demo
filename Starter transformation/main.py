@@ -44,7 +44,7 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
     #data = df
     #print(df)
 
-    json_data = data.to_dict(orient='records')
+    json_data = df.to_dict(orient='records')
 
     # Print the human-readable DataFrame string
     print(json_data)

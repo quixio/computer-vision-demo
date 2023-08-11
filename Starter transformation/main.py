@@ -43,7 +43,7 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
     #data = df
     #print(df)
 
-    csvdata = data.to_csv('output.csv', index=False)
+    csvdata = df.to_csv('output.csv', index=False)
     print(csvdata)
 
     hourly_average = update_data_and_average(df)

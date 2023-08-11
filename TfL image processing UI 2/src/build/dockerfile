@@ -3,7 +3,7 @@ WORKDIR /app
 COPY --from=git /project/package*.json /app/
 RUN npm install
 COPY --from=git /project /app/
-RUN npm run build -- --output-path=./dist/out --configuration=development
+RUN npm run build -- --output-path=./dist/out --configuration=production
 
 FROM nginx:latest
 COPY --from=build /app/dist/out/ /usr/share/nginx/html

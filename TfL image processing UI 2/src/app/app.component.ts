@@ -1,9 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { HubConnection } from "@microsoft/signalr";
-import { ParameterData } from "./models/parameter-data";
-import { QuixService } from "./services/quix.service"
-import { MatSelectChange } from '@angular/material/select';
- 
+import { ClusterIconInfo, ClusterIconStyle } from '@google/markerclustererplus';
+import { HubConnection } from '@microsoft/signalr';
+import { CLUSTER_STYLE } from './constants/cluster';
+import { ParameterData } from './models/parameter-data';
+import { QuixService } from './services/quix.service';
+import { Subject, bufferTime, filter } from 'rxjs';
+
+interface Marker {
+  latitude: number,
+  longitude: number,
+  label: string | google.maps.MarkerLabel,
+  icon: string | google.maps.Icon | google.maps.Symbol
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -12,40 +21,72 @@ import { MatSelectChange } from '@angular/material/select';
 export class AppComponent implements OnInit {
   popularObjectTypes = ['bicycle', 'bus', 'car', 'motorbike', 'person', 'traffic light', 'truck'];
   otherObjectTypes = ['aeroplane', 'apple', 'banana', 'backpack', 'bed', 'bench', 'bird', 'boat', 'book', 'bottle', 'bowl', 'broccoli', 'cake', 'carrot', 'cat'];
-
-  private topic: string;
-
   latitude: number = 51.5072;
   longitude: number = -0.1000;
-  public map: any;
-  public last_image: string;
-  private markers: any[] = new Array();
+  private _markerBuffer = 1000;
+  private _markerFrequency = 500;
+
+  markers: Marker[] = [];
+  clusterIcon: string =
+    'https://raw.githubusercontent.com/googlemaps/v3-utility-library/master/markerclustererplus/images/m';
+  clusterStyle: ClusterIconStyle[] = CLUSTER_STYLE
+  showImages: boolean = true;
+  last_image: string;
   connection: HubConnection;
-  selectedObject: string = "";
+  parameterId: string = 'car';
+  private _topic: string;
+  private _streamId: string = 'input-image';
+  private _parameterDataReceived$ = new Subject<ParameterData>();
 
   constructor(private envVarService: QuixService) { }
 
   ngOnInit(): void {
-    console.log("INIT APP.Component");
-
-    this.envVarService.InitCompleted.subscribe(topic => {
-      console.log("Init completed: " + topic);
-      this.topic = topic;
+    this.envVarService.initCompleted$.subscribe(topic => {
+      console.log('Init completed: ' + topic);
+      this._topic = topic;
       this.envVarService.ConnectToQuix().then(connection => {
         this.connection = connection;
-        this.subscribeToData(topic);
+        this.subscribeToData();
       });
     });
 
-    if(this.envVarService.workingLocally){
-      this.topic = this.envVarService.topic;
-      this.envVarService.ConnectToQuix().then(connection => {
-        this.connection = connection;
-        this.subscribeToData(this.topic);
+    this._parameterDataReceived$.pipe(bufferTime(this._markerFrequency))
+      .subscribe((dataBuffer: ParameterData[]) => {        
+        dataBuffer.forEach((data) => {
+          if (!data.numericValues[this.parameterId]) return;
+
+          const marker: Marker = this.createMarker(data);
+          this.markers.push(marker);
+        })
+        if (this.markers.length > this._markerBuffer) this.markers.shift();
       });
+  }
+
+  createMarker(data: ParameterData): Marker {
+    if (data.stringValues['image']) {
+      let imageBinary = data.stringValues['image'][0];
+      this.last_image = 'data:image/png;base64,' + imageBinary;
     }
 
-    this.selectedObject = "car";
+    //create an index for icon styles
+    let index = 0;
+    //Set total to loop through (starts at total number)
+    let total = data.numericValues[this.parameterId][0];
+    while (total !== 0) {
+      //Create a new total by dividing by a set number
+      total = Math.floor(total / 5);
+      //Increase the index and move up to the next style
+      index++;
+    }
+
+    const markerIcon = this.clusterIcon + index + '.png';
+    const marker: Marker = {
+      latitude: +data.numericValues['lat'][0],
+      longitude: +data.numericValues['lon'][0],
+      label: data.numericValues[this.parameterId][0].toString(),
+      icon: markerIcon
+    }
+    return marker;
   }
 
   /**
@@ -54,59 +95,16 @@ export class AppComponent implements OnInit {
    * 
    * @param quixTopic the topic we want to retrieve data for
    */
-  subscribeToData(quixTopic: string) {
-    this.connection.on("ParameterDataReceived", (data: ParameterData) => {
-      if (data.stringValues["image"]) {
-        let imageBinary = data.stringValues["image"][0];
-        this.last_image = "data:image/png;base64," + imageBinary;
-      }
-
-      var markerIcon = {
-        path: google.maps.SymbolPath.CIRCLE,
-        fillOpacity: 1,
-        fillColor: '#fff',
-        strokeOpacity: 1,
-        strokeWeight: 1,
-        strokeColor: '#333',
-        scale: 12
-      };
-
-      var gMarker = new google.maps.Marker({
-        map: this.map,
-        position: {
-          lat: data.numericValues["lat"][0],
-          lng: data.numericValues["lon"][0]
-        },
-        title: 'Number 123',
-        icon: markerIcon,
-        label: {
-          color: '#000', fontSize: '12px', fontWeight: '600',
-          text: data.numericValues[this.selectedObject][0].toString()
-        }
-      });
-
-      this.markers.push(gMarker);
-      if (this.markers.length > 1000) {
-        this.markers.shift();
-      }
-
+  subscribeToData() {
+    this.connection.on('ParameterDataReceived', (data: ParameterData) => {
+      this._parameterDataReceived$.next(data);
     });
 
-    this.connection.invoke("SubscribeToParameter", quixTopic, "image-feed", "image");
-    this.connection.invoke("SubscribeToParameter", quixTopic, "image-feed", "lat");
-    this.connection.invoke("SubscribeToParameter", quixTopic, "image-feed", this.selectedObject);
-    this.connection.invoke("SubscribeToParameter", quixTopic, "image-feed", "lon");
+    this.connection.invoke('SubscribeToParameter', this._topic, this._streamId, 'image');
+    this.connection.invoke('SubscribeToParameter', this._topic, this._streamId, 'lat');
+    this.connection.invoke('SubscribeToParameter', this._topic, this._streamId, 'lon');
+    this.connection.invoke('SubscribeToParameter', this._topic, this._streamId, this.parameterId);
   }
-
-  /**
-   * Triggered when the map is initialized.
-   * @param map the map object
-   */
-  onMapReady(map: any) {
-    this.map = map;
-  }
-
-  showImages: boolean = true;
 
   /**
    * Loop through old markers and remove them from the map
@@ -115,14 +113,11 @@ export class AppComponent implements OnInit {
 
   * @param newSelectedObject the newly selected object
    */
-  public selectedObjectChanged(event: MatSelectChange) {
-    const { value } = event;
-    for (let i = 0; i < this.markers.length; i++) {
-      this.markers[i].setMap(null);
-    }
-    this.connection?.invoke("UnsubscribeFromParameter", this.topic, "image-feed", this.selectedObject);
-    this.connection?.invoke("SubscribeToParameter", this.topic, "image-feed", value);
-    this.selectedObject = value;
+  selectedObjectChanged(parameterId: string) {
+    this.markers = [];
+    this.connection?.invoke('UnsubscribeFromParameter', this._topic, this._streamId, this.parameterId);
+    this.connection?.invoke('SubscribeToParameter', this._topic, this._streamId, parameterId);
+    this.parameterId = parameterId;
   }
 
   /**
@@ -131,13 +126,66 @@ export class AppComponent implements OnInit {
    * If it's currently running then unsubscribe from the parameter.
    * Else we can resubscribe to it to resume retrieving data. 
    */
-  public toggleFeed() {
-    this.showImages =! this.showImages;
-    if (!this.showImages) {
-      this.connection.invoke("UnsubscribeFromParameter", this.topic, "image-feed", "image");
+  toggleFeed() {
+    this.showImages = !this.showImages;
+    const methodName: string = this.showImages ? 'SubscribeToParameter' : 'UnsubscribeFromParameter';
+    this.connection.invoke(methodName, this._topic, this._streamId, 'image');
+  }
+
+  //Calculate Function - to show image em formatted text
+  calculateFunction(markers: google.maps.Marker[], numStyle: number): ClusterIconInfo {
+    // Set sum of markers
+    let sum = 0;
+    for (var m = 0; m < markers.length; m++) {
+      //This is the custom property called MyValue
+      sum += +markers[m].getLabel()!;
     }
-    else {
-      this.connection.invoke("SubscribeToParameter", this.topic, "image-feed", "image");
+
+    /**
+     * While we still have markers, divide by a set number and
+     * increase the index. Cluster moves up to a new style.
+     *
+     * The bigger the index, the more markers the cluster contains,
+     * so the bigger the cluster.
+     */
+    //create an index for icon styles
+    let index = 0;
+    let total = sum;
+    while (total !== 0) {
+      // Create a new total by dividing by a set number
+      total = Math.floor(total / 5);
+      // Increase the index and move up to the next style
+      index++;
+    }
+
+    /**
+     * Make sure we always return a valid index. E.g. If we only have
+     * 5 styles, but the index is 8, this will make sure we return
+     * 5. Returning an index of 8 wouldn't have a marker style.
+     */
+    index = Math.min(index, numStyle);
+
+    //Tell MarkerCluster this clusters details (and how to style it)
+    return {
+      text: sum.toString(),
+      index,
+      title: ''
+    };
+  }
+
+  getStyleIndex(sum: number): number {
+    switch (true) {
+      case sum < 10:
+        return 1;
+      case sum < 50:
+        return 2;
+      case sum < 100:
+        return 3;
+      case sum < 200:
+        return 4;
+      case sum > 200:
+        return 5;
+      default: return 0;
     }
   }
 }

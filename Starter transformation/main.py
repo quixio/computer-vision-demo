@@ -21,7 +21,7 @@ def update_data_and_average(new_data):
     global data
     
     #print(new_data['timestamp'][0])
-    new_data["image"] = []
+    new_data["image"] = ""
     print(new_data.to_dict())
     # Convert timestamp to datetime
     new_data['timestamp'] = pd.to_datetime(new_data['timestamp'])

@@ -19,6 +19,8 @@ data = pd.DataFrame(columns=['timestamp', 'lat', 'lon', 'car'])
 def update_data_and_average(new_data):
     global data
     
+    print(new_data['timestamp'][0])
+
     # Convert timestamp to datetime
     new_data['timestamp'] = pd.to_datetime(new_data['timestamp'])
     

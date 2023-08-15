@@ -32,7 +32,7 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
             if row.get(vehicle_type, 0) > 0:
                 vehicle_counts[vehicle_type] += 1
                 row_vehicles += 1
-            row["vehicles"] = row_vehicles
+            row["row_vehicles"] = row_vehicles
             print(row)
 
     total_vehicles = 0

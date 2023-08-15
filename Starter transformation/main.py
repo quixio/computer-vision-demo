@@ -16,65 +16,77 @@ pd.set_option('display.max_columns', None)
 data = pd.DataFrame(columns=['timestamp', 'lat', 'lon', 'car'])
 
 
-# Function to update data and calculate average
-def update_data_and_average(new_data):
-    global data
-    
-    #print(new_data['timestamp'][0])
+import pandas as pd
+import datetime
 
-    # Convert timestamp to datetime
-    new_data['timestamp'] = pd.to_datetime(new_data['timestamp'])
-    #print(new_data['timestamp'][0])
-    
-    # Append new data to the DataFrame
-    data = data.append(new_data, ignore_index=True)
-    
-    # Resample data to hourly intervals and sum car
-    resampled_data = data.groupby(['lat', 'lon', pd.Grouper(key='timestamp', freq='1H')]).sum().reset_index()
-    resampled_data['hour'] = resampled_data['timestamp'].dt.hour
-    print(resampled_data.to_dict())
-    # Calculate average for each hour of the day
-    hourly_average = resampled_data.groupby(['lat', 'lon', resampled_data['hour']])['car'].mean().reset_index()
-    
-    return hourly_average
+
+incoming_dataframes = [
+    pd.DataFrame([{'timestamp': 1692095584000000000, 'vehicles': 1.0, 'lat': 51.5143, 'lon': -0.02834}]),
+    pd.DataFrame([{'timestamp': 1692023584000000000, 'vehicles': 2.0, 'lat': 51.5143, 'lon': -0.02834}, 
+                  {'timestamp': 1691994784000000000, 'vehicles': 22.0, 'lat': 51.5143, 'lon': -0.02834}]),
+    pd.DataFrame([{'timestamp': 1692001984000000000, 'vehicles': 3.0, 'lat': 51.5143, 'lon': -0.02834}]),
+]
+
+
+window_data = {}
+
+start_of_window = None
+end_of_window = None
+window_length_days = 2
+
+def update_window():
+    global end_of_window
+    global start_of_window
+
+    end_of_window = datetime.datetime.utcnow()
+    start_of_window = end_of_window - datetime.timedelta(days = 2)
+
+
+def ts_to_date(ts):
+    sec = ts / 1_000_000_000
+    dt = datetime.datetime.utcfromtimestamp(sec)
+    print(dt)
+    return dt
+
+
+def process_data():
+    global window_data
+
+    for new_data_frame in incoming_dataframes:
+        update_window()
+        for i, row in new_data_frame.iterrows():
+            # convert the nanosecond timestamp to a datetime
+            check_date = ts_to_date(row["timestamp"])
+
+            # add to the dictionary if the new data is inside the window.
+            # it should be.
+            if start_of_window <= check_date <= end_of_window:
+                # add to dict
+                window_data[check_date] = row
+
+        # remove any data outside the new start and end window values
+        window_data_inside = {key: value for key, value in window_data.items() if start_of_window <= key <= end_of_window}
+        print(window_data_inside)
+        window_data = window_data_inside
+
+        # Find the highest number of vehicles across all DataFrames
+        highest_vehicles = float('-inf')  # Initialize with negative infinity
+
+        for key, df in window_data_inside.items():
+            max_vehicles_in_df = df['vehicles'].max()
+            highest_vehicles = max(highest_vehicles, max_vehicles_in_df)
+
+        print("Highest Number of Vehicles:", highest_vehicles)
 
 
 def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
-
-    #data = df
-    #print(df)
-
-    #json_data = df.to_dict()
-    #print(json_data)
-
-    df["image"] = ""
-    print(df.to_dict(orient='records'))
-
-    # hourly_average = update_data_and_average(df)
-
-    # # Print the DataFrame with all columns displayed
-    # print("avg=================")
-    # print(f'{hourly_average}')
-    # print("======================")
-    # current_time_ns = time.time_ns()
-
-    # a = pd.DataFrame(hourly_average)
-    # a["timestamp"] = current_time_ns
-    # stream_producer = topic_producer.get_or_create_stream("cars")
-    # stream_producer.timeseries.buffer.publish(a)
-
-
-# Handle event data from samples that emit event data
-def on_event_data_received_handler(stream_consumer: qx.StreamConsumer, data: qx.EventData):
-    print(data)
-    # handle your event data here
+    
+    pass
+    #update_window()
+    #process_data()
 
 
 def on_stream_received_handler(stream_consumer: qx.StreamConsumer):
-    # subscribe to new DataFrames being received
-    # if you aren't familiar with DataFrames there are other callbacks available
-    # refer to the docs here: https://docs.quix.io/sdk/subscribe.html
-    stream_consumer.events.on_data_received = on_event_data_received_handler # register the event data callback
     stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
 
 

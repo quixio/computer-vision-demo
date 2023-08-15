@@ -179,6 +179,26 @@ deployments:
         description: Timezone from the IANA Time Zone Database (e.g. Asia/Singapore) for orchestrating time-based batching and file naming.
         required: true
         value: GMT
+  - name: Stream Vehicles
+    application: TotalVehicles
+    deploymentType: Service
+    version: 279d3dc1b5f0eab8d8b2e4e4bba1b2b57454b4cd
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    desiredStatus: Running
+    variables:
+      - name: input
+        inputType: InputTopic
+        description: This is the input topic to read data from
+        required: true
+        value: image-processed
+      - name: output
+        inputType: OutputTopic
+        description: This is the output topic to write data to
+        required: true
+        value: image-vehicles
 
 # This section describes the Topics of the data pipeline
 topics:

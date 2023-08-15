@@ -24,8 +24,21 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
     #if stream_consumer.stream_id == "JamCams_00001.01404":
     #    print("HERE!")
     df["image"] = ""
-    print(df.to_dict())
 
+    #print(df.to_dict())
+
+    # Initialize counters
+    vehicle_counts = {'car': 0, 'bus': 0, 'truck': 0, 'motorbike': 0}
+
+    # Iterate through the DataFrame rows
+    for index, row in df.iterrows():
+        for vehicle_type in vehicle_counts:
+            if row.get(vehicle_type, 0) > 0:
+                vehicle_counts[vehicle_type] += 1
+
+    # Print the vehicle counts
+    for vehicle_type, count in vehicle_counts.items():
+        print(f"{vehicle_type.capitalize()} Count:", count)
 
 def on_stream_received_handler(stream_consumer: qx.StreamConsumer):
     stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler

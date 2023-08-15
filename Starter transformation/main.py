@@ -3,6 +3,7 @@ import os
 import pandas as pd
 import time
 from io import StringIO
+import datetime
 
 
 client = qx.QuixStreamingClient()
@@ -11,22 +12,6 @@ topic_consumer = client.get_topic_consumer(os.environ["input"], consumer_group =
 topic_producer = client.get_topic_producer(os.environ["output"])
 
 pd.set_option('display.max_columns', None)
-
-# Initialize an empty DataFrame to store the data
-data = pd.DataFrame(columns=['timestamp', 'lat', 'lon', 'car'])
-
-
-import pandas as pd
-import datetime
-
-
-incoming_dataframes = [
-    pd.DataFrame([{'timestamp': 1692095584000000000, 'vehicles': 1.0, 'lat': 51.5143, 'lon': -0.02834}]),
-    pd.DataFrame([{'timestamp': 1692023584000000000, 'vehicles': 2.0, 'lat': 51.5143, 'lon': -0.02834}, 
-                  {'timestamp': 1691994784000000000, 'vehicles': 22.0, 'lat': 51.5143, 'lon': -0.02834}]),
-    pd.DataFrame([{'timestamp': 1692001984000000000, 'vehicles': 3.0, 'lat': 51.5143, 'lon': -0.02834}]),
-]
-
 
 window_data = {}
 
@@ -73,7 +58,7 @@ def process_data(new_data_frame):
     highest_vehicles = float('-inf')  # Initialize with negative infinity
 
     for key, df in window_data_inside.items():
-        max_vehicles_in_df = df['vehicles'].max()
+        max_vehicles_in_df = df['car'].max()
         highest_vehicles = max(highest_vehicles, max_vehicles_in_df)
 
     print("Highest Number of Vehicles:", highest_vehicles)

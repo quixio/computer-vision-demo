@@ -36,9 +36,13 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
             if row.get(vehicle_type, 0) > 0:
                 vehicle_counts[vehicle_type] += 1
 
+    total_vehicles = 0
     # Print the vehicle counts
     for vehicle_type, count in vehicle_counts.items():
         print(f"{vehicle_type.capitalize()} Count:", count)
+        total_vehicles += count
+
+    print(f'Total vehicles = {total_vehicles}')
 
 def on_stream_received_handler(stream_consumer: qx.StreamConsumer):
     stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler

@@ -58,9 +58,10 @@ def process_data(new_data_frame):
     highest_vehicles = float('-inf')  # Initialize with negative infinity
 
     for key, df in window_data_inside.items():
-        max_vehicles_in_df = df['car']
-        highest_vehicles = max(highest_vehicles, max_vehicles_in_df)
-        print(df['car'])
+        if 'car' in df:
+            max_vehicles_in_df = df['car']
+            highest_vehicles = max(highest_vehicles, max_vehicles_in_df)
+            print(df['car'])
 
     print("Highest Number of Vehicles:", highest_vehicles)
 

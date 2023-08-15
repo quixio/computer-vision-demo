@@ -61,18 +61,22 @@ def process_data(stream_id, new_data_frame):
     # Find the highest number of vehicles across all DataFrames
     highest_vehicles = float('-inf')  # Initialize with negative infinity
 
+    # for each row inside the window, find the highest vehicle count
     for key, df in window_data_inside.items():
         max_vehicles_in_df = df['vehicles']
         highest_vehicles = max(highest_vehicles, max_vehicles_in_df)
         print(f"key={key}, {df['vehicles']}")
 
     print("Highest Number of Vehicles:", highest_vehicles)
-    #if stream_id in stream_vehicles:
+    
+    # record the highest vehicle count against the stream id
     cams[stream_id]["stream_vehicles"][stream_id] = highest_vehicles
 
     print(f'streamid={stream_id}, cams[stream_id]["stream_vehicles"]')
-    #else:
-    #    stream_vehicles[stream_id] 
+
+    # publish the amended dataframe to the topic
+    stream_producer = topic_producer.get_or_create_stream(stream_id = stream_id)
+    stream_producer.timeseries.buffer.publish(df)
 
 
 def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):

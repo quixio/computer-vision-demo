@@ -4,7 +4,7 @@ variables:
   - name: input
     inputType: InputTopic
     description: ''
-    defaultValue: image-processed
+    defaultValue: image-vehicles
     required: false
   - name: output
     inputType: OutputTopic

@@ -49,43 +49,43 @@ def ts_to_date(ts):
     return dt
 
 
-def process_data():
+def process_data(new_data_frame):
     global window_data
 
-    for new_data_frame in incoming_dataframes:
-        update_window()
-        for i, row in new_data_frame.iterrows():
-            # convert the nanosecond timestamp to a datetime
-            check_date = ts_to_date(row["timestamp"])
+    #for new_data_frame in incoming_dataframes:
+    update_window()
+    for i, row in new_data_frame.iterrows():
+        # convert the nanosecond timestamp to a datetime
+        check_date = ts_to_date(row["timestamp"])
 
-            # add to the dictionary if the new data is inside the window.
-            # it should be.
-            if start_of_window <= check_date <= end_of_window:
-                # add to dict
-                window_data[check_date] = row
+        # add to the dictionary if the new data is inside the window.
+        # it should be.
+        if start_of_window <= check_date <= end_of_window:
+            # add to dict
+            window_data[check_date] = row
 
-        # remove any data outside the new start and end window values
-        window_data_inside = {key: value for key, value in window_data.items() if start_of_window <= key <= end_of_window}
-        print(window_data_inside)
-        window_data = window_data_inside
+    # remove any data outside the new start and end window values
+    window_data_inside = {key: value for key, value in window_data.items() if start_of_window <= key <= end_of_window}
+    print(window_data_inside)
+    window_data = window_data_inside
 
-        # Find the highest number of vehicles across all DataFrames
-        highest_vehicles = float('-inf')  # Initialize with negative infinity
+    # Find the highest number of vehicles across all DataFrames
+    highest_vehicles = float('-inf')  # Initialize with negative infinity
 
-        for key, df in window_data_inside.items():
-            max_vehicles_in_df = df['vehicles'].max()
-            highest_vehicles = max(highest_vehicles, max_vehicles_in_df)
+    for key, df in window_data_inside.items():
+        max_vehicles_in_df = df['vehicles'].max()
+        highest_vehicles = max(highest_vehicles, max_vehicles_in_df)
 
-        print("Highest Number of Vehicles:", highest_vehicles)
+    print("Highest Number of Vehicles:", highest_vehicles)
 
 
 def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
     print(stream_consumer.stream_id)
-    if stream_consumer.stream_id == "JamCams_00001.01404":
-        print("HERE!")
+    #if stream_consumer.stream_id == "JamCams_00001.01404":
+    #    print("HERE!")
     
-    #update_window()
-    #process_data()
+    update_window(df)
+    process_data()
 
 
 def on_stream_received_handler(stream_consumer: qx.StreamConsumer):

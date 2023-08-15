@@ -192,6 +192,13 @@ deployments:
 
 # This section describes the Topics of the data pipeline
 topics:
+  - name: image-vehicles
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
   - name: output-topic
     persisted: false
     configuration:

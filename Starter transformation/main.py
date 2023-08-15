@@ -39,7 +39,7 @@ def process_data(stream_id, new_data_frame):
     global cams
 
     if stream_id not in cams:
-        cams[stream_id] = {}
+        cams[stream_id] = { "window_data": {}}
 
     #for new_data_frame in incoming_dataframes:
     update_window()

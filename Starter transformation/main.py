@@ -11,8 +11,10 @@ topic_producer = client.get_topic_producer(os.environ["output"])
 
 pd.set_option('display.max_columns', None)
 
-window_data = {}
-stream_vehicles = {}
+cams = {
+    'window_data': {},
+    'stream_vehicles': {}
+}
 
 start_of_window = None
 end_of_window = None
@@ -34,7 +36,7 @@ def ts_to_date(ts):
 
 
 def process_data(stream_id, new_data_frame):
-    global window_data
+    global cams
 
     #for new_data_frame in incoming_dataframes:
     update_window()
@@ -46,12 +48,12 @@ def process_data(stream_id, new_data_frame):
         # it should be.
         if start_of_window <= check_date <= end_of_window:
             # add to dict
-            window_data[check_date] = row
+            cams[stream_id]["window_data"][check_date] = row
 
     # remove any data outside the new start and end window values
-    window_data_inside = {key: value for key, value in window_data.items() if start_of_window <= key <= end_of_window}
+    window_data_inside = {key: value for key, value in cams[stream_id]["window_data"].items() if start_of_window <= key <= end_of_window}
     #print(window_data_inside)
-    window_data = window_data_inside
+    cams[stream_id]["window_data"] = window_data_inside
 
     # Find the highest number of vehicles across all DataFrames
     highest_vehicles = float('-inf')  # Initialize with negative infinity
@@ -63,9 +65,9 @@ def process_data(stream_id, new_data_frame):
 
     print("Highest Number of Vehicles:", highest_vehicles)
     #if stream_id in stream_vehicles:
-    stream_vehicles[stream_id] = highest_vehicles
+    cams[stream_id]["stream_vehicles"][stream_id] = highest_vehicles
 
-    print(stream_vehicles)
+    print(f'streamid={stream_id}, cams[stream_id]["stream_vehicles"]')
     #else:
     #    stream_vehicles[stream_id] 
 

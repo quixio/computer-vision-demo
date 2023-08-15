@@ -14,7 +14,12 @@ pd.set_option('display.max_columns', None)
 def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
     print(stream_consumer.stream_id)
 
-    total_vehicle_count = df[['car', 'bus', 'truck', 'motorbike']].sum(axis=1)
+    # List of vehicle columns
+    vehicle_columns = ['car', 'bus', 'truck', 'motorbike']
+
+    # Calculate the total vehicle count based on existing columns
+    total_vehicle_count = df[vehicle_columns].sum(axis=1, skipna=True)
+
     df["vehicles"] = total_vehicle_count
     
 

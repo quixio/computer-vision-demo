@@ -59,7 +59,7 @@ def process_data(stream_id, new_data_frame):
     for key, df in window_data_inside.items():
         max_vehicles_in_df = df['vehicles']
         highest_vehicles = max(highest_vehicles, max_vehicles_in_df)
-        print(df['vehicles'])
+        print(f"{key}, {df['vehicles']}")
 
     print("Highest Number of Vehicles:", highest_vehicles)
     #if stream_id in stream_vehicles:

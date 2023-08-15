@@ -35,16 +35,16 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
                 row_vehicles += 1
                 print(f'Adding {vehicle_type} - {vehicle_counts[vehicle_type]}')
                 
-        #row["row_vehicles"] = row_vehicles
-        #print(row)
+        row["row_vehicles"] = row_vehicles
+        print(row)
 
-    # total_vehicles = 0
-    # # Print the vehicle counts
-    # for vehicle_type, count in vehicle_counts.items():
-    #     print(f"{vehicle_type.capitalize()} Count:", count)
-    #     total_vehicles += count
+    total_vehicles = 0
+    # Print the vehicle counts
+    for vehicle_type, count in vehicle_counts.items():
+        print(f"{vehicle_type.capitalize()} Count:", count)
+        total_vehicles += count
 
-    # print(f'Total vehicles = {total_vehicles}')
+    print(f'Total vehicles = {total_vehicles}')
 
     # stream_producer = topic_producer.get_or_create_stream(stream_id = stream_consumer.stream_id)
     # stream_producer.timeseries.buffer.publish(df)

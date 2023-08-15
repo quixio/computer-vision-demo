@@ -30,7 +30,7 @@ def update_window():
 def ts_to_date(ts):
     sec = ts / 1_000_000_000
     dt = datetime.datetime.utcfromtimestamp(sec)
-    print(dt)
+    #print(dt)
     return dt
 
 
@@ -51,15 +51,15 @@ def process_data(new_data_frame):
 
     # remove any data outside the new start and end window values
     window_data_inside = {key: value for key, value in window_data.items() if start_of_window <= key <= end_of_window}
-    print(window_data_inside)
+    #print(window_data_inside)
     window_data = window_data_inside
 
     # Find the highest number of vehicles across all DataFrames
     highest_vehicles = float('-inf')  # Initialize with negative infinity
 
     for key, df in window_data_inside.items():
-        #max_vehicles_in_df = df['car'].max()
-        #highest_vehicles = max(highest_vehicles, max_vehicles_in_df)
+        max_vehicles_in_df = df['car']
+        highest_vehicles = max(highest_vehicles, max_vehicles_in_df)
         print(df['car'])
 
     print("Highest Number of Vehicles:", highest_vehicles)

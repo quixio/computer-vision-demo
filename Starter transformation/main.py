@@ -14,6 +14,7 @@ topic_producer = client.get_topic_producer(os.environ["output"])
 pd.set_option('display.max_columns', None)
 
 window_data = {}
+stream_vehicles = {}
 
 start_of_window = None
 end_of_window = None
@@ -64,6 +65,12 @@ def process_data(stream_id, new_data_frame):
             print(df['car'])
 
     print("Highest Number of Vehicles:", highest_vehicles)
+    #if stream_id in stream_vehicles:
+    stream_vehicles[stream_id] = highest_vehicles
+
+    print(stream_vehicles)
+    #else:
+    #    stream_vehicles[stream_id] 
 
 
 def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):

@@ -192,7 +192,7 @@ deployments:
   - name: Stream Vehicles
     application: TotalVehicles
     deploymentType: Service
-    version: 279d3dc1b5f0eab8d8b2e4e4bba1b2b57454b4cd
+    version: faab23bc0006eec3e105fde0f9504105b1467245
     resources:
       cpu: 200
       memory: 500

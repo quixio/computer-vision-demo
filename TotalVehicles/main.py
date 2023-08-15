@@ -36,7 +36,7 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
                 #print(f'Adding {vehicle_type} - {vehicle_counts[vehicle_type]}')
                 
         row["row_vehicles"] = row_vehicles
-        print(row)
+        #print(row)
 
     total_vehicles = 0
     # Print the vehicle counts

@@ -76,7 +76,10 @@ def process_data(stream_id, new_data_frame):
     print(f'streamid={stream_id}, cams[stream_id]["stream_vehicles"]')
 
     # publish the amended dataframe to the topic
+    print("================")
     print(df)
+    print("================")
+
     #stream_producer = topic_producer.get_or_create_stream(stream_id = stream_id)
     #stream_producer.timeseries.buffer.publish(df)
 

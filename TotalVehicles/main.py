@@ -18,7 +18,7 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
     vehicle_columns = ['car', 'bus', 'truck', 'motorbike']
 
     # Calculate the total vehicle count based on existing columns
-    total_vehicle_count = df[vehicle_columns].sum(axis=1, skipna=True)
+    total_vehicle_count = df.apply(lambda row: sum(row.get(column, 0) for column in vehicle_columns), axis=1)
 
     df["vehicles"] = total_vehicle_count
     

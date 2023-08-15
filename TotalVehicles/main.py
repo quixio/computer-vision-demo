@@ -33,7 +33,7 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
         print(f"{vehicle_type.capitalize()} Count:", count)
         total_vehicles += count
 
-    print(df["vehicles"])
+    print(df["vehicles"][0])
     print(f'Total vehicles = {total_vehicles}')
 
     stream_producer = topic_producer.get_or_create_stream(stream_id = stream_consumer.stream_id)

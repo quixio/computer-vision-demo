@@ -23,6 +23,7 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
     print(stream_consumer.stream_id)
     #if stream_consumer.stream_id == "JamCams_00001.01404":
     #    print("HERE!")
+    df["image"] = ""
     print(df.to_dict())
 
 

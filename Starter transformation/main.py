@@ -76,8 +76,9 @@ def process_data(stream_id, new_data_frame):
     print(f'streamid={stream_id}, cams[stream_id]["stream_vehicles"]')
 
     # publish the amended dataframe to the topic
-    stream_producer = topic_producer.get_or_create_stream(stream_id = stream_id)
-    stream_producer.timeseries.buffer.publish(df)
+    print(df)
+    #stream_producer = topic_producer.get_or_create_stream(stream_id = stream_id)
+    #stream_producer.timeseries.buffer.publish(df)
 
 
 def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):

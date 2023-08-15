@@ -21,15 +21,19 @@ def ts_to_date(ts):
 
 def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
     print(stream_consumer.stream_id)
-
+    df["vehicles"] = 0
     # Initialize counters
     vehicle_counts = {'car': 0, 'bus': 0, 'truck': 0, 'motorbike': 0}
 
     # Iterate through the DataFrame rows
     for index, row in df.iterrows():
+        row_vehicles = 0
         for vehicle_type in vehicle_counts:
             if row.get(vehicle_type, 0) > 0:
                 vehicle_counts[vehicle_type] += 1
+                row_vehicles += 1
+            row["vehicles"] = row_vehicles
+            print(row)
 
     total_vehicles = 0
     # Print the vehicle counts
@@ -38,6 +42,9 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
         total_vehicles += count
 
     print(f'Total vehicles = {total_vehicles}')
+
+    stream_producer = topic_producer.get_or_create_stream(stream_id = stream_consumer.stream_id)
+    stream_producer.timeseries.buffer.publish(df)
 
 def on_stream_received_handler(stream_consumer: qx.StreamConsumer):
     stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler

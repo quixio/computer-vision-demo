@@ -80,6 +80,7 @@ def process_data():
 
 
 def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
+    print(stream_consumer.stream_id)
     if stream_consumer.stream_id == "JamCams_00001.01404":
         print("HERE!")
     

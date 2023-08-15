@@ -4,7 +4,7 @@ variables:
   - name: output
     inputType: OutputTopic
     description: This is the output topic to write data to
-    defaultValue: image-processed
+    defaultValue: image-processed2
     required: true
 dockerfile: build/dockerfile
 runEntryPoint: main.py

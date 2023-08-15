@@ -21,29 +21,6 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
     total_vehicle_count = df.apply(lambda row: sum(row.get(column, 0) for column in vehicle_columns), axis=1)
 
     df["vehicles"] = total_vehicle_count
-    
-
-    # # Initialize counters
-    # vehicle_counts = {'car': 0, 'bus': 0, 'truck': 0, 'motorbike': 0}
-
-    # # Iterate through the DataFrame rows
-    # for index, row in df.iterrows():
-    #     row_vehicles = 0
-    #     for vehicle_type in vehicle_counts:
-    #         if row.get(vehicle_type, 0) > 0:
-    #             vehicle_counts[vehicle_type] += row[vehicle_type]
-    #             row_vehicles += 1
-
-    #     row["row_vehicles"] = row_vehicles
-
-    # total_vehicles = 0
-    # # Print the vehicle counts
-    # for vehicle_type, count in vehicle_counts.items():
-    #     print(f"{vehicle_type.capitalize()} Count:", count)
-    #     total_vehicles += count
-
-    # print(df["vehicles"][0])
-    # print(f'Total vehicles = {total_vehicles}')
 
     stream_producer = topic_producer.get_or_create_stream(stream_id = stream_consumer.stream_id)
     stream_producer.timeseries.buffer.publish(df)

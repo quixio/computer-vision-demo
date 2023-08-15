@@ -38,6 +38,9 @@ def ts_to_date(ts):
 def process_data(stream_id, new_data_frame):
     global cams
 
+    if stream_id not in cams:
+        cams[stream_id] = {}
+
     #for new_data_frame in incoming_dataframes:
     update_window()
     for i, row in new_data_frame.iterrows():
@@ -50,26 +53,26 @@ def process_data(stream_id, new_data_frame):
             # add to dict
             cams[stream_id]["window_data"][check_date] = row
 
-    # remove any data outside the new start and end window values
-    window_data_inside = {key: value for key, value in cams[stream_id]["window_data"].items() if start_of_window <= key <= end_of_window}
-    #print(window_data_inside)
-    cams[stream_id]["window_data"] = window_data_inside
+    # # remove any data outside the new start and end window values
+    # window_data_inside = {key: value for key, value in cams[stream_id]["window_data"].items() if start_of_window <= key <= end_of_window}
+    # #print(window_data_inside)
+    # cams[stream_id]["window_data"] = window_data_inside
 
-    # Find the highest number of vehicles across all DataFrames
-    highest_vehicles = float('-inf')  # Initialize with negative infinity
+    # # Find the highest number of vehicles across all DataFrames
+    # highest_vehicles = float('-inf')  # Initialize with negative infinity
 
-    for key, df in window_data_inside.items():
-        max_vehicles_in_df = df['vehicles']
-        highest_vehicles = max(highest_vehicles, max_vehicles_in_df)
-        print(f"key={key}, {df['vehicles']}")
+    # for key, df in window_data_inside.items():
+    #     max_vehicles_in_df = df['vehicles']
+    #     highest_vehicles = max(highest_vehicles, max_vehicles_in_df)
+    #     print(f"key={key}, {df['vehicles']}")
 
-    print("Highest Number of Vehicles:", highest_vehicles)
-    #if stream_id in stream_vehicles:
-    cams[stream_id]["stream_vehicles"][stream_id] = highest_vehicles
+    # print("Highest Number of Vehicles:", highest_vehicles)
+    # #if stream_id in stream_vehicles:
+    # cams[stream_id]["stream_vehicles"][stream_id] = highest_vehicles
 
-    print(f'streamid={stream_id}, cams[stream_id]["stream_vehicles"]')
-    #else:
-    #    stream_vehicles[stream_id] 
+    # print(f'streamid={stream_id}, cams[stream_id]["stream_vehicles"]')
+    # #else:
+    # #    stream_vehicles[stream_id] 
 
 
 def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):

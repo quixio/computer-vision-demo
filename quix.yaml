@@ -37,6 +37,7 @@ deployments:
       replicas: 2
     libraryItemId: bfee7144-49f1-411d-b5c3-0d8396e2c946
     desiredStatus: Running
+    libraryItemId: bfee7144-49f1-411d-b5c3-0d8396e2c946
     variables:
       - name: input
         inputType: InputTopic

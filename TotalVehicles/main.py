@@ -1,7 +1,6 @@
 import quixstreams as qx
 import os
 import pandas as pd
-import datetime
 
 
 client = qx.QuixStreamingClient()
@@ -10,13 +9,6 @@ topic_consumer = client.get_topic_consumer(os.environ["input"], consumer_group =
 topic_producer = client.get_topic_producer(os.environ["output"])
 
 pd.set_option('display.max_columns', None)
-
-
-def ts_to_date(ts):
-    sec = ts / 1_000_000_000
-    dt = datetime.datetime.utcfromtimestamp(sec)
-    #print(dt)
-    return dt
 
 
 def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
@@ -30,13 +22,10 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
         row_vehicles = 0
         for vehicle_type in vehicle_counts:
             if row.get(vehicle_type, 0) > 0:
-                #print(row[vehicle_type])
                 vehicle_counts[vehicle_type] += row[vehicle_type]
                 row_vehicles += 1
-                #print(f'Adding {vehicle_type} - {vehicle_counts[vehicle_type]}')
-                
+
         row["row_vehicles"] = row_vehicles
-        #print(row)
 
     total_vehicles = 0
     # Print the vehicle counts

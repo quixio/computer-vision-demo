@@ -34,7 +34,7 @@ def ts_to_date(ts):
     return dt
 
 
-def process_data(new_data_frame):
+def process_data(stream_id, new_data_frame):
     global window_data
 
     #for new_data_frame in incoming_dataframes:
@@ -58,7 +58,7 @@ def process_data(new_data_frame):
     highest_vehicles = float('-inf')  # Initialize with negative infinity
 
     for key, df in window_data_inside.items():
-        if 'car' in df:
+        if 'car' in df: #remove if when using 'vehicles'
             max_vehicles_in_df = df['car']
             highest_vehicles = max(highest_vehicles, max_vehicles_in_df)
             print(df['car'])
@@ -72,7 +72,7 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
     #    print("HERE!")
     
     update_window()
-    process_data(df)
+    process_data(stream_consumer.stream_id, df)
 
 
 def on_stream_received_handler(stream_consumer: qx.StreamConsumer):

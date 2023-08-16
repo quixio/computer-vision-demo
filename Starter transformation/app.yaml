@@ -1,16 +1,6 @@
-name: Hotspot Service
+name: Max Vehicle Window
 language: python
-variables:
-  - name: input
-    inputType: InputTopic
-    description: ''
-    defaultValue: image-vehicles2
-    required: false
-  - name: output
-    inputType: OutputTopic
-    description: ''
-    defaultValue: max-vehicles
-    required: false
+variables: []
 dockerfile: build/dockerfile
 runEntryPoint: main.py
 defaultFile: main.py

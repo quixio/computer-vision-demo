@@ -204,26 +204,6 @@ deployments:
         description: This is the output topic to write data to
         required: true
         value: image-vehicles
-  - name: Hotspot Service
-    application: Starter transformation
-    deploymentType: Service
-    version: hotspot_count_v1
-    resources:
-      cpu: 200
-      memory: 500
-      replicas: 1
-    desiredStatus: Stopped
-    variables:
-      - name: input
-        inputType: InputTopic
-        description: ''
-        required: false
-        value: image-vehicles
-      - name: output
-        inputType: OutputTopic
-        description: ''
-        required: false
-        value: max-vehicles
   - name: MaxVehicleWindow
     application: Starter transformation
     deploymentType: Service

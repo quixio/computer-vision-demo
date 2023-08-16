@@ -230,7 +230,7 @@ deployments:
     publicAccess:
       enabled: true
       urlPrefix: data-api
-    desiredStatus: Running
+    desiredStatus: Stopped
     variables:
       - name: input
         inputType: InputTopic

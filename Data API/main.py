@@ -30,5 +30,7 @@ def index():
 if __name__ == "__main__":
     from waitress import serve
     print("A")
+    qx.App.run()
+    print("B")
     serve(app, host="0.0.0.0", port=80)
     print("HERE")

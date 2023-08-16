@@ -12,7 +12,7 @@ storage.clear()
 #   `str`, `int`, `float`, `bool`, `bytes`, `bytearray` types.
 
 #set value
-storage.set("KEY1", 12.51)
+storage.set("KEY1", {'foo': 11})
 storage.set("KEY2", "str")
 storage.set("KEY3", True)
 storage.set("KEY4", False)

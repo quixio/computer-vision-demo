@@ -202,11 +202,14 @@ deployments:
   - name: Max Vehicle Window
     application: Starter transformation
     deploymentType: Service
-    version: 9e788e4408a6958ce067ce14a07e3228cdc3d2d2
+    version: max_vehicle_window_v1
     resources:
       cpu: 200
       memory: 500
       replicas: 1
+    state:
+      enabled: true
+      size: 1
     desiredStatus: Running
     variables:
       - name: input

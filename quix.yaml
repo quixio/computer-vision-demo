@@ -49,7 +49,7 @@ deployments:
   - name: Stream merge
     application: Stream merge
     deploymentType: Service
-    version: v1
+    version: 1fd04bb26cabab9b08d5ff171ab04d0f57f0865d
     resources:
       cpu: 8000
       memory: 8000
@@ -60,7 +60,7 @@ deployments:
         inputType: InputTopic
         description: Name of the source topic
         required: true
-        value: image-processed
+        value: image-processed2
       - name: output
         inputType: OutputTopic
         description: Name of the destination topic

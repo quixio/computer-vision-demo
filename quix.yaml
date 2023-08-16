@@ -103,12 +103,12 @@ deployments:
         inputType: InputTopic
         description: This is the input topic for webcam images
         required: true
-        value: tfl-cameras2
+        value: tfl-cameras
       - name: output
         inputType: OutputTopic
         description: This is the output topic for the captured frames
         required: true
-        value: image-raw2
+        value: image-raw
       - name: frame_rate
         inputType: FreeText
         description: The numer of images per second

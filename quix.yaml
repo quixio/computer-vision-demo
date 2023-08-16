@@ -233,7 +233,7 @@ deployments:
   - name: Data API
     application: Data API
     deploymentType: Service
-    version: d0680dac60fcc0e3e27bcfd4611c13883d694cfd
+    version: 032d5d4ca9f692279ddd400285763da6f70b1085
     resources:
       cpu: 200
       memory: 500
@@ -248,6 +248,11 @@ deployments:
         description: This is the input topic to read data from
         required: true
         value: max-vehicles
+      - name: objects
+        inputType: InputTopic
+        description: ''
+        required: false
+        value: image-processed
 
 # This section describes the Topics of the data pipeline
 topics:

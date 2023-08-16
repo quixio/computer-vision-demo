@@ -41,6 +41,12 @@ def get_state():
     global window
     global cams
 
+    # return without changing anything if there is nothing in state
+    if not storage.contains_key("state"):
+        return
+
+    print("Loading properties from state..")
+    
     # get the state value and set the properties with it
     o = storage.get("state")
 
@@ -68,21 +74,17 @@ def update_window():
 def ts_to_date(ts):
     sec = ts / 1_000_000_000
     dt = datetime.datetime.utcfromtimestamp(sec)
-    #print(dt)
     return dt
 
 
 def process_data(stream_id, new_data_frame):
     global cams
 
-    print("*************************************")
     new_data_frame['ts'] = ts_to_date(new_data_frame["timestamp"][0])
-    #print(new_data_frame)
 
     if stream_id not in cams:
         cams[stream_id] = { "window_data": {}, "stream_vehicles": {} }
 
-    #for new_data_frame in incoming_dataframes:
     update_window()
     for i, row in new_data_frame.iterrows():
         # convert the nanosecond timestamp to a datetime
@@ -93,7 +95,9 @@ def process_data(stream_id, new_data_frame):
         if start_of_window <= check_date <= end_of_window:
             # add to dict
             cams[stream_id]["window_data"][check_date] = row
-            #print(f"adding to window_data: {check_date}")
+
+            # update state with this new information
+            set_state()
 
     # remove any data outside the new start and end window values
     window_data_inside = {key: value for key, value in cams[stream_id]["window_data"].items() if start_of_window <= key <= end_of_window}
@@ -117,6 +121,9 @@ def process_data(stream_id, new_data_frame):
         
         # record the highest vehicle count against the stream id
         cams[stream_id]["stream_vehicles"][stream_id] = highest_vehicles
+        
+        # update state with this new information
+        set_state()
 
         print(f'{cams[stream_id]["stream_vehicles"]}')
 
@@ -149,6 +156,9 @@ def on_stream_received_handler(stream_consumer: qx.StreamConsumer):
 topic_consumer.on_stream_received = on_stream_received_handler
 
 print("Listening to streams. Press CTRL-C to exit.")
+
+# before starting, initialize properties from state
+get_state()
 
 # Handle termination signals and provide a graceful exit
 qx.App.run()

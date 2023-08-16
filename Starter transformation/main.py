@@ -71,18 +71,24 @@ def process_data(stream_id, new_data_frame):
     if window_data_inside:
         print(f"HAS DATA: {window_data_inside}")
         #print(window_data_inside)
+        
+        # update the data with the data that is currently in the window
         cams[stream_id]["window_data"] = window_data_inside
 
         # Find the highest number of vehicles across all DataFrames
         highest_vehicles = float('-inf')  # Initialize with negative infinity
+        highest_vehicles_ts = datetime.datetime.utcnow()
+
         #print(f'window_data_inside={window_data_inside}')
         # for each row inside the window, find the highest vehicle count
         for key, df in window_data_inside.items():
             max_vehicles_in_df = df['vehicles']
-            highest_vehicles = max(highest_vehicles, max_vehicles_in_df)
+            if max_vehicles_in_df > highest_vehicles:
+                highest_vehicles = max_vehicles_in_df
+                highest_vehicles_ts = window_data_inside["timestamp"]
             #print(f"key={key}, {df['vehicles']}")
 
-        print("Highest Number of Vehicles:", highest_vehicles)
+        print(f"Highest Number of Vehicles:{highest_vehicles} found at {highest_vehicles_ts}")
         
         # record the highest vehicle count against the stream id
         cams[stream_id]["stream_vehicles"][stream_id] = highest_vehicles

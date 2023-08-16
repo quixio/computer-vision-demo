@@ -190,10 +190,10 @@ deployments:
         description: Timezone from the IANA Time Zone Database (e.g. Asia/Singapore) for orchestrating time-based batching and file naming.
         required: true
         value: GMT
-  - name: Stream Vehicles
+  - name: Cam Vehicles
     application: TotalVehicles
     deploymentType: Service
-    version: total_vehicles_v1
+    version: e6bb005ff21552be9b0cf2482ea95ad6350abf68
     resources:
       cpu: 200
       memory: 500

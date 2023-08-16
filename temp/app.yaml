@@ -1,11 +1,6 @@
 name: temp
 language: python
-variables:
-  - name: output
-    inputType: OutputTopic
-    description: This is the output topic to write data to
-    defaultValue: output-topic
-    required: true
+variables: []
 dockerfile: build/dockerfile
 runEntryPoint: main.py
 defaultFile: main.py

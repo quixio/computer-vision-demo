@@ -35,7 +35,7 @@ def update_window():
     hours, remainder = divmod(time_difference.seconds, 3600)
     minutes = remainder // 60
 
-    print("{}d {}:{}".format(days, hours, minutes))
+    print("{}d {}h {}m".format(days, hours, minutes))
 
 
 def ts_to_date(ts):

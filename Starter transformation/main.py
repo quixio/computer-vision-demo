@@ -69,7 +69,7 @@ def process_data(stream_id, new_data_frame):
     window_data_inside = {key: value for key, value in cams[stream_id]["window_data"].items() if start_of_window <= key <= end_of_window}
     
     if window_data_inside:
-        print("HAS DATA")
+        print(f"HAS DATA: {window_data_inside}")
         #print(window_data_inside)
         cams[stream_id]["window_data"] = window_data_inside
 

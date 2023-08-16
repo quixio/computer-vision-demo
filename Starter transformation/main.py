@@ -19,14 +19,15 @@ cams = {
 
 start_of_window = None
 end_of_window = None
-window_length_days = 2
+window_length_days = 0
+window_length_mins = 1
 
 def update_window():
     global end_of_window
     global start_of_window
 
     end_of_window = datetime.datetime.utcnow()
-    start_of_window = end_of_window - datetime.timedelta(days = 2)
+    start_of_window = end_of_window - datetime.timedelta(days = window_length_days, minutes = window_length_mins)
 
 
 def ts_to_date(ts):

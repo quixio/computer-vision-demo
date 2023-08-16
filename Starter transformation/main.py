@@ -77,7 +77,7 @@ def process_data(stream_id, new_data_frame):
     # record the highest vehicle count against the stream id
     cams[stream_id]["stream_vehicles"][stream_id] = highest_vehicles
 
-    print(f'streamid={stream_id}, {cams[stream_id]["stream_vehicles"]}')
+    print(f'{cams[stream_id]["stream_vehicles"]}')
 
     out_df = pd.DataFrame()
     out_df["max_vehicles"] = [highest_vehicles]
@@ -86,8 +86,8 @@ def process_data(stream_id, new_data_frame):
     print(out_df)
     print("================")
 
-    #stream_producer = topic_producer.get_or_create_stream(stream_id = stream_id)
-    #stream_producer.timeseries.buffer.publish(df)
+    stream_producer = topic_producer.get_or_create_stream(stream_id = stream_id)
+    stream_producer.timeseries.buffer.publish(out_df)
 
 
 def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):

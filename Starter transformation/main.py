@@ -30,6 +30,13 @@ def update_window():
     end_of_window = datetime.datetime.utcnow()
     start_of_window = end_of_window - datetime.timedelta(days = window_length_days, minutes = window_length_mins, seconds = window_length_secs)
 
+    time_difference = end_of_window - start_of_window
+    days = time_difference.days
+    hours, remainder = divmod(time_difference.seconds, 3600)
+    minutes = remainder // 60
+
+    print("Time Difference: {} days, {} hours, {} minutes".format(days, hours, minutes))
+
 
 def ts_to_date(ts):
     sec = ts / 1_000_000_000

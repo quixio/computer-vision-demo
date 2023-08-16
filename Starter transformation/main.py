@@ -91,7 +91,7 @@ def process_data(stream_id, new_data_frame):
         out_df["max_vehicles"] = [highest_vehicles]
         # publish the amended dataframe to the topic
         #print("================")
-        #print(out_df)
+        print(out_df)
         #print("================")
 
         stream_producer = topic_producer.get_or_create_stream(stream_id = stream_id)

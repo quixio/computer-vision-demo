@@ -1,0 +1,36 @@
+name: BigQuery
+language: python
+variables:
+  - name: input
+    inputType: InputTopic
+    description: This is the input topic
+    defaultValue: ''
+    required: true
+  - name: PROJECT_ID
+    inputType: FreeText
+    description: The BigQuery GCP Project ID
+    defaultValue: ''
+    required: true
+  - name: DATASET_ID
+    inputType: FreeText
+    description: The target BigQuery dataset ID
+    defaultValue: ''
+    required: true
+  - name: DATASET_LOCATION
+    inputType: FreeText
+    description: Location of BigQuery dataset
+    defaultValue: US
+    required: true
+  - name: SERVICE_ACCOUNT_JSON
+    inputType: HiddenText
+    description: JSON string of the service account file for the BigQuery GCP project
+    defaultValue: ''
+    required: true
+  - name: MAX_QUEUE_SIZE
+    inputType: FreeText
+    description: Max queue size for the sink ingestion
+    defaultValue: 50
+    required: true
+dockerfile: build/dockerfile
+runEntryPoint: main.py
+defaultFile: main.py

@@ -30,7 +30,7 @@ deployments:
   - name: Computer vision object detection
     application: Computer vision object detection
     deploymentType: Service
-    version: v1
+    version: 1fd04bb26cabab9b08d5ff171ab04d0f57f0865d
     resources:
       cpu: 8000
       memory: 16000
@@ -42,12 +42,12 @@ deployments:
         inputType: InputTopic
         description: This is the input topic for raw images
         required: true
-        value: image-raw
+        value: image-raw2
       - name: output
         inputType: OutputTopic
         description: This is the output for images augmented with the recognized objects
         required: true
-        value: image-processed
+        value: image-processed2
   - name: Stream merge
     application: Stream merge
     deploymentType: Service

@@ -10,6 +10,9 @@ max_vehicles = {}
 #keep the latest detected objects for each cam
 detected_objects = {}
 
+# get a state manager from the Quix client library
+storage = qx.LocalFileStorage()
+
 # if max_vehicles is in state, init the property with it
 if storage.contains_key("max_vehicles"):
     max_vehicles = storage.get("max_vehicles")
@@ -23,9 +26,6 @@ if storage.contains_key("detected_objects"):
 # Quix injects credentials automatically to the client.
 # Alternatively, you can always pass an SDK token manually as an argument.
 client = qx.QuixStreamingClient()
-
-# get a state manager from the Quix client library
-storage = qx.LocalFileStorage()
 
 print("Opening input topic")
 max_veh_topic = client.get_topic_consumer(os.environ["input"])

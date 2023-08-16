@@ -85,7 +85,7 @@ def process_data(stream_id, new_data_frame):
             max_vehicles_in_df = df['vehicles']
             if max_vehicles_in_df > highest_vehicles:
                 highest_vehicles = max_vehicles_in_df
-                highest_vehicles_ts = window_data_inside["ts"]
+                highest_vehicles_ts = df["ts"]
             #print(f"key={key}, {df['vehicles']}")
 
         print(f"Highest Number of Vehicles:{highest_vehicles} found at {highest_vehicles_ts}")

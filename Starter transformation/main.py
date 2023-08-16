@@ -87,6 +87,10 @@ def process_data(stream_id, new_data_frame):
 
         #print(f'{cams[stream_id]["stream_vehicles"]}')
 
+
+        data = {'max_vehicles': [highest_vehicles]}
+        df2 = pd.DataFrame(data)
+
         out_df = pd.DataFrame()
         out_df["max_vehicles"] = [highest_vehicles]
         # publish the amended dataframe to the topic
@@ -95,7 +99,7 @@ def process_data(stream_id, new_data_frame):
         #print("================")
 
         stream_producer = topic_producer.get_or_create_stream(stream_id = stream_id)
-        stream_producer.timeseries.buffer.publish(out_df)
+        stream_producer.timeseries.buffer.publish(df2)
 
 
 def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):

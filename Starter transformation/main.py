@@ -68,14 +68,14 @@ def process_data(stream_id, new_data_frame):
     for key, df in window_data_inside.items():
         max_vehicles_in_df = df['vehicles']
         highest_vehicles = max(highest_vehicles, max_vehicles_in_df)
-        #print(f"key={key}, {df['vehicles']}")
+        print(f"key={key}, {df['vehicles']}")
 
-    #print("Highest Number of Vehicles:", highest_vehicles)
+    print("Highest Number of Vehicles:", highest_vehicles)
     
     # record the highest vehicle count against the stream id
     cams[stream_id]["stream_vehicles"][stream_id] = highest_vehicles
 
-    #print(f'streamid={stream_id}, {cams[stream_id]["stream_vehicles"]}')
+    print(f'streamid={stream_id}, {cams[stream_id]["stream_vehicles"]}')
 
     # publish the amended dataframe to the topic
     print("================")

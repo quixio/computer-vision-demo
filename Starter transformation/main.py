@@ -40,6 +40,7 @@ def ts_to_date(ts):
 
 def process_data(stream_id, new_data_frame):
 
+    print("*************************************")
     print(new_data_frame)
     global cams
 

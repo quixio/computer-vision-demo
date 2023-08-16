@@ -17,11 +17,11 @@ client = qx.QuixStreamingClient()
 print("Opening input topic")
 consumer_topic = client.get_topic_consumer(os.environ["input"])
 
-def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
-    print(df)
-
 
 def on_stream_received_handler(stream_consumer: qx.StreamConsumer):
+    
+    def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
+        print(f'stream:{stream_consumer.stream_id}')
     print("new stream")
     stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
 

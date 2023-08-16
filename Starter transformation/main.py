@@ -39,11 +39,11 @@ def ts_to_date(ts):
 
 
 def process_data(stream_id, new_data_frame):
+    global cams
 
     print("*************************************")
     new_data_frame['ts'] = ts_to_date(new_data_frame["timestamp"][0])
     #print(new_data_frame)
-    global cams
 
     if stream_id not in cams:
         cams[stream_id] = { "window_data": {}, "stream_vehicles": {} }
@@ -96,7 +96,10 @@ def process_data(stream_id, new_data_frame):
         print(f'{cams[stream_id]["stream_vehicles"]}')
 
 
-        data = {'timestamp': datetime.datetime.utcnow() ,'max_vehicles': [highest_vehicles]}
+        data = {'timestamp': datetime.datetime.utcnow(),
+                'max_vehicles': [highest_vehicles],
+                'window_start': start_of_window,
+                'window_end': end_of_window}
         df2 = pd.DataFrame(data)
 
         #out_df = pd.DataFrame()

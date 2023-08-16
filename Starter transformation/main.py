@@ -121,7 +121,6 @@ def process_data(stream_id, new_data_frame):
 
         print(f'{cams[stream_id]["stream_vehicles"]}')
 
-
         data = {'timestamp': datetime.datetime.utcnow(),
                 'max_vehicles': [highest_vehicles],
                 'TAG__window_start': start_of_window,

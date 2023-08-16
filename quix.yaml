@@ -98,12 +98,12 @@ deployments:
         inputType: InputTopic
         description: This is the input topic for webcam images
         required: true
-        value: tfl-cameras
+        value: tfl-cameras2
       - name: output
         inputType: OutputTopic
         description: This is the output topic for the captured frames
         required: true
-        value: image-raw
+        value: image-raw2
       - name: frame_rate
         inputType: FreeText
         description: The numer of images per second
@@ -222,6 +222,13 @@ deployments:
 
 # This section describes the Topics of the data pipeline
 topics:
+  - name: image-raw2
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
   - name: tfl-cameras2
     persisted: false
     configuration:

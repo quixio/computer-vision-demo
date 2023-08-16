@@ -36,6 +36,7 @@ def on_object_stream_received_handler(stream_consumer: qx.StreamConsumer):
     def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
         #print(f'stream:{stream_consumer.stream_id}, data={df["max_vehicles"][0]}')
         #max_vehicles[stream_consumer.stream_id] = df["max_vehicles"][0]
+        print(df)
         pass
 
     stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler

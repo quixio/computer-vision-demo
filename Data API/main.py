@@ -29,6 +29,7 @@ def index():
     return "<h1>Hello!</h1>"
 
 if __name__ == "__main__":
+    print("main..")
     from waitress import serve
 
     #qx.App.run()

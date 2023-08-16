@@ -4,7 +4,7 @@ variables:
   - name: output
     inputType: OutputTopic
     description: This is the output topic for TfL camera images
-    defaultValue: tfl-cameras
+    defaultValue: tfl-cameras2
     required: true
   - name: api_key
     inputType: HiddenText

@@ -95,7 +95,7 @@ def process_data(stream_id, new_data_frame):
         #print("================")
 
         stream_producer = topic_producer.get_or_create_stream(stream_id = stream_id)
-        #stream_producer.timeseries.buffer.publish(out_df)
+        stream_producer.timeseries.buffer.publish(out_df)
 
 
 def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):

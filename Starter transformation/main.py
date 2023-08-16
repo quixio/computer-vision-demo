@@ -65,7 +65,7 @@ def process_data(stream_id, new_data_frame):
 
     # Find the highest number of vehicles across all DataFrames
     highest_vehicles = float('-inf')  # Initialize with negative infinity
-
+    print(window_data_inside)
     # for each row inside the window, find the highest vehicle count
     for key, df in window_data_inside.items():
         max_vehicles_in_df = df['vehicles']

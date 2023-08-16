@@ -60,7 +60,7 @@ deployments:
         inputType: InputTopic
         description: Name of the source topic
         required: true
-        value: image-processed2
+        value: image-processed
       - name: output
         inputType: OutputTopic
         description: Name of the destination topic

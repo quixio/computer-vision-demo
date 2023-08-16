@@ -88,4 +88,4 @@ if __name__ == "__main__":
     # app.run(debug=True, host="0.0.0.0", port=80)
 
     # use waitress instead for production
-    serve(app, host="0.0.0.0", port=10)
+    serve(app, host="0.0.0.0", port=80)

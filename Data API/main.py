@@ -19,12 +19,15 @@ print("Checking state for previous values..")
 if storage.contains_key("max_vehicles"):
     max_vehicles = storage.get("max_vehicles")
     print("max_vehicles loaded from state")
+else:
+    print("max not found")
 
 # if detected_objects is in state, init the property with it
 if storage.contains_key("detected_objects"):
     detected_objects = storage.get("detected_objects")
     print("detected_objects loaded from state")
-
+else:
+    print("obs not found")
 # Quix injects credentials automatically to the client.
 # Alternatively, you can always pass an SDK token manually as an argument.
 client = qx.QuixStreamingClient()

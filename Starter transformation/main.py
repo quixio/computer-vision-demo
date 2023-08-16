@@ -79,9 +79,11 @@ def process_data(stream_id, new_data_frame):
 
     print(f'streamid={stream_id}, {cams[stream_id]["stream_vehicles"]}')
 
+    out_df = pd.DataFrame()
+    out_df["max_vehicles"] = highest_vehicles
     # publish the amended dataframe to the topic
     print("================")
-    #print(df)
+    print(out_df)
     print("================")
 
     #stream_producer = topic_producer.get_or_create_stream(stream_id = stream_id)

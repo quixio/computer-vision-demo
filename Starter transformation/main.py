@@ -28,6 +28,7 @@ window = ""
 def update_window():
     global end_of_window
     global start_of_window
+    global window
 
     end_of_window = datetime.datetime.utcnow()
     start_of_window = end_of_window - datetime.timedelta(days = window_length_days, minutes = window_length_mins, seconds = window_length_secs)

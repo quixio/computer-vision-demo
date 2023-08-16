@@ -43,7 +43,7 @@ deployments:
         inputType: InputTopic
         description: This is the input topic for raw images
         required: true
-        value: image-raw2
+        value: image-raw
       - name: output
         inputType: OutputTopic
         description: This is the output for images augmented with the recognized objects

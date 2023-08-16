@@ -87,7 +87,7 @@ def process_data(stream_id, new_data_frame):
         # record the highest vehicle count against the stream id
         cams[stream_id]["stream_vehicles"][stream_id] = highest_vehicles
 
-        #print(f'{cams[stream_id]["stream_vehicles"]}')
+        print(f'{cams[stream_id]["stream_vehicles"]}')
 
 
         data = {'timestamp': datetime.datetime.utcnow() ,'max_vehicles': [highest_vehicles]}

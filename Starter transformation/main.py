@@ -89,14 +89,14 @@ def process_data(stream_id, new_data_frame):
         #print(f'{cams[stream_id]["stream_vehicles"]}')
 
 
-        data = {'max_vehicles': [highest_vehicles]}
+        data = {'timestamp': datetime.datetime.utcnow() ,'max_vehicles': [highest_vehicles]}
         df2 = pd.DataFrame(data)
 
-        out_df = pd.DataFrame()
-        out_df["max_vehicles"] = [highest_vehicles]
+        #out_df = pd.DataFrame()
+        #out_df["max_vehicles"] = [highest_vehicles]
         # publish the amended dataframe to the topic
         #print("================")
-        print(out_df)
+        #print(out_df)
         #print("================")
 
         stream_producer = topic_producer.get_or_create_stream(stream_id = stream_id)

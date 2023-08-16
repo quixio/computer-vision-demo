@@ -62,7 +62,7 @@ def process_data(stream_id, new_data_frame):
             #print(f"adding to window_data: {check_date}")
 
     print("-------------")
-    print(cams[stream_id]["window_data"])
+    #print(cams[stream_id]["window_data"])
     print("-------------")
 
     # remove any data outside the new start and end window values

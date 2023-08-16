@@ -10,6 +10,16 @@ max_vehicles = {}
 #keep the latest detected objects for each cam
 detected_objects = {}
 
+# if max_vehicles is in state, init the property with it
+if storage.contains_key("max_vehicles"):
+    max_vehicles = storage.get("max_vehicles")
+    print("max_vehicles loaded from state")
+
+# if detected_objects is in state, init the property with it
+if storage.contains_key("detected_objects"):
+    detected_objects = storage.get("detected_objects")
+    print("detected_objects loaded from state")
+
 # Quix injects credentials automatically to the client.
 # Alternatively, you can always pass an SDK token manually as an argument.
 client = qx.QuixStreamingClient()
@@ -17,11 +27,9 @@ client = qx.QuixStreamingClient()
 # get a state manager from the Quix client library
 storage = qx.LocalFileStorage()
 
-
 print("Opening input topic")
 max_veh_topic = client.get_topic_consumer(os.environ["input"])
 object_topic = client.get_topic_consumer(os.environ["objects"])
-
 
 def on_max_veh_stream_received_handler(stream_consumer: qx.StreamConsumer):
     global max_vehicles
@@ -29,9 +37,9 @@ def on_max_veh_stream_received_handler(stream_consumer: qx.StreamConsumer):
     def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
         print(f'MAX_VEHICLES: stream:{stream_consumer.stream_id}, data={df["max_vehicles"][0]}')
         max_vehicles[stream_consumer.stream_id] = df["max_vehicles"][0]
+        storage.set("max_vehicles", max_vehicles)
     
     stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
-
 
 def on_object_stream_received_handler(stream_consumer: qx.StreamConsumer):
     global detected_objects
@@ -40,11 +48,9 @@ def on_object_stream_received_handler(stream_consumer: qx.StreamConsumer):
         df["image"] = '' # we dont need the image for this
         print(f'OBJECT DETECTED: stream:{stream_consumer.stream_id}, data={df.to_dict()}')
         detected_objects[stream_consumer.stream_id] = df.to_dict()
-        print(df)
-        pass
-
+        storage.set("detected_objects", detected_objects)
+        
     stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
-
 
 # init the flas app
 app = Flask(__name__)

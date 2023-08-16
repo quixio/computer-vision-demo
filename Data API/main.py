@@ -40,6 +40,10 @@ def on_max_veh_stream_received_handler(stream_consumer: qx.StreamConsumer):
         print(f'MAX_VEHICLES: stream:{stream_consumer.stream_id}, data={df["max_vehicles"][0]}')
         max_vehicles[stream_consumer.stream_id] = df["max_vehicles"][0]
         storage.set("max_vehicles", max_vehicles)
+
+        if storage.contains_key("max_vehicles"):
+            print("here")
+
     
     stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
 

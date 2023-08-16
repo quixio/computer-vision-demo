@@ -34,6 +34,7 @@ def on_object_stream_received_handler(stream_consumer: qx.StreamConsumer):
 
     def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
         print(f'stream:{stream_consumer.stream_id}, data={df.to_dict()}')
+        df["image"] = ''
         detected_objects[stream_consumer.stream_id] = df.to_dict()
         print(df)
         pass

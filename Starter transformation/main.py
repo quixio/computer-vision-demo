@@ -19,8 +19,8 @@ cams = {
 
 start_of_window = None
 end_of_window = None
-window_length_days = 0
-window_length_mins = 120
+window_length_days = 1
+window_length_mins = 0
 window_length_secs = 0
 
 def update_window():

@@ -42,7 +42,7 @@ def process_data(stream_id, new_data_frame):
 
     print("*************************************")
     new_data_frame['ts'] = ts_to_date(new_data_frame["timestamp"][0])
-    print(new_data_frame)
+    #print(new_data_frame)
     global cams
 
     if stream_id not in cams:
@@ -59,11 +59,11 @@ def process_data(stream_id, new_data_frame):
         if start_of_window <= check_date <= end_of_window:
             # add to dict
             cams[stream_id]["window_data"][check_date] = row
-            print(f"adding to window_data: {check_date}")
+            #print(f"adding to window_data: {check_date}")
 
-    #print("-------------")
-    #print(cams[stream_id]["window_data"])
-    #print("-------------")
+    print("-------------")
+    print(cams[stream_id]["window_data"])
+    print("-------------")
 
     # remove any data outside the new start and end window values
     window_data_inside = {key: value for key, value in cams[stream_id]["window_data"].items() if start_of_window <= key <= end_of_window}

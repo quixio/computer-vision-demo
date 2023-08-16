@@ -14,6 +14,10 @@ detected_objects = {}
 # Alternatively, you can always pass an SDK token manually as an argument.
 client = qx.QuixStreamingClient()
 
+# get a state manager from the Quix client library
+storage = qx.LocalFileStorage()
+
+
 print("Opening input topic")
 max_veh_topic = client.get_topic_consumer(os.environ["input"])
 object_topic = client.get_topic_consumer(os.environ["objects"])

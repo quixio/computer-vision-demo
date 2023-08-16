@@ -5,11 +5,10 @@ import os
 
 pd.set_option('display.max_columns', None)
 
+# keep the max vehicles for each cam
 max_vehicles = {}
+#keep the latest detected objects for each cam
 detected_objects = {}
-
-
-
 
 # Quix injects credentials automatically to the client.
 # Alternatively, you can always pass an SDK token manually as an argument.
@@ -34,8 +33,8 @@ def on_object_stream_received_handler(stream_consumer: qx.StreamConsumer):
     global detected_objects
 
     def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
-        #print(f'stream:{stream_consumer.stream_id}, data={df["max_vehicles"][0]}')
-        #max_vehicles[stream_consumer.stream_id] = df["max_vehicles"][0]
+        print(f'stream:{stream_consumer.stream_id}, data={df.to_dict()}')
+        detected_objects[stream_consumer.stream_id] = df.to_dict()
         print(df)
         pass
 

@@ -22,6 +22,8 @@ end_of_window = None
 window_length_days = 1
 window_length_mins = 0
 window_length_secs = 0
+window = ""
+
 
 def update_window():
     global end_of_window
@@ -35,7 +37,7 @@ def update_window():
     hours, remainder = divmod(time_difference.seconds, 3600)
     minutes = remainder // 60
 
-    print("{}d {}h {}m".format(days, hours, minutes))
+    window = "{}d {}h {}m".format(days, hours, minutes)
 
 
 def ts_to_date(ts):

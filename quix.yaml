@@ -1,0 +1,212 @@
+# Quix Project Descriptor
+# This file describes the data pipeline and configuration of resources of a Quix Project.
+
+metadata:
+  version: 1.0
+
+# This section describes the Deployments of the data pipeline
+deployments:
+  - name: TFL Camera Feed
+    application: TFL Camera Feed
+    deploymentType: Service
+    version: v1
+    resources:
+      cpu: 8000
+      memory: 10240
+      replicas: 1
+    desiredStatus: Running
+    variables:
+      - name: output
+        inputType: OutputTopic
+        description: This is the output topic for TfL camera images
+        required: true
+        value: tfl-cameras
+      - name: api_key
+        inputType: HiddenText
+        description: Your TfL API Key
+        required: true
+        value: ba4f0a6e85ce4e02b8ae2864f9147beb
+  - name: Computer vision object detection
+    application: Computer vision object detection
+    deploymentType: Service
+    version: 9a5adaf3a0651e758c562604ee8935961337c8c2
+    resources:
+      cpu: 8000
+      memory: 16000
+      replicas: 1
+    desiredStatus: Stopped
+    variables:
+      - name: input
+        inputType: InputTopic
+        description: This is the input topic for raw images
+        required: true
+        value: image-raw
+      - name: output
+        inputType: OutputTopic
+        description: This is the output for images augmented with the recognized objects
+        required: true
+        value: image-processed
+  - name: Stream merge
+    application: Stream merge
+    deploymentType: Service
+    version: v1
+    resources:
+      cpu: 8000
+      memory: 8000
+      replicas: 1
+    desiredStatus: Running
+    variables:
+      - name: input
+        inputType: InputTopic
+        description: Name of the source topic
+        required: true
+        value: image-processed
+      - name: output
+        inputType: OutputTopic
+        description: Name of the destination topic
+        required: true
+        value: image-processed-merged
+  - name: TfL image processing UI
+    application: TfL image processing UI
+    deploymentType: Service
+    version: v1
+    resources:
+      cpu: 200
+      memory: 200
+      replicas: 1
+    publicAccess:
+      enabled: true
+      urlPrefix: tfl-image-processing-ui
+    desiredStatus: Running
+    variables:
+      - name: processed
+        inputType: InputTopic
+        description: The topic to read from
+        required: true
+        value: image-processed-merged
+  - name: TfL traffic camera frame grabber
+    application: TfL traffic camera frame grabber
+    deploymentType: Service
+    version: v1
+    resources:
+      cpu: 8000
+      memory: 10240
+      replicas: 1
+    desiredStatus: Running
+    variables:
+      - name: input
+        inputType: InputTopic
+        description: This is the input topic for webcam images
+        required: true
+        value: tfl-cameras
+      - name: output
+        inputType: OutputTopic
+        description: This is the output topic for the captured frames
+        required: true
+        value: image-raw
+      - name: frame_rate
+        inputType: FreeText
+        description: The numer of images per second
+        required: true
+        value: 100
+  - name: S3 new
+    application: S3
+    deploymentType: Service
+    version: 75b6abfe2842349b1fc13453e07bc30e4d7a2747
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    desiredStatus: Running
+    variables:
+      - name: input
+        inputType: InputTopic
+        description: Input topic
+        required: true
+        value: image-processed
+      - name: batch_time_interval
+        inputType: FreeText
+        description: Time interval in seconds to save data to S3 (set -1 to disable batching based on time)
+        required: false
+        value: 3600
+      - name: batch_msg_count
+        inputType: FreeText
+        description: Message count in the batch (0 saves data as they arrive, -1 disables batching based on message count)
+        required: false
+        value: 1000
+      - name: parameters
+        inputType: FreeText
+        description: Comma separated list of parameters to look for in the received data
+        required: true
+        value: bicycle, car, truck, person
+      - name: aws_access_key_id
+        inputType: HiddenText
+        description: AWS S3 access key id
+        required: false
+        value: AKIA5JJJFC76H52H62WO
+      - name: aws_access_key
+        inputType: HiddenText
+        description: AWS S3 access key
+        required: false
+        value: BQla1KEQr5WoptF9TsDxTFeP48Wa+Sh8H7gR2ji5
+      - name: s3_bucket
+        inputType: FreeText
+        description: AWS S3 bucket name
+        required: true
+        value: steve-demo-quix
+      - name: prefix
+        inputType: FreeText
+        description: File name prefix
+        required: false
+        value: demo_
+      - name: s3_folder
+        inputType: FreeText
+        description: Name of the S3 folder to save to
+        required: false
+        value: computer_vision_demo_data
+      - name: s3_folder_per_stream
+        inputType: FreeText
+        description: Flag to save different streams to different S3 folders.
+        required: false
+        value: false
+      - name: suffix
+        inputType: FreeText
+        description: File suffix (e.g. file type extension)
+        required: false
+        value: .csv
+      - name: timezone
+        inputType: FreeText
+        description: Timezone from the IANA Time Zone Database (e.g. Asia/Singapore) for orchestrating time-based batching and file naming.
+        required: true
+        value: GMT
+
+# This section describes the Topics of the data pipeline
+topics:
+  - name: image-processed-merged
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: image-processed
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: image-raw
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: tfl-cameras
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000

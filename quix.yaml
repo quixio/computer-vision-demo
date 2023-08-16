@@ -204,7 +204,7 @@ deployments:
         description: This is the output topic to write data to
         required: true
         value: image-vehicles
-  - name: MaxVehicleWindow
+  - name: Max Vehicle Window
     application: Starter transformation
     deploymentType: Service
     version: 9e788e4408a6958ce067ce14a07e3228cdc3d2d2

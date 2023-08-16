@@ -1,12 +1,19 @@
-import quixstreams as qx
-import os
+from quixstreams import LocalFileStorage
 
-# Quix injects credentials automatically to the client.
-# Alternatively, you can always pass an SDK token manually as an argument.
-client = qx.QuixStreamingClient()
+storage = LocalFileStorage()
 
-# Use Input / Output topics to stream data in or out of your service
-consumer_topic = client.get_topic_consumer(os.environ["input"])
-producer_topic = client.get_topic_producer(os.environ["output"])
+#clear storage ( remove all keys )
+storage.clear()
 
-# for more samples, please see samples or docs
+#storage class supports handling of
+#   `str`, `int`, `float`, `bool`, `bytes`, `bytearray` types.
+
+#set value
+storage.set("KEY1", 12.51)
+storage.set("KEY2", "str")
+storage.set("KEY3", True)
+storage.set("KEY4", False)
+
+#check if the storage contains key
+if storage.contains_key("KEY1"):
+    print(storage.get("KEY1"))

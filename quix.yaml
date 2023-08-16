@@ -227,7 +227,7 @@ deployments:
   - name: Data API
     application: Data API
     deploymentType: Service
-    version: a0a632d71b975bf25a6ebb67c9aba462fd8d270d
+    version: state_api_v1
     resources:
       cpu: 200
       memory: 500

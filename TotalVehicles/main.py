@@ -22,14 +22,14 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
     total_vehicle_count = df.apply(lambda row: sum(row.get(column, 0) for column in vehicle_columns), axis=1)
 
     df_out = pd.DataFrame()
-    df_out["vehicles"] = total_vehicle_count
-    df_out["lat"] = df["lat"]
-    df_out["lon"] = df["lon"]
-    df_out["delta"] = df["delta"]
+    # df_out["vehicles"] = total_vehicle_count
+    # df_out["lat"] = df["lat"]
+    # df_out["lon"] = df["lon"]
+    # df_out["delta"] = df["delta"]
 
     print(df_out)
     stream_producer = topic_producer.get_or_create_stream(stream_id = stream_consumer.stream_id)
-    #stream_producer.timeseries.buffer.publish(df_out)
+    stream_producer.timeseries.buffer.publish(df_out)
 
 def on_stream_received_handler(stream_consumer: qx.StreamConsumer):
     stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler

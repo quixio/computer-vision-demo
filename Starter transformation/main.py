@@ -106,7 +106,6 @@ def process_data(stream_id, new_data_frame):
         highest_vehicles = float('-inf')  # Initialize with negative infinity
         highest_vehicles_ts = datetime.datetime.utcnow()
 
-        print(f'window_data_inside={window_data_inside}')
         # for each row inside the window, find the highest vehicle count
         for key, df in window_data_inside.items():
             max_vehicles_in_df = df['vehicles']

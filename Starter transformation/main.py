@@ -50,6 +50,8 @@ def get_state():
     # get the state value and set the properties with it
     o = storage.get("state")
 
+    print(o)
+
     start_of_window = o['start_of_window']
     end_of_window = o['end_of_window']
     window = o['window']

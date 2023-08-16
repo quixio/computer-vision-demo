@@ -25,7 +25,7 @@ deployments:
         inputType: HiddenText
         description: Your TfL API Key
         required: true
-        value: ba4f0a6e85ce4e02b8ae2864f9147beb
+        value: {{ tfl_api_key }}
   - name: Computer vision object detection
     application: Computer vision object detection
     deploymentType: Service
@@ -143,12 +143,12 @@ deployments:
         inputType: HiddenText
         description: AWS S3 access key id
         required: false
-        value: AKIA5JJJFC76H52H62WO
+        value: {{ s3_sink_aws_access_key_id }}
       - name: aws_access_key
         inputType: HiddenText
         description: AWS S3 access key
         required: false
-        value: BQla1KEQr5WoptF9TsDxTFeP48Wa+Sh8H7gR2ji5
+        value: {{ s3_sink_aws_access_key }}
       - name: s3_bucket
         inputType: FreeText
         description: AWS S3 bucket name

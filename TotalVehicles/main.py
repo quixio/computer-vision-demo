@@ -27,6 +27,7 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
     df_out["lon"] = df["lon"]
     df_out["delta"] = df["delta"]
 
+    print(df_out)
     stream_producer = topic_producer.get_or_create_stream(stream_id = stream_consumer.stream_id)
     stream_producer.timeseries.buffer.publish(df_out)
 

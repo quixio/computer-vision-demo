@@ -14,6 +14,7 @@ detected_objects = {}
 # get a state manager from the Quix client library
 storage = qx.LocalFileStorage()
 
+print("Checking state for previous values..")
 # if max_vehicles is in state, init the property with it
 if storage.contains_key("max_vehicles"):
     max_vehicles = storage.get("max_vehicles")

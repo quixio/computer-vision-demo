@@ -3,6 +3,7 @@ import os
 import pandas as pd
 import datetime
 
+storage = qx.LocalFileStorage()
 
 client = qx.QuixStreamingClient()
 
@@ -24,6 +25,29 @@ window_length_mins = 0
 window_length_secs = 0
 window = ""
 
+def set_state():
+    # build the object we want to store in state
+    o = {
+        'start_of_window': start_of_window,
+        'end_of_window': end_of_window,
+        'window': window,
+        'cams': cams
+    }
+    storage.set("state", o)
+
+def get_state():
+    global start_of_window
+    global end_of_window
+    global window
+    global cams
+
+    # get the state value and set the properties with it
+    o = storage.get("state")
+
+    start_of_window = o['start_of_window']
+    end_of_window = o['end_of_window']
+    window = o['window']
+    cams = o['cams']
 
 def update_window():
     global end_of_window
@@ -71,17 +95,10 @@ def process_data(stream_id, new_data_frame):
             cams[stream_id]["window_data"][check_date] = row
             #print(f"adding to window_data: {check_date}")
 
-    print("-------------")
-    #print(cams[stream_id]["window_data"])
-    print("-------------")
-
     # remove any data outside the new start and end window values
     window_data_inside = {key: value for key, value in cams[stream_id]["window_data"].items() if start_of_window <= key <= end_of_window}
     
     if window_data_inside:
-        #print(f"HAS DATA: {window_data_inside}")
-        #print(window_data_inside)
-        
         # update the data with the data that is currently in the window
         cams[stream_id]["window_data"] = window_data_inside
 
@@ -96,7 +113,6 @@ def process_data(stream_id, new_data_frame):
             if max_vehicles_in_df > highest_vehicles:
                 highest_vehicles = max_vehicles_in_df
                 highest_vehicles_ts = df["ts"]
-            #print(f"key={key}, {df['vehicles']}")
 
         print(f"Highest Number of Vehicles:{highest_vehicles} found at {highest_vehicles_ts}")
         
@@ -114,13 +130,7 @@ def process_data(stream_id, new_data_frame):
                 'TAG__cam': stream_id}
         df2 = pd.DataFrame(data)
 
-        #out_df = pd.DataFrame()
-        #out_df["max_vehicles"] = [highest_vehicles]
-        # publish the amended dataframe to the topic
-        #print("================")
-        #print(out_df)
-        #print("================")
-
+        # publish the new dataframe
         stream_producer = topic_producer.get_or_create_stream(stream_id = stream_id)
         stream_producer.timeseries.buffer.publish(df2)
 

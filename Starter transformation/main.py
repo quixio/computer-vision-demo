@@ -58,6 +58,10 @@ def process_data(stream_id, new_data_frame):
             # add to dict
             cams[stream_id]["window_data"][check_date] = row
 
+    print("-------------")
+    cams[stream_id]["window_data"]
+    print("-------------")
+
     # remove any data outside the new start and end window values
     window_data_inside = {key: value for key, value in cams[stream_id]["window_data"].items() if start_of_window <= key <= end_of_window}
     #print(window_data_inside)

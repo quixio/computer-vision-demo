@@ -84,6 +84,8 @@ def ts_to_date(ts):
 def process_data(stream_id, new_data_frame):
     global cams
 
+    new_data_frame["image"] = "" # we dont need the image for this path in the pipeline
+
     new_data_frame['ts'] = ts_to_date(new_data_frame["timestamp"][0])
 
     if stream_id not in cams:

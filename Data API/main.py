@@ -19,6 +19,7 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
 
 
 def on_stream_received_handler(stream_consumer: qx.StreamConsumer):
+    print("new stream")
     stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
 
 
@@ -29,8 +30,11 @@ def index():
 
 if __name__ == "__main__":
     from waitress import serve
-    print("A")
+
     #qx.App.run()
-    print("B")
+
+    # you can use app.run for dev, but its not secure, stable or particularly efficient
+    # app.run(debug=True, host="0.0.0.0", port=80)
+
+    # use waitress instead for production
     serve(app, host="0.0.0.0", port=80)
-    print("HERE")

@@ -25,16 +25,17 @@ def get_data():
 
         cameras_list = cameras.json()
 
-        for camera in cameras_list:
-            camera_id = camera["id"]
+        #for camera in cameras_list:
+        camera = cameras_list[0]
+        camera_id = camera["id"]
 
-            producer_topic.get_or_create_stream(camera_id).events.add_timestamp_nanoseconds(time.time_ns()) \
-                .add_value("camera", json.dumps(camera)) \
-                .publish()    
+        producer_topic.get_or_create_stream(camera_id).events.add_timestamp_nanoseconds(time.time_ns()) \
+            .add_value("camera", json.dumps(camera)) \
+            .publish()    
 
-            print("Sent camera " + camera_id)
+        print("Sent camera " + camera_id)
 
-        sleep_time = 120 - (time.time() - start)
+        sleep_time = 5 - (time.time() - start)
 
         if sleep_time > 0:
             print("Sleep for " + str(sleep_time))

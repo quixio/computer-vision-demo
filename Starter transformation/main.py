@@ -110,7 +110,7 @@ def process_data(stream_id, new_data_frame):
                 'max_vehicles': [highest_vehicles],
                 'window_start': start_of_window,
                 'window_end': end_of_window,
-                'window': window}
+                'TAG__window': window}
         df2 = pd.DataFrame(data)
 
         #out_df = pd.DataFrame()

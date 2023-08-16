@@ -108,7 +108,8 @@ def process_data(stream_id, new_data_frame):
         data = {'timestamp': datetime.datetime.utcnow(),
                 'max_vehicles': [highest_vehicles],
                 'window_start': start_of_window,
-                'window_end': end_of_window}
+                'window_end': end_of_window,
+                'window': window}
         df2 = pd.DataFrame(data)
 
         #out_df = pd.DataFrame()

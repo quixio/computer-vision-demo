@@ -58,6 +58,7 @@ def process_data(stream_id, new_data_frame):
         if start_of_window <= check_date <= end_of_window:
             # add to dict
             cams[stream_id]["window_data"][check_date] = row
+            print(f"adding to window_data: {check_date}")
 
     #print("-------------")
     #print(cams[stream_id]["window_data"])

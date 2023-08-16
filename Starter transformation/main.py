@@ -59,9 +59,9 @@ def process_data(stream_id, new_data_frame):
             # add to dict
             cams[stream_id]["window_data"][check_date] = row
 
-    print("-------------")
-    print(cams[stream_id]["window_data"])
-    print("-------------")
+    #print("-------------")
+    #print(cams[stream_id]["window_data"])
+    #print("-------------")
 
     # remove any data outside the new start and end window values
     window_data_inside = {key: value for key, value in cams[stream_id]["window_data"].items() if start_of_window <= key <= end_of_window}
@@ -73,26 +73,26 @@ def process_data(stream_id, new_data_frame):
 
         # Find the highest number of vehicles across all DataFrames
         highest_vehicles = float('-inf')  # Initialize with negative infinity
-        print(f'window_data_inside={window_data_inside}')
+        #print(f'window_data_inside={window_data_inside}')
         # for each row inside the window, find the highest vehicle count
         for key, df in window_data_inside.items():
             max_vehicles_in_df = df['vehicles']
             highest_vehicles = max(highest_vehicles, max_vehicles_in_df)
-            print(f"key={key}, {df['vehicles']}")
+            #print(f"key={key}, {df['vehicles']}")
 
         print("Highest Number of Vehicles:", highest_vehicles)
         
         # record the highest vehicle count against the stream id
         cams[stream_id]["stream_vehicles"][stream_id] = highest_vehicles
 
-        print(f'{cams[stream_id]["stream_vehicles"]}')
+        #print(f'{cams[stream_id]["stream_vehicles"]}')
 
         out_df = pd.DataFrame()
         out_df["max_vehicles"] = [highest_vehicles]
         # publish the amended dataframe to the topic
-        print("================")
-        print(out_df)
-        print("================")
+        #print("================")
+        #print(out_df)
+        #print("================")
 
         stream_producer = topic_producer.get_or_create_stream(stream_id = stream_id)
         stream_producer.timeseries.buffer.publish(out_df)

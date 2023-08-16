@@ -41,6 +41,7 @@ def ts_to_date(ts):
 def process_data(stream_id, new_data_frame):
 
     print("*************************************")
+    new_data_frame['ts'] = ts_to_date(new_data_frame["timestamp"][0])
     print(new_data_frame)
     global cams
 

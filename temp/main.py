@@ -2,6 +2,9 @@ from quixstreams import LocalFileStorage
 
 storage = LocalFileStorage()
 
+if storage.contains_key("KEY1"):
+    print(storage.get("KEY1"))
+    
 #clear storage ( remove all keys )
 storage.clear()
 

@@ -23,7 +23,7 @@ def on_max_veh_stream_received_handler(stream_consumer: qx.StreamConsumer):
     global max_vehicles
 
     def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
-        print(f'stream:{stream_consumer.stream_id}, data={df["max_vehicles"][0]}')
+        print(f'MAX_VEHICLES: stream:{stream_consumer.stream_id}, data={df["max_vehicles"][0]}')
         max_vehicles[stream_consumer.stream_id] = df["max_vehicles"][0]
     
     stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
@@ -34,7 +34,7 @@ def on_object_stream_received_handler(stream_consumer: qx.StreamConsumer):
 
     def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
         df["image"] = '' # we dont need the image for this
-        print(f'stream:{stream_consumer.stream_id}, data={df.to_dict()}')
+        print(f'OBJECT DETECTED: stream:{stream_consumer.stream_id}, data={df.to_dict()}')
         detected_objects[stream_consumer.stream_id] = df.to_dict()
         print(df)
         pass

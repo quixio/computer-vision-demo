@@ -32,6 +32,9 @@ if __name__ == "__main__":
     print("main..")
     from waitress import serve
 
+
+    consumer_topic.on_stream_received = on_stream_received_handler
+    consumer_topic.subscribe()
     #qx.App.run()
 
     # you can use app.run for dev, but its not secure, stable or particularly efficient

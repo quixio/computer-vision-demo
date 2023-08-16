@@ -4,7 +4,7 @@ variables:
   - name: input
     inputType: InputTopic
     description: This is the input topic to read data from
-    defaultValue: ''
+    defaultValue: max-vehicles
     required: true
 dockerfile: build/dockerfile
 runEntryPoint: main.py

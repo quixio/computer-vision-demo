@@ -1,0 +1,36 @@
+name: Snowflake
+language: csharp
+variables:
+  - name: Broker__TopicName
+    inputType: InputTopic
+    description: Name of the input topic to read from
+    defaultValue: image-raw
+    required: true
+  - name: Snowflake__Locator
+    inputType: FreeText
+    description: The locator be found under Admin/Accounts or in the URL
+    defaultValue: test
+    required: true
+  - name: Snowflake__Region
+    inputType: FreeText
+    description: Check your snowflake url or readme for details to acquire the region
+    defaultValue: test
+    required: true
+  - name: Snowflake__Database
+    inputType: FreeText
+    description: The name of the database to persist to
+    defaultValue: test
+    required: true
+  - name: Snowflake__User
+    inputType: FreeText
+    description: The username of the user the sink should use to interact with the database
+    defaultValue: test
+    required: true
+  - name: Snowflake__Password
+    inputType: HiddenText
+    description: The password of the user
+    defaultValue: test
+    required: true
+dockerfile: build/dockerfile
+runEntryPoint: Quix.Snowflake.Writer/Quix.Snowflake.Writer.csproj
+defaultFile: Quix.Snowflake.Writer/Worker.cs

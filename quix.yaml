@@ -29,7 +29,7 @@ deployments:
   - name: Computer vision object detection
     application: Computer vision object detection
     deploymentType: Service
-    version: v1.1
+    version: 5fa551de81bb87d10f73404eaaec0fb5a9c8b9c2
     resources:
       cpu: 8000
       memory: 16000

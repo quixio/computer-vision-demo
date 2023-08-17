@@ -184,6 +184,47 @@ deployments:
         description: Timezone from the IANA Time Zone Database (e.g. Asia/Singapore) for orchestrating time-based batching and file naming.
         required: true
         value: GMT
+  - name: Snowflake
+    application: Snowflake
+    deploymentType: Service
+    version: 3262b3533c8e89ff1ee5502b30d204c47dfe7479
+    resources:
+      cpu: 400
+      memory: 800
+      replicas: 1
+    libraryItemId: 9ec049c0-d6d4-4543-805a-1dbac7c3e962
+    desiredStatus: Running
+    variables:
+      - name: Broker__TopicName
+        inputType: InputTopic
+        description: Name of the input topic to read from
+        required: true
+        value: image-raw
+      - name: Snowflake__Locator
+        inputType: FreeText
+        description: The locator be found under Admin/Accounts or in the URL
+        required: true
+        value: test
+      - name: Snowflake__Region
+        inputType: FreeText
+        description: Check your snowflake url or readme for details to acquire the region
+        required: true
+        value: test
+      - name: Snowflake__Database
+        inputType: FreeText
+        description: The name of the database to persist to
+        required: true
+        value: test
+      - name: Snowflake__User
+        inputType: FreeText
+        description: The username of the user the sink should use to interact with the database
+        required: true
+        value: test
+      - name: Snowflake__Password
+        inputType: HiddenText
+        description: The password of the user
+        required: true
+        value: test
 
 # This section describes the Topics of the data pipeline
 topics:

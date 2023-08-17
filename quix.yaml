@@ -148,17 +148,17 @@ deployments:
         inputType: HiddenText
         description: AWS S3 access key id
         required: false
-        value: AKIA5JJJFC76CB5S6EAL
+        value: xxx
       - name: aws_access_key
         inputType: HiddenText
         description: AWS S3 access key
         required: false
-        value: 09xDju1fmuWhUqDNqd4EJMy8KL0nILls/YWTHnZI
+        value: xxx
       - name: s3_bucket
         inputType: FreeText
         description: AWS S3 bucket name
         required: true
-        value: steve-demo-quix
+        value: quix-vision-demo
       - name: prefix
         inputType: FreeText
         description: File name prefix

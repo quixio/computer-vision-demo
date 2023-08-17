@@ -5,14 +5,13 @@ import numpy as np
 import time
 from ultralytics import YOLO
 import cv2
-import json
 
 
 client = qx.QuixStreamingClient()
 
 topic_consumer = client.get_topic_consumer(os.environ["input"], consumer_group = "empty-transformation")
-topic_producer_videos = client.get_topic_producer(os.environ["output_videos"])
-topic_producer_vehicles = client.get_topic_producer(os.environ["output_vehicles"])
+# topic_producer_videos = client.get_topic_producer(os.environ["output_videos"])
+topic_producer_vehicles = client.get_topic_producer(os.environ["output"])
 
 yolo_8 = YOLO(os.environ["yolo_model"])
 
@@ -52,18 +51,19 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
     print(df.info())
     stream_producer = topic_producer_vehicles.get_or_create_stream(stream_id = stream_consumer.stream_id)
     stream_producer.timeseries.publish(df)
-    
-    # OUTPUT: VIDEOS
-    tl = time.time()
-    stream_producer_videos = topic_producer_videos.get_or_create_stream(stream_id = stream_consumer.stream_id)
-    print(video_df.info())
-    stream_producer_videos.timeseries.publish(video_df)
-    tm = time.time()
 
     print("{} seconds employed in images classification".format(tj-ti))
     print("{} seconds employed in all frames images conversions and storing and vehicle counts".format(tk-tj))
-    print("{} seconds employed in outputing vehicle numbers".format(tl-tk))
-    print("{} seconds employed in outputing original and classified frames".format(tm-tl))
+    
+    # OUTPUT: VIDEOS
+    # tl = time.time()
+    # stream_producer_videos = topic_producer_videos.get_or_create_stream(stream_id = stream_consumer.stream_id)
+    # print(video_df.info())
+    # stream_producer_videos.timeseries.publish(video_df)
+    # tm = time.time()
+
+    # print("{} seconds employed in outputing vehicle numbers".format(tl-tk))
+    # print("{} seconds employed in outputing original and classified frames".format(tm-tl))
         
 
 

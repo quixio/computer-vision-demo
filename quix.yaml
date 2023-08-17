@@ -215,7 +215,7 @@ topics:
       retentionInMinutes: -1
       retentionInBytes: 262144000
   - name: image-raw
-    persisted: true
+    persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2

@@ -11,6 +11,11 @@ variables:
     description: This is the output for images augmented with the recognized objects
     defaultValue: image-processed
     required: true
+  - name: yolo_model
+    inputType: FreeText
+    description: ''
+    defaultValue: yolov8n.pt
+    required: false
 dockerfile: build/dockerfile
 runEntryPoint: main.py
 defaultFile: quix_function.py

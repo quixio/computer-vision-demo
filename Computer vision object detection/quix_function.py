@@ -3,7 +3,6 @@ import time
 from collections import Counter
 import traceback
 
-
 class QuixFunction:
     def __init__(self, stream_producer: qx.StreamProducer, image_processor):
         self.stream_producer = stream_producer

@@ -22,7 +22,7 @@ def n_vehicles_from_result(res, df: pd.DataFrame):
   df["bus"] = 0
   df["truck"] = 0
   classes_list = [res.names[int(class_i)] for class_i in res.boxes.cls.tolist()]
-  for vehicle in classes_list:
+  for vc in classes_list:
       if vc in ["car", "motorcycle", "bus", "truck"]:
           df.loc[0, [vc]] += 1
 

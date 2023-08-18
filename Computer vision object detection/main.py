@@ -49,7 +49,7 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
         df_i = df.copy(deep=True)
         # df_i["original_frame"] = image_to_binary_string(frame_res.orig_img)
         df_i["classified_frame"] = image_to_binary_string(frame_res.plot())
-        df_i["number_vehicles"] = n_vehicles_from_result(frame_res, df_i)
+        n_vehicles_from_result(frame_res, df_i)
         video_df = pd.concat([video_df, df_i], ignore_index=True)
 
     # OUTPUT: NUMBER OF VEHICLES

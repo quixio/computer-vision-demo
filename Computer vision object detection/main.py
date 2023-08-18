@@ -16,11 +16,15 @@ topic_producer_vehicles = client.get_topic_producer(os.environ["output"])
 yolo_8 = YOLO(os.environ["yolo_model"])
 
 
-def n_vehicles_from_result(res):
-  vehicle_classes = ["car", "motorcycle", "bus", "truck"]
+def n_vehicles_from_result(res, df: pd.DataFrame):
+  df["car"] = 0
+  df["motorcycle"] = 0
+  df["bus"] = 0
+  df["truck"] = 0
   classes_list = [res.names[int(class_i)] for class_i in res.boxes.cls.tolist()]
-  n_vehicles = len([class_i for class_i in classes_list if class_i in vehicle_classes])
-  return n_vehicles
+  for vehicle in classes_list:
+      if vc in ["car", "motorcycle", "bus", "truck"]:
+          df.loc[0, [vc]] += 1
 
 def image_to_binary_string(numpy_image):
     return cv2.imencode('.png', numpy_image)[1].tobytes()
@@ -45,12 +49,15 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
         df_i = df.copy(deep=True)
         # df_i["original_frame"] = image_to_binary_string(frame_res.orig_img)
         df_i["classified_frame"] = image_to_binary_string(frame_res.plot())
-        df_i["number_vehicles"] = n_vehicles_from_result(frame_res)
+        df_i["number_vehicles"] = n_vehicles_from_result(frame_res, df_i)
         video_df = pd.concat([video_df, df_i], ignore_index=True)
 
     # OUTPUT: NUMBER OF VEHICLES
     tk = time.time()
-    df["number_vehicles"] = np.median(video_df["number_vehicles"])
+    df["car"] = np.median(video_df["car"])
+    df["motorcycle"] = np.median(video_df["motorcycle"])
+    df["bus"] = np.median(video_df["bus"])
+    df["truck"] = np.median(video_df["truck"])
     print(df.info())
     stream_producer = topic_producer_vehicles.get_or_create_stream(stream_id = stream_consumer.stream_id)
     stream_producer.timeseries.publish(df)

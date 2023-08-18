@@ -28,13 +28,16 @@ def image_to_binary_string(numpy_image):
 def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
 
     # Initiate variables
-    video_url = df['video_url'].iloc[0]
+    image_file = "image.jpg"
+    with open(image_file, "wb") as fd:
+        fd.write(df['image'].iloc[0])
+    
     df["TAG__ML_model"] = os.environ["yolo_model"]
     video_df = pd.DataFrame()
 
     ti = time.time()
     # Classify video with model
-    classification_results = yolo_8(source = video_url, conf = 0.15, iou = 0.5) #Check device arg https://docs.ultralytics.com/modes/predict/#sources
+    classification_results = yolo_8(source = image_file, conf = 0.15, iou = 0.5) #Check device arg https://docs.ultralytics.com/modes/predict/#sources
     
     tj = time.time()
     # Iterate over frames to format as binary

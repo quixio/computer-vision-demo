@@ -18,4 +18,4 @@ variables:
     required: false
 dockerfile: build/dockerfile
 runEntryPoint: main.py
-defaultFile: quix_function.py
+defaultFile: main.py

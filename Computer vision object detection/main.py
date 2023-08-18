@@ -64,10 +64,14 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
 
     # OUTPUT: NUMBER OF VEHICLES
     tk = time.time()
-    df["car"] = np.median(video_df["car"])
-    df["motorcycle"] = np.median(video_df["motorcycle"])
-    df["bus"] = np.median(video_df["bus"])
-    df["truck"] = np.median(video_df["truck"])
+    if "car" in video_df:
+        df["car"] = np.median(video_df["car"])
+    if "motorcycle" in video_df:
+        df["motorcycle"] = np.median(video_df["motorcycle"])
+    if "bus" in video_df:
+        df["bus"] = np.median(video_df["bus"])
+    if "truck" in video_df:
+        df["truck"] = np.median(video_df["truck"])
     print(df.info())
     stream_producer = topic_producer_vehicles.get_or_create_stream(stream_id = stream_consumer.stream_id)
     stream_producer.timeseries.publish(df)

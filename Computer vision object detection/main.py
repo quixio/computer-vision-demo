@@ -17,14 +17,24 @@ yolo_8 = YOLO(os.environ["yolo_model"])
 
 
 def n_vehicles_from_result(res, df: pd.DataFrame):
-  df["car"] = 0
-  df["motorcycle"] = 0
-  df["bus"] = 0
-  df["truck"] = 0
-  classes_list = [res.names[int(class_i)] for class_i in res.boxes.cls.tolist()]
-  for vc in classes_list:
-      if vc in ["car", "motorcycle", "bus", "truck"]:
-          df.loc[0, [vc]] += 1
+    count = {
+        "car": 0,
+        "motorcycle": 0,
+        "bus": 0,
+        "truck": 0
+    }
+    classes_list = [res.names[int(class_i)] for class_i in res.boxes.cls.tolist()]
+    for vc in classes_list:
+        if vc in ["car", "motorcycle", "bus", "truck"]:
+            count[vc] += 1
+    if count["car"]:
+        df.loc[0, ["car"]] = count["car"]
+    if count["motorcycle"]:
+        df.loc[0, ["motorcycle"]] = count["motorcycle"]
+    if count["bus"]:
+        df.loc[0, ["bus"]] = count["bus"]
+    if count["truck"]:
+        df.loc[0, ["truck"]] = count["truck"]
 
 def image_to_binary_string(numpy_image):
     return cv2.imencode('.png', numpy_image)[1].tobytes()

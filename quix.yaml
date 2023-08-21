@@ -184,6 +184,26 @@ deployments:
         description: Timezone from the IANA Time Zone Database (e.g. Asia/Singapore) for orchestrating time-based batching and file naming.
         required: true
         value: GMT
+  - name: bob
+    application: bob
+    deploymentType: Service
+    version: 5f4c507bf2923541e799c06a2830ba2174649c9f
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    desiredStatus: Running
+    variables:
+      - name: input
+        inputType: InputTopic
+        description: This is the input topic to read data from
+        required: true
+        value: help-me
+      - name: output
+        inputType: OutputTopic
+        description: This is the output topic to write data to
+        required: true
+        value: output-topic
 
 # This section describes the Topics of the data pipeline
 topics:

@@ -29,11 +29,11 @@ deployments:
   - name: Computer vision object detection
     application: Computer vision object detection
     deploymentType: Service
-    version: 5fa551de81bb87d10f73404eaaec0fb5a9c8b9c2
+    version: 90e2ce416a7230e55ab169885fc23edb68e6cc76
     resources:
       cpu: 8000
       memory: 16000
-      replicas: 1
+      replicas: 2
     desiredStatus: Running
     variables:
       - name: input
@@ -46,6 +46,11 @@ deployments:
         description: This is the output for images augmented with the recognized objects
         required: true
         value: image-processed
+      - name: yolo_model
+        inputType: FreeText
+        description: ''
+        required: false
+        value: yolov8n.pt
   - name: Stream merge
     application: Stream merge
     deploymentType: Service
@@ -182,14 +187,7 @@ deployments:
 
 # This section describes the Topics of the data pipeline
 topics:
-  - name: tfl-cameras
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: image-raw
+  - name: image-processed-merged
     persisted: false
     configuration:
       partitions: 2
@@ -203,7 +201,14 @@ topics:
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
-  - name: image-processed-merged
+  - name: image-raw
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: tfl-cameras
     persisted: false
     configuration:
       partitions: 2

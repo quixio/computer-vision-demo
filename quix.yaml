@@ -187,14 +187,14 @@ deployments:
 
 # This section describes the Topics of the data pipeline
 topics:
-  - name: image-processed-merged
+  - name: help-me
     persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2
-      retentionInMinutes: 500
-      retentionInBytes: 262144000
-  - name: image-processed
+      retentionInMinutes: 60
+      retentionInBytes: 52428800
+  - name: tfl-cameras
     persisted: false
     configuration:
       partitions: 2
@@ -208,7 +208,14 @@ topics:
       replicationFactor: 2
       retentionInMinutes: 500
       retentionInBytes: 262144000
-  - name: tfl-cameras
+  - name: image-processed
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: 500
+      retentionInBytes: 262144000
+  - name: image-processed-merged
     persisted: false
     configuration:
       partitions: 2

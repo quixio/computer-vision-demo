@@ -12,7 +12,7 @@ deployments:
     version: v1
     resources:
       cpu: 200
-      memory: 10240
+      memory: 200
       replicas: 1
     desiredStatus: Running
     variables:
@@ -32,7 +32,7 @@ deployments:
     version: 90e2ce416a7230e55ab169885fc23edb68e6cc76
     resources:
       cpu: 200
-      memory: 16000
+      memory: 200
       replicas: 2
     desiredStatus: Running
     variables:
@@ -57,7 +57,7 @@ deployments:
     version: v1
     resources:
       cpu: 200
-      memory: 8000
+      memory: 200
       replicas: 1
     desiredStatus: Running
     variables:
@@ -95,7 +95,7 @@ deployments:
     version: v1
     resources:
       cpu: 200
-      memory: 10240
+      memory: 200
       replicas: 1
     desiredStatus: Running
     variables:

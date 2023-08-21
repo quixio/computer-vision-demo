@@ -192,26 +192,26 @@ topics:
     configuration:
       partitions: 2
       replicationFactor: 2
-      retentionInMinutes: -1
+      retentionInMinutes: 500
       retentionInBytes: 262144000
   - name: image-processed
     persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2
-      retentionInMinutes: -1
+      retentionInMinutes: 500
       retentionInBytes: 262144000
   - name: image-raw
     persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2
-      retentionInMinutes: -1
+      retentionInMinutes: 500
       retentionInBytes: 262144000
   - name: tfl-cameras
     persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2
-      retentionInMinutes: -1
+      retentionInMinutes: 500
       retentionInBytes: 262144000

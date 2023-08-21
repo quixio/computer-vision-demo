@@ -20,6 +20,8 @@ shutting_down = False
 # Alternatively, you can always pass an SDK token manually as an argument.
 client = qx.QuixStreamingClient()
 
+# comment
+
 print("Opening producer topic.")
 # The producer topic is where the data will be published to
 # It's the output from this demo data source code.

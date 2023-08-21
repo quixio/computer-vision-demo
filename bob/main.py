@@ -3,6 +3,7 @@ import os
 
 # Quix injects credentials automatically to the cfawefawlient.
 # Alternatively, you can always pass an SDK token manually as an argument.
+
 client = qx.QuixStreamingClient()
 
 # Use Input / Output topics to stream data in or out of your service

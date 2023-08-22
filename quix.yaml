@@ -205,7 +205,7 @@ deployments:
     version: max_vehicle_window_v4
     resources:
       cpu: 200
-      memory: 500
+      memory: 10100
       replicas: 1
     state:
       enabled: true

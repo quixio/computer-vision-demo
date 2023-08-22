@@ -30,7 +30,7 @@ deployments:
   - name: Computer vision object detection
     application: Computer vision object detection
     deploymentType: Service
-    version: 90e2ce416a7230e55ab169885fc23edb68e6cc76
+    version: 1fd04bb26cabab9b08d5ff171ab04d0f57f0865d
     resources:
       cpu: 8000
       memory: 16000
@@ -216,7 +216,7 @@ deployments:
     version: max_vehicle_window_v4
     resources:
       cpu: 200
-      memory: 500
+      memory: 10100
       replicas: 1
     state:
       enabled: true
@@ -236,10 +236,10 @@ deployments:
   - name: Data API 2
     application: Data API
     deploymentType: Service
-    version: 314ef59316ff6be348a89f9ea6dffe289b7adea9
+    version: 7fbfafa04d1ada55a27cda770177cadbbbc7862d
     resources:
       cpu: 200
-      memory: 500
+      memory: 2600
       replicas: 1
     publicAccess:
       enabled: true

@@ -11,6 +11,11 @@ variables:
     description: This is the output topic to write data to
     defaultValue: fenced-cameras
     required: true
+  - name: fence_coordinates
+    inputType: FreeText
+    description: ''
+    defaultValue: 51.532074,51.472461,-0.038891,-0.158347
+    required: false
 dockerfile: build/dockerfile
 runEntryPoint: main.py
 defaultFile: main.py

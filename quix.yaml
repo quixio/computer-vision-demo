@@ -256,7 +256,7 @@ deployments:
   - name: Geofence
     application: Geofence
     deploymentType: Service
-    version: 1cb6225d97aa7b5258b058dc0f3e14fd794bde7a
+    version: b1637e43e13d18945f6062e24f5c67eea0a51ceb
     resources:
       cpu: 200
       memory: 500

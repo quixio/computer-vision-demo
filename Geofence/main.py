@@ -12,6 +12,13 @@ south = float(fence_coords[1])
 east = float(fence_coords[2])
 west = float(fence_coords[3])
 
+if north < south:
+    print("North<South")
+
+if east < west:
+    print("East<West")
+
+
 
 client = qx.QuixStreamingClient()
 
@@ -27,7 +34,12 @@ def on_event_data_handler(stream_consumer: qx.StreamConsumer, data: qx.EventData
     lon = float(camera["lon"])
     lat = float(camera["lat"])
 
-    in_fence = (lon < east) & (lon > west) & (lat < north) & (lat > south)
+    print("lt east {}", lat < east)
+    print("lt west {}", lat > west)
+    print("lt north {}", lon > north)
+    print("lt south {}", lon < south)
+
+    in_fence = (lon < east) & (lon > west) & (lat > north) & (lat < south)
     print(in_fence)
     camera_id = camera["id"]
 

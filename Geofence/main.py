@@ -2,6 +2,8 @@ import quixstreams as qx
 import os
 import pandas as pd
 import json
+import time
+
 
 coords = os.environ["fence_coordinates"]
 fence_coords = coords.split(',')
@@ -30,7 +32,7 @@ def on_event_data_handler(stream_consumer: qx.StreamConsumer, data: qx.EventData
     camera_id = camera["id"]
 
     if in_fence:
-        topic_producer.get_or_create_stream(camera_id).events.add_timestamp_nanoseconds(data["Timestamp"]) \
+        topic_producer.get_or_create_stream(camera_id).events.add_timestamp_nanoseconds(time.time_ns()) \
             .add_value("camera", json.dumps(camera)) \
             .publish() 
 

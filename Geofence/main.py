@@ -3,7 +3,7 @@ import os
 import pandas as pd
 import json
 
-coords = os.environ("fence_coordinates")
+coords = os.environ["fence_coordinates"]
 fence_coords = coords.split(',')
 north = fence_coords[0]
 south = fence_coords[1]

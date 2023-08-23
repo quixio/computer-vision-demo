@@ -19,7 +19,7 @@ topic_producer = client.get_topic_producer(os.environ["output"])
 
 pd.set_option('display.max_columns', None)
 
-def on_event_data_handler(self, stream_consumer: qx.StreamConsumer, data: qx.EventData):
+def on_event_data_handler(stream_consumer: qx.StreamConsumer, data: qx.EventData):
     
     camera = json.loads(data.value)
     lon = float(camera["lon"])

@@ -3,11 +3,11 @@ import os
 import pandas as pd
 import json
 
-
-north = os.environ("north")
-south = os.environ("south")
-east = os.environ("east")
-west = os.environ("west")
+fence_coords = str(os.environ("fence_coordinates")).split(',')
+north = fence_coords[0]
+south = fence_coords[1]
+east = fence_coords[2]
+west = fence_coords[3]
 
 
 client = qx.QuixStreamingClient()

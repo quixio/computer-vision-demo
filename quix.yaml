@@ -253,6 +253,31 @@ deployments:
         description: ''
         required: false
         value: image-processed
+  - name: Geofence
+    application: Geofence
+    deploymentType: Service
+    version: 1cb6225d97aa7b5258b058dc0f3e14fd794bde7a
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    desiredStatus: Running
+    variables:
+      - name: input
+        inputType: InputTopic
+        description: This is the input topic to read data from
+        required: true
+        value: tfl-cameras
+      - name: output
+        inputType: OutputTopic
+        description: This is the output topic to write data to
+        required: true
+        value: fenced-cameras
+      - name: fence_coordinates
+        inputType: FreeText
+        description: ''
+        required: false
+        value: 51.532074,51.472461,-0.038891,-0.158347
 
 # This section describes the Topics of the data pipeline
 topics:

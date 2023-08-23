@@ -6,11 +6,14 @@ import { ParameterData } from './models/parameter-data';
 import { QuixService } from './services/quix.service';
 import { Subject, bufferTime, filter } from 'rxjs';
 
+const CONSTANTS: any = {};
+
 interface Marker {
   latitude: number,
   longitude: number,
   label: string | google.maps.MarkerLabel,
-  icon: string | google.maps.Icon | google.maps.Symbol
+  title: string,
+  icon: string | google.maps.Icon | google.maps.Symbol,
 }
 
 @Component({
@@ -27,6 +30,7 @@ export class AppComponent implements OnInit {
   private _markerFrequency = 500;
 
   markers: Marker[] = [];
+  markerIcon: string = 'assets/m/m';
   clusterIcon: string =
     'https://raw.githubusercontent.com/googlemaps/v3-utility-library/master/markerclustererplus/images/m';
   clusterStyle: ClusterIconStyle[] = CLUSTER_STYLE
@@ -53,37 +57,49 @@ export class AppComponent implements OnInit {
     this._parameterDataReceived$.pipe(bufferTime(this._markerFrequency))
       .subscribe((dataBuffer: ParameterData[]) => {        
         dataBuffer.forEach((data) => {
-          if (!data.numericValues[this.parameterId]) return;
-
+          // if (!data.numericValues[this.parameterId]) return;
+          if (data.stringValues['image']) {
+            let imageBinary = data.stringValues['image'][0];
+            this.last_image = 'data:image/png;base64,' + imageBinary;
+          }
+      
           const marker: Marker = this.createMarker(data);
           this.markers.push(marker);
         })
         if (this.markers.length > this._markerBuffer) this.markers.shift();
+        // Store global variables
+        CONSTANTS.markers = this.markers;
       });
   }
 
   createMarker(data: ParameterData): Marker {
-    if (data.stringValues['image']) {
-      let imageBinary = data.stringValues['image'][0];
-      this.last_image = 'data:image/png;base64,' + imageBinary;
-    }
-
+    // Set sum of markers
+    const sum =  data.numericValues[this.parameterId]?.at(0) || 0;
+    
+    /**
+     * While we still have markers, divide by a set number and
+     * increase the index. Cluster moves up to a new style.
+     *
+     * The bigger the index, the more markers the cluster contains,
+     * so the bigger the cluster.
+     */
     //create an index for icon styles
     let index = 0;
-    //Set total to loop through (starts at total number)
-    let total = data.numericValues[this.parameterId][0];
+    let total = sum;
     while (total !== 0) {
-      //Create a new total by dividing by a set number
+      // Create a new total by dividing by a set number
       total = Math.floor(total / 5);
-      //Increase the index and move up to the next style
+      // Increase the index and move up to the next style
       index++;
     }
 
-    const markerIcon = this.clusterIcon + index + '.png';
+
+    const markerIcon = this.markerIcon + index + '.png';
     const marker: Marker = {
       latitude: +data.numericValues['lat'][0],
       longitude: +data.numericValues['lon'][0],
-      label: data.numericValues[this.parameterId][0].toString(),
+      label: sum.toString(),
+      title: data.tagValues['parent_streamId'][0],
       icon: markerIcon
     }
     return marker;
@@ -134,6 +150,10 @@ export class AppComponent implements OnInit {
 
   //Calculate Function - to show image em formatted text
   calculateFunction(markers: google.maps.Marker[], numStyle: number): ClusterIconInfo {
+    const gMarkers: Marker[] = CONSTANTS.markers; 
+    const selectedMarkers = gMarkers.filter((f) => markers.some((s) => s.getTitle() === f.title));
+    console.log(selectedMarkers)
+
     // Set sum of markers
     let sum = 0;
     for (var m = 0; m < markers.length; m++) {

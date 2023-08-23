@@ -5,10 +5,10 @@ import json
 
 coords = os.environ["fence_coordinates"]
 fence_coords = coords.split(',')
-north = fence_coords[0]
-south = fence_coords[1]
-east = fence_coords[2]
-west = fence_coords[3]
+north = float(fence_coords[0])
+south = float(fence_coords[1])
+east = float(fence_coords[2])
+west = float(fence_coords[3])
 
 
 client = qx.QuixStreamingClient()

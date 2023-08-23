@@ -103,7 +103,7 @@ deployments:
         inputType: InputTopic
         description: This is the input topic for webcam images
         required: true
-        value: tfl-cameras
+        value: fenced-cameras
       - name: output
         inputType: OutputTopic
         description: This is the output topic for the captured frames

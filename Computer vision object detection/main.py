@@ -1,45 +1,103 @@
 import quixstreams as qx
-from quix_function import QuixFunction
-from image_processing import ImageProcessing
 import os
+import pandas as pd
+import numpy as np
+import time
+from ultralytics import YOLO
+import cv2
 
-# Quix injects credentials automatically to the client.
-# Alternatively, you can always pass an SDK token manually as an argument.
+
 client = qx.QuixStreamingClient()
 
-print("Starting")
-print("Opening input and output topics")
-consumer_topic = client.get_topic_consumer(os.environ.get("input"), "processing4",
-                                           auto_offset_reset = qx.AutoOffsetReset.Latest)
-producer_topic = client.get_topic_producer(os.environ.get("output"))
-image_processor = ImageProcessing()
+topic_consumer = client.get_topic_consumer(os.environ["input"], consumer_group = "empty-transformation")
+# topic_producer_videos = client.get_topic_producer(os.environ["output_videos"])
+topic_producer_vehicles = client.get_topic_producer(os.environ["output"])
+
+yolo_8 = YOLO(os.environ["yolo_model"])
 
 
-# Callback called for each incoming stream
-def read_stream(consumer_stream: qx.StreamConsumer):
-    # Create a new stream to output data
-    producer_stream = producer_topic.create_stream(consumer_stream.stream_id)
-    producer_stream.properties.parents.append(consumer_stream.stream_id)
+def n_vehicles_from_result(res, df: pd.DataFrame):
+    count = {
+        "car": 0,
+        "motorcycle": 0,
+        "bus": 0,
+        "truck": 0
+    }
+    classes_list = [res.names[int(class_i)] for class_i in res.boxes.cls.tolist()]
+    for vc in classes_list:
+        if vc in ["car", "motorcycle", "bus", "truck"]:
+            count[vc] += 1
+    if count["car"]:
+        df.loc[0, ["car"]] = count["car"]
+    if count["motorcycle"]:
+        df.loc[0, ["motorcycle"]] = count["motorcycle"]
+    if count["bus"]:
+        df.loc[0, ["bus"]] = count["bus"]
+    if count["truck"]:
+        df.loc[0, ["truck"]] = count["truck"]
 
-    # handle the data in a function to simplify the example
-    quix_function = QuixFunction(producer_stream, image_processor)
+def image_to_binary_string(numpy_image):
+    return cv2.imencode('.png', numpy_image)[1].tobytes()
 
-    # React to new data received from input topic.
-    consumer_stream.timeseries.on_data_received = quix_function.on_data_handler
+def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
 
-    # When input stream closes, we close output stream as well.
-    def on_stream_close(stream_consumer: qx.StreamConsumer, end_type: qx.StreamEndType):
-        producer_stream.close()
-        print("Stream closed:" + producer_stream.stream_id)
+    # Initiate variables
+    image_file = "image.jpg"
+    with open(image_file, "wb") as fd:
+        fd.write(df['image'].iloc[0])
+    
+    df["TAG__ML_model"] = os.environ["yolo_model"]
+    video_df = pd.DataFrame()
 
-    consumer_stream.on_stream_closed = on_stream_close
+    ti = time.time()
+    # Classify video with model
+    classification_results = yolo_8(source = image_file, conf = 0.15, iou = 0.5) #Check device arg https://docs.ultralytics.com/modes/predict/#sources
+    
+    tj = time.time()
+    # Iterate over frames to format as binary
+    for frame_res in classification_results:
+        df_i = df.copy(deep=True)
+        # df_i["original_frame"] = image_to_binary_string(frame_res.orig_img)
+        df_i["classified_frame"] = image_to_binary_string(frame_res.plot())
+        n_vehicles_from_result(frame_res, df_i)
+        video_df = pd.concat([video_df, df_i], ignore_index=True)
+
+    # OUTPUT: NUMBER OF VEHICLES
+    tk = time.time()
+    if "car" in video_df:
+        df["car"] = np.median(video_df["car"])
+    if "motorcycle" in video_df:
+        df["motorcycle"] = np.median(video_df["motorcycle"])
+    if "bus" in video_df:
+        df["bus"] = np.median(video_df["bus"])
+    if "truck" in video_df:
+        df["truck"] = np.median(video_df["truck"])
+    print(df.info())
+    stream_producer = topic_producer_vehicles.get_or_create_stream(stream_id = stream_consumer.stream_id)
+    stream_producer.timeseries.publish(df)
+
+    print("{} seconds employed in images classification".format(tj-ti))
+    print("{} seconds employed in all frames images conversions and storing and vehicle counts".format(tk-tj))
+    
+    # OUTPUT: VIDEOS
+    # tl = time.time()
+    # stream_producer_videos = topic_producer_videos.get_or_create_stream(stream_id = stream_consumer.stream_id)
+    # print(video_df.info())
+    # stream_producer_videos.timeseries.publish(video_df)
+    # tm = time.time()
+
+    # print("{} seconds employed in outputing vehicle numbers".format(tl-tk))
+    # print("{} seconds employed in outputing original and classified frames".format(tm-tl))
+        
 
 
-# Hook up events before initiating read to avoid losing out on any data
-consumer_topic.on_stream_received = read_stream
+def on_stream_received_handler(stream_consumer: qx.StreamConsumer):
+    stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
 
-# Hook up to termination signal (for docker image) and CTRL-C
+
+# subscribe to new streams being received
+topic_consumer.on_stream_received = on_stream_received_handler
+
 print("Listening to streams. Press CTRL-C to exit.")
-
-# Handle graceful exit of the model.
+# Handle termination signals and provide a graceful exit
 qx.App.run()

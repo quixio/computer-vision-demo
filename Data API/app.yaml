@@ -1,0 +1,16 @@
+name: Data API
+language: python
+variables:
+  - name: input
+    inputType: InputTopic
+    description: This is the input topic to read data from
+    defaultValue: max-vehicles
+    required: true
+  - name: objects
+    inputType: InputTopic
+    description: ''
+    defaultValue: image-processed
+    required: false
+dockerfile: build/dockerfile
+runEntryPoint: main.py
+defaultFile: main.py

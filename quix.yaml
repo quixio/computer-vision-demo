@@ -14,6 +14,7 @@ deployments:
       cpu: 8000
       memory: 10240
       replicas: 1
+    libraryItemId: 86195d34-be00-4f0d-a303-c1e95cdb1c32
     desiredStatus: Running
     variables:
       - name: output
@@ -34,7 +35,9 @@ deployments:
       cpu: 4000
       memory: 16000
       replicas: 2
+    libraryItemId: bfee7144-49f1-411d-b5c3-0d8396e2c946
     desiredStatus: Running
+    libraryItemId: bfee7144-49f1-411d-b5c3-0d8396e2c946
     variables:
       - name: input
         inputType: InputTopic
@@ -46,14 +49,20 @@ deployments:
         description: This is the output for images augmented with the recognized objects
         required: true
         value: image-processed
+      - name: yolo_model
+        inputType: FreeText
+        description: ''
+        required: false
+        value: yolov8n.pt
   - name: Stream merge
     application: Stream merge
     deploymentType: Service
-    version: v1
+    version: 1fd04bb26cabab9b08d5ff171ab04d0f57f0865d
     resources:
       cpu: 8000
       memory: 8000
       replicas: 1
+    libraryItemId: f36c1fdd-b900-4ac5-808c-1ea1320471e7
     desiredStatus: Running
     variables:
       - name: input
@@ -77,6 +86,7 @@ deployments:
     publicAccess:
       enabled: true
       urlPrefix: tfl-image-processing-ui
+    libraryItemId: 5976fcd9-2ed6-407c-bc5f-795891340bb5
     desiredStatus: Running
     variables:
       - name: processed
@@ -92,6 +102,7 @@ deployments:
       cpu: 8000
       memory: 10240
       replicas: 1
+    libraryItemId: eec165e1-f648-4e58-9fd3-9af475a840e8
     desiredStatus: Running
     variables:
       - name: input
@@ -117,7 +128,7 @@ deployments:
       cpu: 200
       memory: 500
       replicas: 1
-    desiredStatus: Running
+    desiredStatus: Stopped
     variables:
       - name: input
         inputType: InputTopic
@@ -138,17 +149,17 @@ deployments:
         inputType: FreeText
         description: Comma separated list of parameters to look for in the received data
         required: true
-        value: bicycle, car, truck, person
+        value: car, truck, bus
       - name: aws_access_key_id
         inputType: HiddenText
         description: AWS S3 access key id
         required: false
-        value: AKIA5JJJFC76H52H62WO
+        value: AKIA5JJJFC76CB5S6EAL
       - name: aws_access_key
         inputType: HiddenText
         description: AWS S3 access key
         required: false
-        value: BQla1KEQr5WoptF9TsDxTFeP48Wa+Sh8H7gR2ji5
+        value: 09xDju1fmuWhUqDNqd4EJMy8KL0nILls/YWTHnZI
       - name: s3_bucket
         inputType: FreeText
         description: AWS S3 bucket name
@@ -197,9 +208,107 @@ deployments:
         description: The topic to read from
         required: true
         value: image-processed-merged
+        
+  - name: Cam Vehicles
+    application: TotalVehicles
+    deploymentType: Service
+    version: e6bb005ff21552be9b0cf2482ea95ad6350abf68
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    desiredStatus: Running
+    variables:
+      - name: input
+        inputType: InputTopic
+        description: This is the input topic to read data from
+        required: true
+        value: image-processed
+      - name: output
+        inputType: OutputTopic
+        description: This is the output topic to write data to
+        required: true
+        value: image-vehicles
+  - name: Max Vehicle Window
+    application: Starter transformation
+    deploymentType: Service
+    version: max_vehicle_window_v4
+    resources:
+      cpu: 200
+      memory: 10100
+      replicas: 1
+    state:
+      enabled: true
+      size: 1
+    desiredStatus: Running
+    variables:
+      - name: input
+        inputType: InputTopic
+        description: ''
+        required: false
+        value: image-vehicles
+      - name: output
+        inputType: OutputTopic
+        description: ''
+        required: false
+        value: max-vehicles
+  - name: Data API 2
+    application: Data API
+    deploymentType: Service
+    version: 7fbfafa04d1ada55a27cda770177cadbbbc7862d
+    resources:
+      cpu: 200
+      memory: 2600
+      replicas: 1
+    publicAccess:
+      enabled: true
+      urlPrefix: dataapi-state-2
+    state:
+      enabled: true
+      size: 1
+    desiredStatus: Running
+    variables:
+      - name: input
+        inputType: InputTopic
+        description: This is the input topic to read data from
+        required: true
+        value: max-vehicles
+      - name: objects
+        inputType: InputTopic
+        description: ''
+        required: false
+        value: image-processed
 
 # This section describes the Topics of the data pipeline
 topics:
+  - name: image-vehicles
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: output-topic
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: max-vehicles
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: transform
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
   - name: image-processed-merged
     persisted: false
     configuration:

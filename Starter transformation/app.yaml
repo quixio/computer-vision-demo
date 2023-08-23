@@ -1,0 +1,6 @@
+name: Max Vehicle Window
+language: python
+variables: []
+dockerfile: build/dockerfile
+runEntryPoint: main.py
+defaultFile: main.py

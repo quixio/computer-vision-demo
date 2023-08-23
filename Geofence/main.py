@@ -4,6 +4,12 @@ import pandas as pd
 import json
 
 
+north = os.environ("north")
+south = os.environ("south")
+east = os.environ("east")
+west = os.environ("west")
+
+
 client = qx.QuixStreamingClient()
 
 topic_consumer = client.get_topic_consumer(os.environ["input"], consumer_group = "geofence", 
@@ -17,6 +23,15 @@ def on_event_data_handler(self, stream_consumer: qx.StreamConsumer, data: qx.Eve
     camera = json.loads(data.value)
     lon = float(camera["lon"])
     lat = float(camera["lat"])
+
+    in_fence = (lon < east) & (lon > west) & (lat < north) & (lat > south)
+
+    camera_id = camera["id"]
+
+    if in_fence:
+        topic_producer.get_or_create_stream(camera_id).events.add_timestamp_nanoseconds(data["Timestamp"]) \
+            .add_value("camera", json.dumps(camera)) \
+            .publish() 
 
 def on_stream_received_handler(stream_consumer: qx.StreamConsumer):
     stream_consumer.events.on_data_received = on_event_data_handler

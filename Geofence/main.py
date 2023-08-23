@@ -22,13 +22,13 @@ topic_producer = client.get_topic_producer(os.environ["output"])
 pd.set_option('display.max_columns', None)
 
 def on_event_data_handler(stream_consumer: qx.StreamConsumer, data: qx.EventData):
-    
+    print("data")
     camera = json.loads(data.value)
     lon = float(camera["lon"])
     lat = float(camera["lat"])
 
     in_fence = (lon < east) & (lon > west) & (lat < north) & (lat > south)
-
+    print(in_fence)
     camera_id = camera["id"]
 
     if in_fence:

@@ -42,9 +42,13 @@
         <div fxFlex.gt-xs="50" fxFlex.gt-sm="100" fxFlex fxLayout="column" class="map-container">
           <agm-map #map [zoom]="10" [maxZoom]="25" [fitBounds]="false" [latitude]="latitude" [longitude]="longitude">
             <agm-marker-cluster [imagePath]="clusterIcon" [calculator]="calculateFunction" [averageCenter]="true" [gridSize]="50">
-              <agm-marker *ngFor="let m of markers; let i = index" [latitude]="m.latitude" [longitude]="m.longitude"
-                [label]="m.label" [iconUrl]="m.icon" [opacity]="0.5" [title]="m.title">
-                <agm-info-window>Börk</agm-info-window>
+              <agm-marker 
+                *ngFor="let m of markers; let i = index" 
+                [latitude]="m.latitude" 
+                [longitude]="m.longitude"
+                [label]="m.label" 
+                [iconUrl]="m.icon" 
+                [title]="m.title">
               </agm-marker>
             </agm-marker-cluster>
           </agm-map>

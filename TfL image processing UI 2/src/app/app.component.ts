@@ -4,16 +4,19 @@ import { HubConnection } from '@microsoft/signalr';
 import { CLUSTER_STYLE } from './constants/cluster';
 import { ParameterData } from './models/parameter-data';
 import { QuixService } from './services/quix.service';
-import { Subject, bufferTime, filter } from 'rxjs';
+import { Subject, bufferTime, filter, switchMap } from 'rxjs';
+import { DataService } from './services/data.service';
 
 const CONSTANTS: any = {};
 
 interface Marker {
+  title: string;
   latitude: number,
   longitude: number,
   label: string | google.maps.MarkerLabel,
-  title: string,
   icon: string | google.maps.Icon | google.maps.Symbol,
+  max: number
+  value: number;
 }
 
 @Component({
@@ -26,10 +29,10 @@ export class AppComponent implements OnInit {
   otherObjectTypes = ['aeroplane', 'apple', 'banana', 'backpack', 'bed', 'bench', 'bird', 'boat', 'book', 'bottle', 'bowl', 'broccoli', 'cake', 'carrot', 'cat'];
   latitude: number = 51.5072;
   longitude: number = -0.1000;
-  private _markerBuffer = 1000;
   private _markerFrequency = 500;
 
-  markers: Marker[] = [];
+  private _markersMap: Map<string, Marker> = new Map<string, Marker>();
+  markers: Marker[];
   markerIcon: string = 'assets/m/m';
   clusterIcon: string =
     'https://raw.githubusercontent.com/googlemaps/v3-utility-library/master/markerclustererplus/images/m';
@@ -38,13 +41,18 @@ export class AppComponent implements OnInit {
   last_image: string;
   connection: HubConnection;
   parameterId: string = 'car';
+  private _maxVehicles: { [key: string]: number };
   private _topic: string;
   private _streamId: string = 'input-image';
   private _parameterDataReceived$ = new Subject<ParameterData>();
 
-  constructor(private envVarService: QuixService) { }
+  constructor(private envVarService: QuixService, private dataService: DataService) { }
 
   ngOnInit(): void {
+    this.dataService.getMaxVehicles().subscribe((maxVehicles) => {
+      this._maxVehicles = maxVehicles;
+    });
+
     this.envVarService.initCompleted$.subscribe(topic => {
       console.log('Init completed: ' + topic);
       this._topic = topic;
@@ -55,53 +63,52 @@ export class AppComponent implements OnInit {
     });
 
     this._parameterDataReceived$.pipe(bufferTime(this._markerFrequency))
-      .subscribe((dataBuffer: ParameterData[]) => {        
+      .subscribe((dataBuffer: ParameterData[]) => {
         dataBuffer.forEach((data) => {
-          // if (!data.numericValues[this.parameterId]) return;
           if (data.stringValues['image']) {
             let imageBinary = data.stringValues['image'][0];
             this.last_image = 'data:image/png;base64,' + imageBinary;
           }
-      
-          const marker: Marker = this.createMarker(data);
-          this.markers.push(marker);
-        })
-        if (this.markers.length > this._markerBuffer) this.markers.shift();
+          const key: string = data.tagValues['parent_streamId'][0];
+          const marker: Marker | undefined = this.createMarker(data);
+          if (marker) this._markersMap.set(key, marker);
+        });
+
         // Store global variables
+        this.markers = [...this._markersMap.values()];
         CONSTANTS.markers = this.markers;
       });
   }
 
-  createMarker(data: ParameterData): Marker {
-    // Set sum of markers
-    const sum =  data.numericValues[this.parameterId]?.at(0) || 0;
-    
-    /**
-     * While we still have markers, divide by a set number and
-     * increase the index. Cluster moves up to a new style.
-     *
-     * The bigger the index, the more markers the cluster contains,
-     * so the bigger the cluster.
-     */
-    //create an index for icon styles
+  createMarker(data: ParameterData): Marker | undefined {
+    const key: string = data.tagValues['parent_streamId'][0]
+    const max: number = this._maxVehicles[key];
+    const sum: number = data.numericValues[this.parameterId]?.at(0) || 0;
+
+    if (!max) return; 
+    const percent: number = sum / max * 100;
+
+
     let index = 0;
-    let total = sum;
-    while (total !== 0) {
+    let total = 0;
+    while (percent >= total && total < 100) {
       // Create a new total by dividing by a set number
-      total = Math.floor(total / 5);
+      total += 100 / 5
       // Increase the index and move up to the next style
       index++;
     }
 
-
-    const markerIcon = this.markerIcon + index + '.png';
+    const markerIcon: string = this.markerIcon + index + '.png';
     const marker: Marker = {
+      title: data.tagValues['parent_streamId'][0],
       latitude: +data.numericValues['lat'][0],
       longitude: +data.numericValues['lon'][0],
-      label: sum.toString(),
-      title: data.tagValues['parent_streamId'][0],
-      icon: markerIcon
+      label: Math.round(percent).toString(),
+      icon: markerIcon,
+      value: sum,
+      max
     }
+
     return marker;
   }
 
@@ -130,7 +137,8 @@ export class AppComponent implements OnInit {
   * @param newSelectedObject the newly selected object
    */
   selectedObjectChanged(parameterId: string) {
-    this.markers = [];
+    this._markersMap.clear();
+    delete CONSTANTS.markers;
     this.connection?.invoke('UnsubscribeFromParameter', this._topic, this._streamId, this.parameterId);
     this.connection?.invoke('SubscribeToParameter', this._topic, this._streamId, parameterId);
     this.parameterId = parameterId;
@@ -149,63 +157,37 @@ export class AppComponent implements OnInit {
   }
 
   //Calculate Function - to show image em formatted text
-  calculateFunction(markers: google.maps.Marker[], numStyle: number): ClusterIconInfo {
-    const gMarkers: Marker[] = CONSTANTS.markers; 
-    const selectedMarkers = gMarkers.filter((f) => markers.some((s) => s.getTitle() === f.title));
-    console.log(selectedMarkers)
+  calculateFunction(gmMarkers: google.maps.Marker[], numStyle: number): ClusterIconInfo {
+    const markers: Marker[] = CONSTANTS.markers?.filter((f: Marker) => gmMarkers.some((s) => s.getTitle() === f.title));
 
     // Set sum of markers
     let sum = 0;
-    for (var m = 0; m < markers.length; m++) {
+    let max = 0;
+    let keys = [];
+    for (let i = 0; i < markers?.length; i++) {
       //This is the custom property called MyValue
-      sum += +markers[m].getLabel()!;
+      sum += +markers[i].value;
+      max += +markers[i].max
+      keys.push(markers[i].title)
     }
+    const percent: number = sum / max * 100;
 
-    /**
-     * While we still have markers, divide by a set number and
-     * increase the index. Cluster moves up to a new style.
-     *
-     * The bigger the index, the more markers the cluster contains,
-     * so the bigger the cluster.
-     */
-    //create an index for icon styles
     let index = 0;
-    let total = sum;
-    while (total !== 0) {
+    let total = 0;
+    while (percent >= total && total < 100) {
       // Create a new total by dividing by a set number
-      total = Math.floor(total / 5);
+      total += 100 / 5
       // Increase the index and move up to the next style
       index++;
     }
 
-    /**
-     * Make sure we always return a valid index. E.g. If we only have
-     * 5 styles, but the index is 8, this will make sure we return
-     * 5. Returning an index of 8 wouldn't have a marker style.
-     */
-    index = Math.min(index, numStyle);
-
-    //Tell MarkerCluster this clusters details (and how to style it)
-    return {
-      text: sum.toString(),
+    // Tell MarkerCluster this clusters details (and how to style it)
+    const clusterInfo: ClusterIconInfo = {
+      text: Math.round(percent).toString(),
       index,
-      title: ''
+      title: keys.join(', ')
     };
-  }
 
-  getStyleIndex(sum: number): number {
-    switch (true) {
-      case sum < 10:
-        return 1;
-      case sum < 50:
-        return 2;
-      case sum < 100:
-        return 3;
-      case sum < 200:
-        return 4;
-      case sum > 200:
-        return 5;
-      default: return 0;
-    }
+    return clusterInfo;
   }
 }

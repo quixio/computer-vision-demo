@@ -277,7 +277,7 @@ deployments:
         inputType: FreeText
         description: ''
         required: false
-        value: 51.532074,51.472461,-0.038891,-0.158347
+        value: 51.522529,51.510993,-0.092083,-0.111824
 
 # This section describes the Topics of the data pipeline
 topics:

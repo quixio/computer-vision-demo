@@ -32,7 +32,7 @@ def on_event_data_handler(stream_consumer: qx.StreamConsumer, data: qx.EventData
     if in_fence:
         print(f"Camera is inside the geofence? = {in_fence}")
         print(data)
-        print(f"{camera['id']} - {camera['aditionalProperties'][0]['value']}")
+        print(f"{camera['id']} - {camera['additionalProperties'][0]['value']}")
 
     camera_id = camera["id"]
 

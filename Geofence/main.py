@@ -9,6 +9,7 @@ import ast
 # setup camera coordinates and fence area
 coords = os.environ["fence_coordinates"]
 area_of_interest = ast.literal_eval(coords)
+print(f"Area of interest = {area_of_interest}")
 area_of_interest_polygon = Polygon(area_of_interest)
 
 # create the QuixStreamingClient

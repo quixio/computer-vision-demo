@@ -26,21 +26,25 @@ def on_event_data_handler(stream_consumer: qx.StreamConsumer, data: qx.EventData
     lon = float(camera["lon"])
     lat = float(camera["lat"])
 
-    camera_position = Point(lon, lat)
-    in_fence = area_of_interest_polygon.contains(camera_position)
+    # is the camera online?
+    props = camera['additionalProperties'][0]
+    print(f"{camera['id']} - {props['key']}={props['value']}")
 
-    if in_fence:
-        print(f"Camera is inside the geofence? = {in_fence}")
-        print(data)
-        props = camera['additionalProperties'][0]
-        print(f"{camera['id']} - {props['key']}={props['value']}")
+    if props['value']:
+        # check the ONLINE cameras position.
+        camera_position = Point(lon, lat)
+        in_fence = area_of_interest_polygon.contains(camera_position)
 
-    camera_id = camera["id"]
+        # if it is inside the area of interest.
+        # Publish it to the producer topic.
+        if in_fence:
+            print(f"Camera is inside the geofence? = {in_fence}")
+    
+            camera_id = camera["id"]
 
-    if in_fence:
-        topic_producer.get_or_create_stream(camera_id).events.add_timestamp_nanoseconds(time.time_ns()) \
-            .add_value("camera", json.dumps(camera)) \
-            .publish() 
+            topic_producer.get_or_create_stream(camera_id).events.add_timestamp_nanoseconds(time.time_ns()) \
+                .add_value("camera", json.dumps(camera)) \
+                .publish() 
 
 def on_stream_received_handler(stream_consumer: qx.StreamConsumer):
     stream_consumer.events.on_data_received = on_event_data_handler

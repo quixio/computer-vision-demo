@@ -36,7 +36,7 @@ def on_event_data_handler(stream_consumer: qx.StreamConsumer, data: qx.EventData
         in_fence = area_of_interest_polygon.contains(camera_position)
 
         # if it is inside the area of interest.
-        # Publish it to the producer topic.
+        # publish it to the producer topic.
         if in_fence:
             print(f"Camera is inside the geofence? = {in_fence}")
     

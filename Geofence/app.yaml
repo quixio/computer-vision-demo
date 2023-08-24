@@ -14,7 +14,7 @@ variables:
   - name: fence_coordinates
     inputType: FreeText
     description: ''
-    defaultValue: 51.532074,51.472461,-0.038891,-0.158347
+    defaultValue: '[(-0.1203346,51.5417444),(-0.0411987,51.5404633),(-0.0411987,51.5007287),(-0.1253128,51.4966678),(-0.1205063,51.5417444)]'
     required: false
 dockerfile: build/dockerfile
 runEntryPoint: main.py

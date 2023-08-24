@@ -277,7 +277,7 @@ deployments:
         inputType: FreeText
         description: ''
         required: false
-        value: 51.522529,51.510993,-0.092083,-0.111824
+        value: '[(-0.1203346,51.5417444),(-0.0411987,51.5404633),(-0.0411987,51.5007287),(-0.1253128,51.4966678),(-0.1205063,51.5417444)]'
 
 # This section describes the Topics of the data pipeline
 topics:

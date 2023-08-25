@@ -1,6 +1,7 @@
 import quixstreams as qx
 import pandas as pd
 from flask import Flask
+from flask_cors import CORS
 import os
  
 
@@ -56,6 +57,7 @@ def on_object_stream_received_handler(stream_consumer: qx.StreamConsumer):
 
 # init the flas app
 app = Flask(__name__)
+CORS(app)
 
 # create the default route
 @app.route("/")

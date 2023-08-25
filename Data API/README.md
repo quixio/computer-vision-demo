@@ -1,28 +1,21 @@
-# Sample template
+# Data API
 
-[This project](https://github.com/quixio/quix-samples/tree/main/python/empty) is a template for developing Quix Code Samples with Python.
+This Data API allows the UI to instantly obtain data for all of the traffic cameras in London.
+It is used to prime the UI with the most recent data rather than waiting for data from each camera to flow through the pipeline.
 
-## How to run
+There are 2 endpoints:
 
-Create a [Quix](https://portal.platform.quix.ai/self-sign-up?xlink=github) account or log-in and visit the Samples to use this project.
+ - `max_vehicles` - A rolling 24 hour window of the maximum number of vehicles seen on a given traffic camera.
+ - `detected_objects` - The latest detected object counts for each camera.
 
-Clicking `Edit code` on the Sample, forks the project to your own Git repo so you can customize it before deploying.
+The API is written in Python and uses Flask and [Waitress](https://flask.palletsprojects.com/en/2.3.x/deploying/waitress/).
 
 ## Environment variables
 
 This code sample uses the following environment variables:
 
-- **VariableName**: {Description of the variable}
-- **input**: {Description of the variable}
-- **output**: {Description of the variable}
-
-## Requirements/prerequisites (optional)
-
-{This will contain any external resource needed to run this sample and the instructions to get them.}
-
-## Contribute
-
-Submit forked projects to the Quix [GitHub](https://github.com/quixio/quix-samples) repo. Any new project that we accept will be attributed to you and you'll receive $200 in Quix credit.
+- **input**: The topic containing maximum vehicle counts.
+- **objects**: The topic containing detected objects.
 
 ## Open source
 

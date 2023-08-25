@@ -14,8 +14,7 @@ deployments:
       cpu: 8000
       memory: 10240
       replicas: 1
-    libraryItemId: 86195d34-be00-4f0d-a303-c1e95cdb1c32
-    desiredStatus: Running
+    desiredStatus: Stopped
     variables:
       - name: output
         inputType: OutputTopic
@@ -35,9 +34,7 @@ deployments:
       cpu: 4000
       memory: 16000
       replicas: 2
-    libraryItemId: bfee7144-49f1-411d-b5c3-0d8396e2c946
-    desiredStatus: Running
-    libraryItemId: bfee7144-49f1-411d-b5c3-0d8396e2c946
+    desiredStatus: Stopped
     variables:
       - name: input
         inputType: InputTopic
@@ -62,8 +59,7 @@ deployments:
       cpu: 8000
       memory: 8000
       replicas: 1
-    libraryItemId: f36c1fdd-b900-4ac5-808c-1ea1320471e7
-    desiredStatus: Running
+    desiredStatus: Stopped
     variables:
       - name: input
         inputType: InputTopic
@@ -86,8 +82,7 @@ deployments:
     publicAccess:
       enabled: true
       urlPrefix: tfl-image-processing-ui
-    libraryItemId: 5976fcd9-2ed6-407c-bc5f-795891340bb5
-    desiredStatus: Running
+    desiredStatus: Stopped
     variables:
       - name: processed
         inputType: InputTopic
@@ -102,8 +97,7 @@ deployments:
       cpu: 8000
       memory: 10240
       replicas: 1
-    libraryItemId: eec165e1-f648-4e58-9fd3-9af475a840e8
-    desiredStatus: Running
+    desiredStatus: Stopped
     variables:
       - name: input
         inputType: InputTopic
@@ -217,7 +211,7 @@ deployments:
       cpu: 200
       memory: 500
       replicas: 1
-    desiredStatus: Running
+    desiredStatus: Stopped
     variables:
       - name: input
         inputType: InputTopic
@@ -240,7 +234,7 @@ deployments:
     state:
       enabled: true
       size: 1
-    desiredStatus: Running
+    desiredStatus: Stopped
     variables:
       - name: input
         inputType: InputTopic
@@ -266,7 +260,7 @@ deployments:
     state:
       enabled: true
       size: 1
-    desiredStatus: Running
+    desiredStatus: Stopped
     variables:
       - name: input
         inputType: InputTopic
@@ -281,42 +275,7 @@ deployments:
 
 # This section describes the Topics of the data pipeline
 topics:
-  - name: image-vehicles
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: output-topic
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: max-vehicles
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: transform
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: image-processed-merged
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: image-processed
+  - name: tfl-cameras
     persisted: false
     configuration:
       partitions: 2
@@ -330,7 +289,42 @@ topics:
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
-  - name: tfl-cameras
+  - name: image-processed
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: image-processed-merged
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: transform
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: max-vehicles
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: output-topic
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: image-vehicles
     persisted: false
     configuration:
       partitions: 2

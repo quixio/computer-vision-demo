@@ -8,7 +8,6 @@ import {HubConnection, HubConnectionBuilder} from "@microsoft/signalr";
   providedIn: 'root'
 })
 export class QuixService {
-
   /*~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
   /*WORKING LOCALLY? UPDATE THESE!*/
   public workingLocally = true; // set to true if working locally

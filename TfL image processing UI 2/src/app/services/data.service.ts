@@ -17,4 +17,9 @@ export class DataService {
     const url = `${this.url}/max_vehicles`
     return this.httpClient.get<{ [key: string]: number }>(url)
   }
+
+  getDetectedObjects(): Observable<{ [key: string]: any }> {
+    const url = `${this.url}/detected_objects`
+    return this.httpClient.get<{ [key: string]: number }>(url)
+  }
 }

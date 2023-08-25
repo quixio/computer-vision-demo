@@ -1,22 +1,30 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ClusterIconInfo, ClusterIconStyle } from '@google/markerclustererplus';
 import { HubConnection } from '@microsoft/signalr';
 import { CLUSTER_STYLE } from './constants/cluster';
 import { ParameterData } from './models/parameter-data';
 import { QuixService } from './services/quix.service';
-import { Subject, bufferTime, filter, switchMap } from 'rxjs';
+import { Subject, bufferTime, filter, map, switchMap } from 'rxjs';
 import { DataService } from './services/data.service';
+import { AgmMap } from '@agm/core';
 
 const CONSTANTS: any = {};
-
 interface Marker {
   title: string;
   latitude: number,
   longitude: number,
   label: string | google.maps.MarkerLabel,
   icon: string | google.maps.Icon | google.maps.Symbol,
-  max: number
+  max?: number
+  value?: number;
+}
+
+interface MarkerData {
+  title: string;
+  latitude: number;
+  longitude: number;
   value: number;
+  max?: number;
 }
 
 @Component({
@@ -25,17 +33,17 @@ interface Marker {
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
+  @ViewChild(AgmMap) map: AgmMap;
   popularObjectTypes = ['bicycle', 'bus', 'car', 'motorbike', 'person', 'traffic light', 'truck'];
   otherObjectTypes = ['aeroplane', 'apple', 'banana', 'backpack', 'bed', 'bench', 'bird', 'boat', 'book', 'bottle', 'bowl', 'broccoli', 'cake', 'carrot', 'cat'];
   latitude: number = 51.5072;
   longitude: number = -0.1000;
+  bounds: google.maps.LatLngBounds
+  zoom: number = 13;
   private _markerFrequency = 500;
 
-  private _markersMap: Map<string, Marker> = new Map<string, Marker>();
   markers: Marker[];
-  markerIcon: string = 'assets/m/m';
-  clusterIcon: string =
-    'https://raw.githubusercontent.com/googlemaps/v3-utility-library/master/markerclustererplus/images/m';
+  markerIcon: string = 'assets/camera/camera';
   clusterStyle: ClusterIconStyle[] = CLUSTER_STYLE
   showImages: boolean = true;
   last_image: string;
@@ -49,9 +57,29 @@ export class AppComponent implements OnInit {
   constructor(private envVarService: QuixService, private dataService: DataService) { }
 
   ngOnInit(): void {
-    this.dataService.getMaxVehicles().subscribe((maxVehicles) => {
-      this._maxVehicles = maxVehicles;
-    });
+    this.dataService.getDetectedObjects().pipe(switchMap((detectedObjects) => {
+      return this.dataService.getMaxVehicles().pipe(map((maxVehicles) => {
+        this._maxVehicles = maxVehicles;
+        const markers: Marker[] = [];
+        Object.keys(detectedObjects).forEach((key) => {
+          const data = detectedObjects[key];
+          const markerData: MarkerData = {
+            title: key,
+            latitude: data.lat[0],
+            longitude: data.lon[0],
+            value: data[this.parameterId] ? data[this.parameterId][0] : 0,
+            max: maxVehicles[key]
+          }
+          // Filter markers by bounds
+          const latLng = new google.maps.LatLng(markerData.latitude, markerData.longitude);
+          if (this.bounds.contains(latLng)) markers.push(this.createMarker(markerData));
+        });
+        return markers;
+      }))
+    })).subscribe((markers: Marker[]) => {
+      this.markers = markers
+      CONSTANTS.markers = this.markers;
+    })
 
     this.envVarService.initCompleted$.subscribe(topic => {
       console.log('Init completed: ' + topic);
@@ -59,35 +87,55 @@ export class AppComponent implements OnInit {
       this.envVarService.ConnectToQuix().then(connection => {
         this.connection = connection;
         this.subscribeToData();
+
+        this.connection.onreconnected(() => {
+          this.subscribeToData();
+        });
       });
     });
 
     this._parameterDataReceived$.pipe(bufferTime(this._markerFrequency))
       .subscribe((dataBuffer: ParameterData[]) => {
+        if (!dataBuffer.length) return;
+
         dataBuffer.forEach((data) => {
           if (data.stringValues['image']) {
             let imageBinary = data.stringValues['image'][0];
             this.last_image = 'data:image/png;base64,' + imageBinary;
           }
           const key: string = data.tagValues['parent_streamId'][0];
-          const marker: Marker | undefined = this.createMarker(data);
-          if (marker) this._markersMap.set(key, marker);
+          const markerData: MarkerData = {
+            title: key,
+            latitude: +data.numericValues['lat'][0],
+            longitude: +data.numericValues['lon'][0],
+            value: data.numericValues[this.parameterId]?.at(0) || 0,
+            max: this._maxVehicles[key]
+          }
+          const marker: Marker = this.createMarker(markerData);
+          const index = this.markers.findIndex((f) => f.title === key)
+          // Object.assign to avoid icon flickering
+          if (index > -1) Object.assign(this.markers[index], marker); 
+          else this.markers.push(marker)
         });
-
         // Store global variables
-        this.markers = [...this._markersMap.values()];
         CONSTANTS.markers = this.markers;
       });
   }
 
-  createMarker(data: ParameterData): Marker | undefined {
-    const key: string = data.tagValues['parent_streamId'][0]
-    const max: number = this._maxVehicles[key];
-    const sum: number = data.numericValues[this.parameterId]?.at(0) || 0;
+  createMarker(data: MarkerData): Marker {
+    if (!data.max) {
+      const marker: Marker = {
+        title: data.title,
+        latitude: data.latitude,
+        longitude: data.longitude,
+        label: '?',
+        icon: this.markerIcon + '.svg',
+      }
 
-    if (!max) return; 
-    const percent: number = sum / max * 100;
+      return marker;
+    }
 
+    const percent: number = data.value / data.max * 100;
 
     let index = 0;
     let total = 0;
@@ -99,14 +147,19 @@ export class AppComponent implements OnInit {
     }
 
     const markerIcon: string = this.markerIcon + index + '.png';
+    const label: google.maps.MarkerLabel = {
+      text: Math.round(percent).toString(),
+      fontSize: '11px',
+      fontWeight: 'bold',
+    }
     const marker: Marker = {
-      title: data.tagValues['parent_streamId'][0],
-      latitude: +data.numericValues['lat'][0],
-      longitude: +data.numericValues['lon'][0],
-      label: Math.round(percent).toString(),
+      title: data.title,
+      latitude: data.latitude,
+      longitude: data.longitude,
+      label,
       icon: markerIcon,
-      value: sum,
-      max
+      value: data.value,
+      max: data.max
     }
 
     return marker;
@@ -137,7 +190,7 @@ export class AppComponent implements OnInit {
   * @param newSelectedObject the newly selected object
    */
   selectedObjectChanged(parameterId: string) {
-    this._markersMap.clear();
+    this.markers = [];
     delete CONSTANTS.markers;
     this.connection?.invoke('UnsubscribeFromParameter', this._topic, this._streamId, this.parameterId);
     this.connection?.invoke('SubscribeToParameter', this._topic, this._streamId, parameterId);
@@ -158,21 +211,34 @@ export class AppComponent implements OnInit {
 
   //Calculate Function - to show image em formatted text
   calculateFunction(gmMarkers: google.maps.Marker[], numStyle: number): ClusterIconInfo {
-    const markers: Marker[] = CONSTANTS.markers?.filter((f: Marker) => gmMarkers.some((s) => s.getTitle() === f.title));
-
+    const markers: Marker[] = CONSTANTS.markers?.filter((f: Marker) => gmMarkers.some((s) => s.getTitle() === f.title)) || [];
     // Set sum of markers
     let sum = 0;
     let max = 0;
     let keys = [];
     for (let i = 0; i < markers?.length; i++) {
       //This is the custom property called MyValue
-      sum += +markers[i].value;
-      max += +markers[i].max
-      keys.push(markers[i].title)
-    }
-    const percent: number = sum / max * 100;
+      const marker = markers[i];
+      if (!marker) continue;
 
-    let index = 0;
+      sum += +(marker.value || 0);
+      max += +(marker.max || 0)
+      keys.push(marker.title)
+    }
+
+    const percent: number = sum / max * 100;
+    
+    // If not cluster info
+    if (isNaN(percent)) {
+      const clusterInfo: ClusterIconInfo = {
+        text: '?',
+        index: 0,
+        title: keys.join(', ')
+      };
+      return clusterInfo;
+    }
+
+    let index = 1;
     let total = 0;
     while (percent >= total && total < 100) {
       // Create a new total by dividing by a set number
@@ -183,11 +249,10 @@ export class AppComponent implements OnInit {
 
     // Tell MarkerCluster this clusters details (and how to style it)
     const clusterInfo: ClusterIconInfo = {
-      text: Math.round(percent).toString(),
+      text:  Math.round(percent).toString(),
       index,
       title: keys.join(', ')
     };
-
     return clusterInfo;
   }
 }

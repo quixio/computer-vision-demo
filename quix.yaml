@@ -29,11 +29,11 @@ deployments:
   - name: Computer vision object detection
     application: Computer vision object detection
     deploymentType: Service
-    version: 1fd04bb26cabab9b08d5ff171ab04d0f57f0865d
+    version: yolov8
     resources:
       cpu: 4000
       memory: 16000
-      replicas: 2
+      replicas: 8
     desiredStatus: Running
     variables:
       - name: input

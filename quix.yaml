@@ -274,6 +274,13 @@ deployments:
 
 # This section describes the Topics of the data pipeline
 topics:
+  - name: image-raw
+    persisted: false
+    configuration:
+      partitions: 16
+      replicationFactor: 2
+      retentionInMinutes: 4380
+      retentionInBytes: 262144000
   - name: transform
     persisted: false
     configuration:

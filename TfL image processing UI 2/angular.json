@@ -50,7 +50,9 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/styles/bootstrap.scss",
+              "src/styles/material.scss"
             ],
             "scripts": []
           },

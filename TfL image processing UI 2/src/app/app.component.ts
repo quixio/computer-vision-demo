@@ -25,6 +25,7 @@ interface MarkerData {
   longitude: number;
   value: number;
   max?: number;
+  image?: string; 
 }
 
 @Component({
@@ -42,14 +43,14 @@ export class AppComponent implements OnInit {
   zoom: number = 13;
   private _markerFrequency = 500;
 
-  markers: Marker[];
+  markers: Marker[] = [];
   markerIcon: string = 'assets/camera/camera';
   clusterStyle: ClusterIconStyle[] = CLUSTER_STYLE
   showImages: boolean = true;
-  last_image: string;
+  lastImages: string[] = Array(5);
   connection: HubConnection;
   parameterId: string = 'car';
-  private _maxVehicles: { [key: string]: number };
+  private _maxVehicles: { [key: string]: number } = {};
   private _topic: string;
   private _streamId: string = 'input-image';
   private _parameterDataReceived$ = new Subject<ParameterData>();
@@ -88,8 +89,8 @@ export class AppComponent implements OnInit {
         this.connection = connection;
         this.subscribeToData();
 
-        this.connection.onreconnected(() => {
-          this.subscribeToData();
+        this.connection.onreconnected((connectionId?: string) => {
+          if (connectionId) this.subscribeToData();
         });
       });
     });
@@ -99,9 +100,11 @@ export class AppComponent implements OnInit {
         if (!dataBuffer.length) return;
 
         dataBuffer.forEach((data) => {
+          let imageBinary: string | undefined;
           if (data.stringValues['image']) {
-            let imageBinary = data.stringValues['image'][0];
-            this.last_image = 'data:image/png;base64,' + imageBinary;
+            imageBinary = data.stringValues['image'][0];
+            this.lastImages.shift();
+            this.lastImages.push(imageBinary);
           }
           const key: string = data.tagValues['parent_streamId'][0];
           const markerData: MarkerData = {
@@ -109,7 +112,8 @@ export class AppComponent implements OnInit {
             latitude: +data.numericValues['lat'][0],
             longitude: +data.numericValues['lon'][0],
             value: data.numericValues[this.parameterId]?.at(0) || 0,
-            max: this._maxVehicles[key]
+            max: this._maxVehicles[key],
+            image: imageBinary
           }
           const marker: Marker = this.createMarker(markerData);
           const index = this.markers.findIndex((f) => f.title === key)

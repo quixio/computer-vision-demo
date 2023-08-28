@@ -1,26 +1,50 @@
-<mat-drawer-container class="example-container">
+<mat-drawer-container class="example-container mat-body-2">
   <mat-drawer-content>
     <header>
       <mat-toolbar>
-        <a routerLink="/lobby" routerLinkActive="active" class="logo" [style.marginRight.px]="30">
-          <img src="assets/quix-logo.svg" alt="Quix" width="40" />
+        <a routerLink="/lobby" routerLinkActive="active" class="logo">
+          <img src="assets/quix-logo.svg" alt="Quix" height="32" />
         </a>
-        <span class="mat-h3 m-0">Image recognition demo</span>
+        <span [style.fontSize.px]="18" class="ms-2">BLUEPRINT</span>
       </mat-toolbar>
     </header>
-    <main>
-      <div fxFlex fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap.xs="0" fxLayoutGap.gt-xs="40">
+    <main fxFlex fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap.xs="0">
+      <!-- Live feed Section -->
+      <div fxLayout="column" fxFlex.gt-xs="50" fxFlex.gt-sm="400px" class="overflow-auto p-5">
+        <div class="mb-5">
+          <h1 class="mb-1">London traffic</h1>
+          <p class="mb-3 text-body">Real-time image processing demo</p>
+          <p class="mat-body">Explore London traffic in realtime, with a ML image processing pipeline built in Quix.
+          </p>
+          <button mat-raised-button color="primary" class="small me-2">Explore the pipeline</button>
+          <button mat-raised-button color="accent" class="small">View repo</button>
+        </div>
 
-        <!-- Live feed Section -->
-        <div fxLayout="column" fxFlex.gt-xs="50" fxFlex.gt-sm="400px">
-          <div fxLayout="row" fxLayoutAlign="space-between center">
-            <div class="mat-h2 m-0">Image Feed</div>
-            <button mat-raised-button class="toggle-feed" [color]="!showImages ? 'primary' : undefined"
-              (click)="toggleFeed()">{{ showImages ? 'Pause feed' : 'Resume feed' }}</button>
+        <div class="mb-5">
+          <h4 class="mb-2">Real-time image processing demo</h4>
+          <p class="text-body mb-3">
+            We <a class="text-primary fw-bold">ingest data</a> from Transport for London (TfL) traffic cameras. A YOLO
+            v3
+            <a class="text-primary fw-bold">ML model</a> is used to detect
+            vehicles in realtime. round <b class="text-black">x images</b> (x GB), are analysed per min.
+          </p>
+          <div fxLayout="row" fxLayoutGap="2">
+            <ng-container *ngFor="let img of lastImages">
+              <img *ngIf="img" [src]="'data:image/png;base64,' + img" height="48" fxFlex>
+              <div *ngIf="!img" fxFlex class="bg-secondary"></div>
+            </ng-container>
           </div>
-          <img class="img" [src]="last_image" width="100%">
+        </div>
 
-          <mat-form-field appearance="outline" class="mt-2">
+        <div class="mb-5">
+          <h4 class="mb-2">Real-time image processing demo</h4>
+          <p class="text-body mb-3">
+            Traffic density is <a class="text-primary fw-bold">calculated in real time</a> as a fraction of the road max
+            capacity and represented in the colour scale. You can also select a specific vehicle to see the total sum.
+            The <a class="text-primary fw-bold">code can be customised</a> to identify any other object (like...
+            bananas, yes, for real).
+          </p>
+          <mat-form-field appearance="outline" class="w-100">
             <mat-label>Select object</mat-label>
             <mat-select [value]="parameterId" (selectionChange)="selectedObjectChanged($event.value)">
               <mat-option class="select-title" disabled>Popular objects</mat-option>
@@ -34,37 +58,43 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
-
-          <div [style.fontSize.px]="14" [style.marginBottom.px]="40">Searching for {{ parameterId }}...</div>
+          <div fxLayout="row" fxLayoutGap="2" [style.height.px]="8">
+            <div fxFlex [style.backgroundColor]="'#63FFB1'"></div>
+            <div fxFlex [style.backgroundColor]="'#FFBE00'"></div>
+            <div fxFlex [style.backgroundColor]="'#FF7828'"></div>
+            <div fxFlex [style.backgroundColor]="'#FF4040'"></div>
+            <div fxFlex [style.backgroundColor]="'#C23131'"></div>
+          </div>
+          <div fxLayout="row" fxLayoutGap="2" class="mat-caption text-body ms-n2 me-2 mt-1">
+            <div fxFlex><span class="ms-2">0</span></div>
+            <div fxFlex>20%</div>
+            <div fxFlex>40%</div>
+            <div fxFlex>60%</div>
+            <div fxFlex>80%</div>
+          </div>
         </div>
 
-        <!-- Map Section -->
-        <div fxFlex.gt-xs="50" fxFlex.gt-sm="100" fxFlex fxLayout="column" class="map-container">
-          <agm-map #map 
-            [zoom]="zoom"
-            [maxZoom]="18" 
-            [minZoom]="10" 
-            [fitBounds]="false" 
-            [latitude]="latitude" 
-            [longitude]="longitude" 
-            (boundsChange)="bounds = $event"
-            (zoomChange)="zoom = $event">
-            <agm-marker-cluster 
-              [styles]="clusterStyle" 
-              [calculator]="calculateFunction" 
-              [averageCenter]="true" 
-              [gridSize]="50">
-              <agm-marker 
-                *ngFor="let m of markers; let i = index" 
-                [latitude]="m.latitude" 
-                [longitude]="m.longitude"
-                [label]="m.label" 
-                [iconUrl]="m.icon" 
-                [title]="m.title">
-              </agm-marker>
-            </agm-marker-cluster>
-          </agm-map>
+        <div class="mb-5">
+          <h4 class="mb-2">Are you intrigued?</h4>
+          <p class="text-body mb-3">
+            Try Quix for free to build your own pipeline. Or visit other demos to explore what else is possible.
+          </p>
+          <button mat-raised-button color="primary" class="small me-2">Explore the pipeline</button>
+          <button mat-raised-button color="accent" class="small">View repo</button>
         </div>
+      </div>
+
+      <!-- Map Section -->
+      <div fxFlex.gt-xs="50" fxFlex.gt-sm="100" fxFlex fxLayout="column">
+        <agm-map #map [zoom]="zoom" [maxZoom]="18" [minZoom]="10" [fitBounds]="false" [latitude]="latitude"
+          [longitude]="longitude" (boundsChange)="bounds = $event" (zoomChange)="zoom = $event" class="w-100 h-100">
+          <agm-marker-cluster [styles]="clusterStyle" [calculator]="calculateFunction" [averageCenter]="true"
+            [gridSize]="50">
+            <agm-marker *ngFor="let m of markers; let i = index" [latitude]="m.latitude" [longitude]="m.longitude"
+              [label]="m.label" [iconUrl]="m.icon" [title]="m.title">
+            </agm-marker>
+          </agm-marker-cluster>
+        </agm-map>
       </div>
     </main>
   </mat-drawer-content>

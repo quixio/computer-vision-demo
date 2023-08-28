@@ -1,0 +1,57 @@
+// Options
+// Quickly modify global styling by enabling or disabling optional features.
+$enable-shadows:              true;
+$enable-gradients:            true;
+$enable-negative-margins:     true;
+
+// Body
+// Settings for the `<body>` element.
+$body-color:                #646471;
+
+// scss-docs-start theme-colors-map
+// $theme-colors: quix.$bootstrap-dark-theme;
+// scss-docs-end theme-colors-map
+
+// scss-docs-start type-variables
+// $text-muted: quix.get-mat-theme-color(quix.$bootstrap-dark-theme, muted);
+// scss-docs-end type-variables
+
+// scss-docs-start font-variables
+$font-weight-bold: 600;
+// scss-docs-end font-variables
+
+// scss-docs-start grid-breakpoints
+$grid-breakpoints: (
+  xs: 0,
+  sm: 600px,
+  md: 960px,
+  lg: 1280px,
+  xl: 1920px,
+  xxl: 2560px
+);
+// scss-docs-end grid-breakpoints
+
+
+// scss-docs-start border-variables
+// $border-color: quix.get-mat-theme-color(quix.$dark-theme-foreground, divider);
+// scss-docs-end border-variables
+
+// scss-docs-start border-radius-variables
+$border-radius: 4px;
+$border-radius-sm: 2px;
+$border-radius-lg: 8px;
+// scss-docs-end border-radius-variables
+
+// scss-docs-start spacer-variables-maps
+$spacer: 16px;
+$spacers: (
+  auto: 'auto',
+  0: 0,
+  1: $spacer * .25,
+  2: $spacer * .5,
+  3: $spacer,
+  4: $spacer * 1.5,
+  5: $spacer * 2,
+);
+$font-family-monospace: monospace;
+// scss-docs-end spacer-variables-maps

@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class DataService {
-  workspaceId: string = "44893hotspots"; // Look in the URL for the Quix Portal your workspace ID is after 'workspace='
+  workspaceId: string = "frontend"; // Look in the URL for the Quix Portal your workspace ID is after 'workspace='
   url: string;
 
   constructor(private httpClient: HttpClient) {

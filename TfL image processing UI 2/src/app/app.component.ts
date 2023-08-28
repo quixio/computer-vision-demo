@@ -17,6 +17,7 @@ interface Marker {
   icon: string | google.maps.Icon | google.maps.Symbol,
   max?: number
   value?: number;
+  image?: string; 
 }
 
 interface MarkerData {
@@ -41,6 +42,7 @@ export class AppComponent implements OnInit {
   longitude: number = -0.1000;
   bounds: google.maps.LatLngBounds
   zoom: number = 13;
+  selectedMarker: Marker | undefined;
   private _markerFrequency = 500;
 
   markers: Marker[] = [];
@@ -83,7 +85,6 @@ export class AppComponent implements OnInit {
     })
 
     this.envVarService.initCompleted$.subscribe(topic => {
-      console.log('Init completed: ' + topic);
       this._topic = topic;
       this.envVarService.ConnectToQuix().then(connection => {
         this.connection = connection;
@@ -97,6 +98,7 @@ export class AppComponent implements OnInit {
 
     this._parameterDataReceived$.pipe(bufferTime(this._markerFrequency))
       .subscribe((dataBuffer: ParameterData[]) => {
+        console.log(dataBuffer)
         if (!dataBuffer.length) return;
 
         dataBuffer.forEach((data) => {
@@ -134,6 +136,7 @@ export class AppComponent implements OnInit {
         longitude: data.longitude,
         label: '?',
         icon: this.markerIcon + '.svg',
+        image: data.image
       }
 
       return marker;
@@ -163,7 +166,8 @@ export class AppComponent implements OnInit {
       label,
       icon: markerIcon,
       value: data.value,
-      max: data.max
+      max: data.max,
+      image: data.image
     }
 
     return marker;
@@ -258,5 +262,9 @@ export class AppComponent implements OnInit {
       title: keys.join(', ')
     };
     return clusterInfo;
+  }
+
+  selectMarker(title: string) {
+    this.selectedMarker = this.markers.find((f) => f.title === title);
   }
 }

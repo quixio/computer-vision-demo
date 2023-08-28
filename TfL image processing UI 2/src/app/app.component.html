@@ -91,7 +91,23 @@
           <agm-marker-cluster [styles]="clusterStyle" [calculator]="calculateFunction" [averageCenter]="true"
             [gridSize]="50">
             <agm-marker *ngFor="let m of markers; let i = index" [latitude]="m.latitude" [longitude]="m.longitude"
-              [label]="m.label" [iconUrl]="m.icon" [title]="m.title">
+              [label]="m.label" [iconUrl]="m.icon" [title]="m.title" (markerClick)="selectMarker($event.title)">
+              <agm-snazzy-info-window 
+                [isOpen]="selectedMarker?.title === m.title" 
+                [closeWhenOthersOpen]="true" 
+                [closeOnMapClick]="true"  
+                [showCloseButton]="false"  
+                [openOnMarkerClick]="true"
+                [panOnOpen]="false"
+                [backgroundColor]="'#FFF'"
+                [padding]="'12px'"
+                [maxWidth]="300"
+                [maxHeight]="300"
+                [latitude]="m.latitude" [longitude]="m.longitude">
+                <ng-template>
+                  <img [src]="'data:image/png;base64,' + selectedMarker?.image" width="240">
+                </ng-template>
+              </agm-snazzy-info-window>
             </agm-marker>
           </agm-marker-cluster>
         </agm-map>

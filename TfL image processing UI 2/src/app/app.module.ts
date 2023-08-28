@@ -8,6 +8,7 @@ import { MaterialModule } from './material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { AgmCoreModule } from '@agm/core';
 import { AgmMarkerClustererModule } from '@agm/markerclusterer';
+import { AgmSnazzyInfoWindowModule } from '@agm/snazzy-info-window';
 
 @NgModule({
   declarations: [
@@ -20,8 +21,11 @@ import { AgmMarkerClustererModule } from '@agm/markerclusterer';
     BrowserAnimationsModule,
     MaterialModule,
     FlexLayoutModule,
-    AgmCoreModule.forRoot(),
-    AgmMarkerClustererModule
+    AgmCoreModule.forRoot({
+      apiKey: '',
+    }),
+    AgmMarkerClustererModule,
+    AgmSnazzyInfoWindowModule
   ],
   providers: [],
   bootstrap: [AppComponent]

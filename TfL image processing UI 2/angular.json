@@ -52,7 +52,8 @@
             "styles": [
               "src/styles.scss",
               "src/styles/bootstrap.scss",
-              "src/styles/material.scss"
+              "src/styles/material.scss",
+              "node_modules/snazzy-info-window/dist/snazzy-info-window.scss"
             ],
             "scripts": []
           },

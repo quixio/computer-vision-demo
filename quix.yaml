@@ -237,7 +237,7 @@ deployments:
       replicas: 1
     publicAccess:
       enabled: true
-      urlPrefix: dataapi-state-2
+      urlPrefix: data-api
     state:
       enabled: true
       size: 1

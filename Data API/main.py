@@ -62,7 +62,7 @@ CORS(app)
 # create the default route
 @app.route("/")
 def index():
-    return "hello"
+    return "Endpoints are:<br/>detected_objects<br/>max_vehicles"
 
 # create the max_vehicles route
 @app.route("/max_vehicles")

@@ -230,10 +230,10 @@ deployments:
   - name: Data API
     application: Data API
     deploymentType: Service
-    version: 7fbfafa04d1ada55a27cda770177cadbbbc7862d
+    version: api-v2.0
     resources:
-      cpu: 200
-      memory: 2600
+      cpu: 100
+      memory: 500
       replicas: 1
     publicAccess:
       enabled: true
@@ -309,6 +309,3 @@ topics:
     persisted: false
     configuration:
       partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000

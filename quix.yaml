@@ -233,7 +233,7 @@ deployments:
     version: api-v2.0
     resources:
       cpu: 100
-      memory: 100
+      memory: 500
       replicas: 1
     publicAccess:
       enabled: true

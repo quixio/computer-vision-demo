@@ -24,12 +24,12 @@ variables:
   - name: aws_access_key_id
     inputType: HiddenText
     description: AWS S3 access key id
-    defaultValue: AKIA5JJJFC76PNETJKUS
+    defaultValue: xxx
     required: false
   - name: aws_access_key
     inputType: HiddenText
     description: AWS S3 access key
-    defaultValue: YN0OO2f/ywQWVY6kQZvVjGYK3tPtsL8ACiOnc3eD
+    defaultValue: xxx
     required: false
   - name: s3_bucket
     inputType: FreeText

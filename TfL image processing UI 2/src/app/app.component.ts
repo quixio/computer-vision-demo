@@ -15,8 +15,8 @@ interface MarkerData {
   title: string;
   latitude: number;
   longitude: number;
-  value: number;
   timestamp: number;
+  value?: number;
   max?: number;
   image?: string; 
 }
@@ -92,7 +92,8 @@ export class AppComponent implements OnInit {
             longitude: +data.numericValues['lon'][0],
             value: data.numericValues[this.parameterId]?.at(0) || 0,
             max: this._maxVehicles[key],
-            image: imageBinary
+            image: imageBinary,
+            timestamp: data.timestamps[0]
           }
           const marker: Marker = this.createMarker(markerData);
           const index = this.markers.findIndex((f) => f.title === key)
@@ -133,7 +134,7 @@ export class AppComponent implements OnInit {
   }
 
   createMarker(data: MarkerData): Marker {
-    if (!data.max) {
+    if (!data.max || !data.value) {
       const marker: Marker = {
         ...data,
         label: '?',
@@ -230,7 +231,7 @@ export class AppComponent implements OnInit {
     const percent: number = sum / max * 100;
     
     // If not cluster info
-    if (isNaN(percent)) {
+    if (!max) {
       const clusterInfo: ClusterIconInfo = {
         text: '?',
         index: 0,

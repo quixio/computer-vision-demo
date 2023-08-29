@@ -9,24 +9,21 @@ import { DataService } from './services/data.service';
 import { AgmMap } from '@agm/core';
 
 const CONSTANTS: any = {};
-interface Marker {
-  title: string;
-  latitude: number,
-  longitude: number,
-  label: string | google.maps.MarkerLabel,
-  icon: string | google.maps.Icon | google.maps.Symbol,
-  max?: number
-  value?: number;
-  image?: string; 
-}
+
 
 interface MarkerData {
   title: string;
   latitude: number;
   longitude: number;
   value: number;
+  timestamp: number;
   max?: number;
   image?: string; 
+}
+
+interface Marker extends MarkerData {
+  label: string | google.maps.MarkerLabel,
+  icon: string | google.maps.Icon | google.maps.Symbol, 
 }
 
 @Component({
@@ -60,34 +57,15 @@ export class AppComponent implements OnInit {
   constructor(private envVarService: QuixService, private dataService: DataService) { }
 
   ngOnInit(): void {
-    this.dataService.getDetectedObjects().pipe(switchMap((detectedObjects) => {
-      return this.dataService.getMaxVehicles().pipe(map((maxVehicles) => {
-        this._maxVehicles = maxVehicles;
-        const markers: Marker[] = [];
-        Object.keys(detectedObjects).forEach((key) => {
-          const data = detectedObjects[key];
-          const markerData: MarkerData = {
-            title: key,
-            latitude: data.lat[0],
-            longitude: data.lon[0],
-            value: data[this.parameterId] ? data[this.parameterId][0] : 0,
-            max: maxVehicles[key]
-          }
-          // Filter markers by bounds
-          const latLng = new google.maps.LatLng(markerData.latitude, markerData.longitude);
-          if (this.bounds.contains(latLng)) markers.push(this.createMarker(markerData));
-        });
-        return markers;
-      }))
-    })).subscribe((markers: Marker[]) => {
-      this.markers = markers
-      CONSTANTS.markers = this.markers;
-    })
+    this.getInitialData();
 
     this.envVarService.initCompleted$.subscribe(topic => {
       this._topic = topic;
       this.envVarService.ConnectToQuix().then(connection => {
         this.connection = connection;
+        this.connection.on('ParameterDataReceived', (data: ParameterData) => {
+          this._parameterDataReceived$.next(data);
+        });
         this.subscribeToData();
 
         this.connection.onreconnected((connectionId?: string) => {
@@ -98,7 +76,6 @@ export class AppComponent implements OnInit {
 
     this._parameterDataReceived$.pipe(bufferTime(this._markerFrequency))
       .subscribe((dataBuffer: ParameterData[]) => {
-        console.log(dataBuffer)
         if (!dataBuffer.length) return;
 
         dataBuffer.forEach((data) => {
@@ -128,15 +105,39 @@ export class AppComponent implements OnInit {
       });
   }
 
+  getInitialData(): void {
+    this.dataService.getDetectedObjects().pipe(switchMap((detectedObjects) => {
+      return this.dataService.getMaxVehicles().pipe(map((maxVehicles) => {
+        this._maxVehicles = maxVehicles;
+        const markers: Marker[] = [];
+        Object.keys(detectedObjects).forEach((key) => {
+          const data = detectedObjects[key];
+          const markerData: MarkerData = {
+            title: key,
+            latitude: data.lat[0],
+            longitude: data.lon[0],
+            value: data[this.parameterId] ? data[this.parameterId][0] : 0,
+            max: maxVehicles[key],
+            timestamp: 0
+          }
+          // Filter markers by bounds
+          const latLng = new google.maps.LatLng(markerData.latitude, markerData.longitude);
+          if (this.bounds.contains(latLng)) markers.push(this.createMarker(markerData));
+        });
+        return markers;
+      }))
+    })).subscribe((markers: Marker[]) => {
+      this.markers = markers
+      CONSTANTS.markers = this.markers;
+    })
+  }
+
   createMarker(data: MarkerData): Marker {
     if (!data.max) {
       const marker: Marker = {
-        title: data.title,
-        latitude: data.latitude,
-        longitude: data.longitude,
+        ...data,
         label: '?',
-        icon: this.markerIcon + '.svg',
-        image: data.image
+        icon: this.markerIcon + '.svg'
       }
 
       return marker;
@@ -153,21 +154,15 @@ export class AppComponent implements OnInit {
       index++;
     }
 
-    const markerIcon: string = this.markerIcon + index + '.png';
     const label: google.maps.MarkerLabel = {
       text: Math.round(percent).toString(),
       fontSize: '11px',
       fontWeight: 'bold',
     }
     const marker: Marker = {
-      title: data.title,
-      latitude: data.latitude,
-      longitude: data.longitude,
+      ...data,
       label,
-      icon: markerIcon,
-      value: data.value,
-      max: data.max,
-      image: data.image
+      icon: this.markerIcon + index + '.png'
     }
 
     return marker;
@@ -180,14 +175,11 @@ export class AppComponent implements OnInit {
    * @param quixTopic the topic we want to retrieve data for
    */
   subscribeToData() {
-    this.connection.on('ParameterDataReceived', (data: ParameterData) => {
-      this._parameterDataReceived$.next(data);
-    });
-
     this.connection.invoke('SubscribeToParameter', this._topic, this._streamId, 'image');
     this.connection.invoke('SubscribeToParameter', this._topic, this._streamId, 'lat');
     this.connection.invoke('SubscribeToParameter', this._topic, this._streamId, 'lon');
     this.connection.invoke('SubscribeToParameter', this._topic, this._streamId, this.parameterId);
+    // this.connection.invoke('SubscribeToParameter', 'max-vehicles', 'JamCams_00001.06600', 'max_vehicles');
   }
 
   /**
@@ -203,6 +195,7 @@ export class AppComponent implements OnInit {
     this.connection?.invoke('UnsubscribeFromParameter', this._topic, this._streamId, this.parameterId);
     this.connection?.invoke('SubscribeToParameter', this._topic, this._streamId, parameterId);
     this.parameterId = parameterId;
+    this.getInitialData();
   }
 
   /**

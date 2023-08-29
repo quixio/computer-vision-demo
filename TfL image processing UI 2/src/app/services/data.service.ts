@@ -1,3 +1,4 @@
+import { QuixService } from './quix.service';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -6,11 +7,10 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class DataService {
-  workspaceId: string = "frontend"; // Look in the URL for the Quix Portal your workspace ID is after 'workspace='
   url: string;
 
-  constructor(private httpClient: HttpClient) {
-    this.url = `https://dataapi-state-2-demo-computervisiondemo-${this.workspaceId}.deployments.quix.ai`
+  constructor(private httpClient: HttpClient, private quixService: QuixService) {
+    this.url = `https://data-api-${this.quixService.workspaceId}.deployments.quix.ai`
   }
 
   getMaxVehicles(): Observable<{ [key: string]: number }> {

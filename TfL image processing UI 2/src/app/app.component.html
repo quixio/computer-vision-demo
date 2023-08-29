@@ -29,9 +29,10 @@
             vehicles in realtime. round <b class="text-black">x images</b> (x GB), are analysed per min.
           </p>
           <div fxLayout="row" fxLayoutGap="2">
-            <ng-container *ngFor="let img of lastImages">
-              <img *ngIf="img" [src]="'data:image/png;base64,' + img" height="48" fxFlex>
-              <div *ngIf="!img" fxFlex class="bg-secondary"></div>
+            <ng-container *ngFor="let m of lastMarkers">
+              <img *ngIf="m?.image" [src]="'data:image/png;base64,' + m.image" height="48" fxFlex role="button"
+                (click)="selectMarker(m.title)">
+              <div *ngIf="!m?.image" fxFlex class="bg-secondary"></div>
             </ng-container>
           </div>
         </div>
@@ -52,10 +53,6 @@
                 {{ type | titlecase }}
               </mat-option>
               <mat-divider></mat-divider>
-              <mat-option class="select-title" disabled>Other objects</mat-option>
-              <mat-option *ngFor="let type of otherObjectTypes" [value]="type">
-                {{ type | titlecase }}
-              </mat-option>
             </mat-select>
           </mat-form-field>
           <div fxLayout="row" fxLayoutGap="2" [style.height.px]="8">
@@ -89,27 +86,35 @@
         <agm-map #map [zoom]="zoom" [maxZoom]="18" [minZoom]="10" [fitBounds]="false" [latitude]="latitude"
           [longitude]="longitude" (boundsChange)="bounds = $event" (zoomChange)="zoom = $event" class="w-100 h-100">
           <agm-marker-cluster [styles]="clusterStyle" [calculator]="calculateFunction" [averageCenter]="true"
-            [gridSize]="50">
+            [gridSize]="50" #cluster>
             <agm-marker *ngFor="let m of markers; let i = index" [latitude]="m.latitude" [longitude]="m.longitude"
-              [label]="m.label" [iconUrl]="m.icon" [title]="m.title" (markerClick)="selectMarker($event.title)">
-              <agm-snazzy-info-window 
-                [isOpen]="selectedMarker?.title === m.title" 
-                [closeWhenOthersOpen]="true" 
-                [closeOnMapClick]="true"  
-                [showCloseButton]="true"  
-                [openOnMarkerClick]="true"
-                [panOnOpen]="false"
-                [backgroundColor]="'#FFF'"
-                [padding]="'12px'"
-                [maxWidth]="300"
-                [maxHeight]="300"
-                [latitude]="m.latitude" [longitude]="m.longitude">
-                <ng-template>
-                  <img [src]="'data:image/png;base64,' + selectedMarker?.image" width="240">
-                </ng-template>
-              </agm-snazzy-info-window>
+              [label]="m.label" [iconUrl]="m.icon" [title]="m.title" (markerClick)="selectMarker($event.title)"
+              [opacity]="m.image ? 1 : .5">
             </agm-marker>
           </agm-marker-cluster>
+          <agm-snazzy-info-window 
+            *ngIf="selectedMarker as m"
+            [isOpen]="!!m" 
+            [closeWhenOthersOpen]="true" 
+            [closeOnMapClick]="true"  
+            [showCloseButton]="true"  
+            [openOnMarkerClick]="true"
+            [panOnOpen]="true"
+            [backgroundColor]="'#FFF'"
+            [padding]="'12px'"
+            [maxWidth]="266"
+            [maxHeight]="300"
+            [latitude]="m.latitude" 
+            [longitude]="m.longitude"
+            (afterClose)="selectedMarker = undefined">
+            <ng-template>
+              <img [src]="'data:image/png;base64,' + m?.image" width="240">
+              <div fxLayout="row" fxLayoutAlign="space-between start">
+                <span class="fw-bold">{{ m.title }}</span>
+                <span class="mat-caption text-body">{{ m.date | date: 'HH:mm:ss' }}</span>
+              </div>
+            </ng-template>
+          </agm-snazzy-info-window>
         </agm-map>
       </div>
     </main>

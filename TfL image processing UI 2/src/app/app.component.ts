@@ -7,6 +7,7 @@ import { QuixService } from './services/quix.service';
 import { Subject, bufferTime, filter, map, switchMap } from 'rxjs';
 import { DataService } from './services/data.service';
 import { AgmMap } from '@agm/core';
+import { AgmMarkerCluster, ClusterManager } from '@agm/markerclusterer';
 
 const CONSTANTS: any = {};
 
@@ -15,7 +16,7 @@ interface MarkerData {
   title: string;
   latitude: number;
   longitude: number;
-  timestamp: number;
+  date?: Date;
   value?: number;
   max?: number;
   image?: string; 
@@ -33,8 +34,8 @@ interface Marker extends MarkerData {
 })
 export class AppComponent implements OnInit {
   @ViewChild(AgmMap) map: AgmMap;
+  @ViewChild(AgmMarkerCluster) cluster: AgmMarkerCluster;
   popularObjectTypes = ['bicycle', 'bus', 'car', 'motorbike', 'person', 'traffic light', 'truck'];
-  otherObjectTypes = ['aeroplane', 'apple', 'banana', 'backpack', 'bed', 'bench', 'bird', 'boat', 'book', 'bottle', 'bowl', 'broccoli', 'cake', 'carrot', 'cat'];
   latitude: number = 51.5072;
   longitude: number = -0.1000;
   bounds: google.maps.LatLngBounds
@@ -46,22 +47,24 @@ export class AppComponent implements OnInit {
   markerIcon: string = 'assets/camera/camera';
   clusterStyle: ClusterIconStyle[] = CLUSTER_STYLE
   showImages: boolean = true;
-  lastImages: string[] = Array(5);
+  lastMarkers: Marker[] = Array(5);
   connection: HubConnection;
   parameterId: string = 'car';
   private _maxVehicles: { [key: string]: number } = {};
-  private _topic: string;
-  private _streamId: string = 'input-image';
+  private _topicName: string;
+  private _streamId: string = 'image-feed';
   private _parameterDataReceived$ = new Subject<ParameterData>();
 
-  constructor(private envVarService: QuixService, private dataService: DataService) { }
+  constructor(private quixService: QuixService, private dataService: DataService) { 
+  }
 
   ngOnInit(): void {
     this.getInitialData();
 
-    this.envVarService.initCompleted$.subscribe(topic => {
-      this._topic = topic;
-      this.envVarService.ConnectToQuix().then(connection => {
+    this.quixService.initCompleted$.subscribe((topicName) => {
+      this._topicName = topicName;
+
+      this.quixService.ConnectToQuix().then(connection => {
         this.connection = connection;
         this.connection.on('ParameterDataReceived', (data: ParameterData) => {
           this._parameterDataReceived$.next(data);
@@ -80,27 +83,39 @@ export class AppComponent implements OnInit {
 
         dataBuffer.forEach((data) => {
           let imageBinary: string | undefined;
-          if (data.stringValues['image']) {
-            imageBinary = data.stringValues['image'][0];
-            this.lastImages.shift();
-            this.lastImages.push(imageBinary);
+          if (data.stringValues['image']) imageBinary = data.stringValues['image'][0];
+
+          if (data.numericValues['max_vehicles']) {
+            const key: string = data.tagValues['cam'][0];
+            // Update maxVehicles list
+            this._maxVehicles[key] = data.numericValues['max_vehicles'][0];
+            // Update existing marker
+            const index = this.markers.findIndex((f) => f.title === key)
+            if (index > -1) Object.assign(this.markers[index], { max: this._maxVehicles[key] }); 
           }
-          const key: string = data.tagValues['parent_streamId'][0];
-          const markerData: MarkerData = {
-            title: key,
-            latitude: +data.numericValues['lat'][0],
-            longitude: +data.numericValues['lon'][0],
-            value: data.numericValues[this.parameterId]?.at(0) || 0,
-            max: this._maxVehicles[key],
-            image: imageBinary,
-            timestamp: data.timestamps[0]
+
+          if (data.numericValues[this.parameterId]) {
+            const key: string = data.tagValues['parent_streamId'][0];
+            const markerData: MarkerData = {
+              title: key,
+              latitude: +data.numericValues['lat'][0],
+              longitude: +data.numericValues['lon'][0],
+              value: data.numericValues[this.parameterId]?.at(0) || 0,
+              max: this._maxVehicles[key],
+              image: imageBinary,
+              date: new Date(data.timestamps[0] / 1000000)
+            }
+            const marker: Marker = this.createMarker(markerData);
+            // Update existing marker
+            const index = this.markers.findIndex((f) => f.title === key)
+            if (index > -1) Object.assign(this.markers[index], marker); 
+            else this.markers.push(marker)
+
+            this.lastMarkers.shift();
+            this.lastMarkers.push(marker);
           }
-          const marker: Marker = this.createMarker(markerData);
-          const index = this.markers.findIndex((f) => f.title === key)
-          // Object.assign to avoid icon flickering
-          if (index > -1) Object.assign(this.markers[index], marker); 
-          else this.markers.push(marker)
         });
+
         // Store global variables
         CONSTANTS.markers = this.markers;
       });
@@ -119,7 +134,7 @@ export class AppComponent implements OnInit {
             longitude: data.lon[0],
             value: data[this.parameterId] ? data[this.parameterId][0] : 0,
             max: maxVehicles[key],
-            timestamp: 0
+            image: data?.image[0],
           }
           // Filter markers by bounds
           const latLng = new google.maps.LatLng(markerData.latitude, markerData.longitude);
@@ -128,8 +143,8 @@ export class AppComponent implements OnInit {
         return markers;
       }))
     })).subscribe((markers: Marker[]) => {
-      this.markers = markers
-      CONSTANTS.markers = this.markers;
+      // this.markers = markers
+      // CONSTANTS.markers = this.markers;
     })
   }
 
@@ -176,11 +191,11 @@ export class AppComponent implements OnInit {
    * @param quixTopic the topic we want to retrieve data for
    */
   subscribeToData() {
-    this.connection.invoke('SubscribeToParameter', this._topic, this._streamId, 'image');
-    this.connection.invoke('SubscribeToParameter', this._topic, this._streamId, 'lat');
-    this.connection.invoke('SubscribeToParameter', this._topic, this._streamId, 'lon');
-    this.connection.invoke('SubscribeToParameter', this._topic, this._streamId, this.parameterId);
-    // this.connection.invoke('SubscribeToParameter', 'max-vehicles', 'JamCams_00001.06600', 'max_vehicles');
+    this.connection.invoke('SubscribeToParameter', this._topicName, this._streamId, 'image');
+    this.connection.invoke('SubscribeToParameter', this._topicName, this._streamId, 'lat');
+    this.connection.invoke('SubscribeToParameter', this._topicName, this._streamId, 'lon');
+    this.connection.invoke('SubscribeToParameter', this._topicName, this._streamId, this.parameterId);
+    this.connection.invoke('SubscribeToParameter', 'max-vehicles', '*', 'max_vehicles');
   }
 
   /**
@@ -193,8 +208,8 @@ export class AppComponent implements OnInit {
   selectedObjectChanged(parameterId: string) {
     this.markers = [];
     delete CONSTANTS.markers;
-    this.connection?.invoke('UnsubscribeFromParameter', this._topic, this._streamId, this.parameterId);
-    this.connection?.invoke('SubscribeToParameter', this._topic, this._streamId, parameterId);
+    this.connection?.invoke('UnsubscribeFromParameter', this._topicName, this._streamId, this.parameterId);
+    this.connection?.invoke('SubscribeToParameter', this._topicName, this._streamId, parameterId);
     this.parameterId = parameterId;
     this.getInitialData();
   }
@@ -208,7 +223,7 @@ export class AppComponent implements OnInit {
   toggleFeed() {
     this.showImages = !this.showImages;
     const methodName: string = this.showImages ? 'SubscribeToParameter' : 'UnsubscribeFromParameter';
-    this.connection.invoke(methodName, this._topic, this._streamId, 'image');
+    this.connection.invoke(methodName, this._topicName, this._streamId, 'image');
   }
 
   //Calculate Function - to show image em formatted text
@@ -219,9 +234,8 @@ export class AppComponent implements OnInit {
     let max = 0;
     let keys = [];
     for (let i = 0; i < markers?.length; i++) {
-      //This is the custom property called MyValue
       const marker = markers[i];
-      if (!marker) continue;
+      if (!marker.max) continue;
 
       sum += +(marker.value || 0);
       max += +(marker.max || 0)
@@ -259,6 +273,10 @@ export class AppComponent implements OnInit {
   }
 
   selectMarker(title: string) {
-    this.selectedMarker = this.markers.find((f) => f.title === title);
+    const marker = this.markers.find((f) => f.title === title);
+    if (!marker) return;
+    // this.longitude = marker.longitude;
+    // this.latitude = marker.latitude;
+    setTimeout(() => this.selectedMarker = marker, 100)
   }
 }

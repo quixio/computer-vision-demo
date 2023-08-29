@@ -230,10 +230,10 @@ deployments:
   - name: Data API
     application: Data API
     deploymentType: Service
-    version: 7fbfafa04d1ada55a27cda770177cadbbbc7862d
+    version: 81eec2fb76014175c31a20567643319b41f1008f
     resources:
-      cpu: 200
-      memory: 2600
+      cpu: 100
+      memory: 100
       replicas: 1
     publicAccess:
       enabled: true
@@ -256,42 +256,7 @@ deployments:
 
 # This section describes the Topics of the data pipeline
 topics:
-  - name: tfl-cameras
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: image-raw
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: image-processed
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: image-processed-merged
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: transform
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: max-vehicles
+  - name: image-vehicles
     persisted: false
     configuration:
       partitions: 2
@@ -305,7 +270,42 @@ topics:
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
-  - name: image-vehicles
+  - name: max-vehicles
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: transform
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: image-processed-merged
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: image-processed
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: image-raw
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: tfl-cameras
     persisted: false
     configuration:
       partitions: 2

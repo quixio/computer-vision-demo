@@ -94,9 +94,9 @@ deployments:
     deploymentType: Service
     version: v1
     resources:
-      cpu: 8000
-      memory: 10240
-      replicas: 1
+      cpu: 4000
+      memory: 4100
+      replicas: 8
     desiredStatus: Running
     variables:
       - name: input

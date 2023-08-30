@@ -27,7 +27,7 @@ class QuixFunction:
 
         timestamp = parser.parse(camera_video_feed["modified"])
 
-        if last_image_state.value is not None and timestamp > last_image_state.value:
+        if last_image_state.value is None or timestamp > last_image_state.value:
 
             print( timestamp)
             last_image_state.value = timestamp

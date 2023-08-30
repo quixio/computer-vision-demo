@@ -274,6 +274,13 @@ deployments:
 
 # This section describes the Topics of the data pipeline
 topics:
+  - name: tfl-cameras
+    persisted: false
+    configuration:
+      partitions: 15
+      replicationFactor: 2
+      retentionInMinutes: 5760
+      retentionInBytes: 262144000
   - name: image-raw
     persisted: false
     configuration:

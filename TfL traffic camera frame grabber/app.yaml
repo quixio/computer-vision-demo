@@ -11,6 +11,11 @@ variables:
     description: ''
     defaultValue: image-raw
     required: true
+  - name: frame_rate
+    inputType: FreeText
+    description: ''
+    defaultValue: 100
+    required: true
 dockerfile: build/dockerfile
 runEntryPoint: main.py
 defaultFile: quix_function.py

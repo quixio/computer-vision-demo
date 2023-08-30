@@ -197,7 +197,7 @@ deployments:
       replicas: 1
     publicAccess:
       enabled: true
-      urlPrefix: tflimageprocessingui3-b919f69
+      urlPrefix: app
     desiredStatus: Running
     variables:
       - name: processed

@@ -235,7 +235,7 @@ deployments:
   - name: Data API
     application: Data API
     deploymentType: Service
-    version: c3c2376e7b97d1cae49457bd52efe2197deefc3a
+    version: 524dbeea6e24c28fb934857b1e165156baec94b1
     resources:
       cpu: 4000
       memory: 2000
@@ -258,6 +258,11 @@ deployments:
         description: ''
         required: false
         value: image-processed
+      - name: vehicles
+        inputType: InputTopic
+        description: The sum of the visible vehicles on a given camera. Vehicles are cars, busses, trucks and motorbikes
+        required: false
+        value: image-vehicles
 
 # This section describes the Topics of the data pipeline
 topics:

@@ -2,13 +2,15 @@
 
 [This project](https://github.com/quixio/quix-samples/tree/main/python/sources/TFL-Camera-Feed) streams TfL's London traffic camera images to Quix.
 
+If you would like to limit the area of interest, supply a value for `fence_coordinates`.
+
 ## How to run
 
 Create a [Quix](https://portal.platform.quix.ai/self-sign-up?xlink=github) account or log-in and visit the Samples to use this project.
 
 Clicking `Deploy` on the Sample, deploys a pre-built container in Quix. Complete the environment variables to configure the container.
 
-Clicking `Edit code` on the Sample, forks the project to your own Git repo so you can customize it before deploying.
+Clicking `Edit code` on the Sample, forks the project to your own Git repo, so you can customize it before deploying.
 
 ## Environment variables
 
@@ -16,6 +18,7 @@ This code sample uses the following environment variables:
 
 - **output**: This is the output topic for TfL camera images
 - **api_key**: Your TfL API Key
+- **fence_coordinates**: Geofence coordinates. e.g. [(LAT1,LON1),(LAT2,LON2),(LAT3,LON3)] 
 
 ## Prerequisites
 	

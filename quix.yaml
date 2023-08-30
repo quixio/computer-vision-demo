@@ -9,7 +9,7 @@ deployments:
   - name: TFL Camera Feed
     application: TFL Camera Feed
     deploymentType: Service
-    version: v1
+    version: v1.2-geofence
     resources:
       cpu: 8000
       memory: 10240
@@ -26,6 +26,11 @@ deployments:
         description: Your TfL API Key
         required: true
         value: ba4f0a6e85ce4e02b8ae2864f9147beb
+      - name: fence_coordinates
+        inputType: FreeText
+        description: Geofence coordinates. e.g. [(LAT1,LON1),(LAT2,LON2),(LAT3,LON3)]
+        required: false
+        value: ''
   - name: Computer vision object detection
     application: Computer vision object detection
     deploymentType: Service
@@ -230,10 +235,10 @@ deployments:
   - name: Data API
     application: Data API
     deploymentType: Service
-    version: api-v2.0
+    version: c3c2376e7b97d1cae49457bd52efe2197deefc3a
     resources:
-      cpu: 100
-      memory: 500
+      cpu: 200
+      memory: 1000
       replicas: 1
     publicAccess:
       enabled: true
@@ -256,42 +261,7 @@ deployments:
 
 # This section describes the Topics of the data pipeline
 topics:
-  - name: tfl-cameras
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: image-raw
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: image-processed
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: image-processed-merged
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: transform
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: max-vehicles
+  - name: image-vehicles
     persisted: false
     configuration:
       partitions: 2
@@ -305,7 +275,45 @@ topics:
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
-  - name: image-vehicles
+  - name: max-vehicles
     persisted: false
     configuration:
       partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: transform
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: image-processed-merged
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: image-processed
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: image-raw
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: tfl-cameras
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000

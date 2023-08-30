@@ -25,11 +25,12 @@ def get_data():
 
         cameras_list = cameras.json()
 
-        print(cameras_list)
-
-        return
-
         for camera in cameras_list:
+
+            print(camera)
+
+            return
+
             camera_id = camera["id"]
 
             producer_topic.get_or_create_stream(camera_id).events.add_timestamp_nanoseconds(time.time_ns()) \

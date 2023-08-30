@@ -24,6 +24,8 @@ class QuixFunction:
 
         print( camera_video_feed["modified"])
 
+        return
+
         video_stream = cv2.VideoCapture(camera_video_feed["value"])
 
         count = 0

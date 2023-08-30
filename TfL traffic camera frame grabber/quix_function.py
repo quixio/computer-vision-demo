@@ -16,7 +16,7 @@ class QuixFunction:
     # Callback triggered for each new event.
     def on_event_data_handler(self, stream_consumer: qx.StreamConsumer, data: qx.EventData):
 
-        last_image_state = stream_consumer.get_scalar_state("last_image", lambda: None)
+        last_image_state = stream_consumer.get_scalar_state("last_image_v1", lambda: None)
         
         camera = json.loads(data.value)
         camera_id = camera["id"]

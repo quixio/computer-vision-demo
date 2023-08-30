@@ -235,7 +235,7 @@ deployments:
   - name: Data API
     application: Data API
     deploymentType: Service
-    version: 3b4fe7c3e398224d211d30aafa506e00e6caae64
+    version: 53a2fb435222acbd7f91390438c2b6e5c55faca1
     resources:
       cpu: 4000
       memory: 2000
@@ -246,7 +246,7 @@ deployments:
     state:
       enabled: true
       size: 1
-    desiredStatus: Running
+    desiredStatus: Stopped
     variables:
       - name: input
         inputType: InputTopic

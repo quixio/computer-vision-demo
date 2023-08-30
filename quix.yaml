@@ -14,7 +14,7 @@ deployments:
       cpu: 8000
       memory: 10240
       replicas: 1
-    desiredStatus: Running
+    desiredStatus: Stopped
     variables:
       - name: output
         inputType: OutputTopic
@@ -94,9 +94,9 @@ deployments:
     deploymentType: Service
     version: v1
     resources:
-      cpu: 8000
-      memory: 10240
-      replicas: 1
+      cpu: 4000
+      memory: 4100
+      replicas: 15
     desiredStatus: Running
     variables:
       - name: input
@@ -275,11 +275,11 @@ deployments:
 # This section describes the Topics of the data pipeline
 topics:
   - name: tfl-cameras
-    persisted: false
+    persisted: true
     configuration:
-      partitions: 2
+      partitions: 15
       replicationFactor: 2
-      retentionInMinutes: -1
+      retentionInMinutes: 5760
       retentionInBytes: 262144000
   - name: image-raw
     persisted: false

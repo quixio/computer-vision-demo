@@ -28,6 +28,7 @@ def get_data():
         print(cameras_list)
 
         return
+        
 
         for camera in cameras_list:
             camera_id = camera["id"]

@@ -6,6 +6,11 @@ variables:
     description: ''
     defaultValue: tfl-cameras
     required: true
+  - name: output
+    inputType: OutputTopic
+    description: ''
+    defaultValue: image-raw
+    required: true
 dockerfile: build/dockerfile
 runEntryPoint: main.py
 defaultFile: quix_function.py

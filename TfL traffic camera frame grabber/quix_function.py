@@ -48,7 +48,7 @@ class QuixFunction:
                 count += 1
 
                 if (count - 1) % self.frame_rate == 0:
-                    self.stream_producer.timeseries.buffer.add_timestamp_nanoseconds(time.time_ns()) \
+                    self.stream_producer.timeseries.buffer.add_timestamp(timestamp) \
                         .add_value("image", bytearray(frame_bytes)) \
                         .add_value("lon", lon) \
                         .add_value("lat", lat) \

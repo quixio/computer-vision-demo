@@ -238,7 +238,7 @@ deployments:
     version: c3c2376e7b97d1cae49457bd52efe2197deefc3a
     resources:
       cpu: 4000
-      memory: 1000
+      memory: 2000
       replicas: 1
     publicAccess:
       enabled: true

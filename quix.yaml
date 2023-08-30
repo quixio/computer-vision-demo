@@ -194,8 +194,8 @@ deployments:
     deploymentType: Service
     version: e6bb005ff21552be9b0cf2482ea95ad6350abf68
     resources:
-      cpu: 200
-      memory: 500
+      cpu: 4000
+      memory: 2000
       replicas: 1
     desiredStatus: Running
     variables:
@@ -212,9 +212,9 @@ deployments:
   - name: Max Vehicle Window
     application: Starter transformation
     deploymentType: Service
-    version: max_vehicle_window_v4
+    version: 42ef65af48e695879d5f7593c2924c569a0d00c5
     resources:
-      cpu: 200
+      cpu: 4000
       memory: 10100
       replicas: 1
     state:
@@ -237,8 +237,8 @@ deployments:
     deploymentType: Service
     version: c3c2376e7b97d1cae49457bd52efe2197deefc3a
     resources:
-      cpu: 200
-      memory: 1000
+      cpu: 4000
+      memory: 2000
       replicas: 1
     publicAccess:
       enabled: true
@@ -261,42 +261,7 @@ deployments:
 
 # This section describes the Topics of the data pipeline
 topics:
-  - name: image-vehicles
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: output-topic
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: max-vehicles
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: transform
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: image-processed-merged
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: image-processed
+  - name: tfl-cameras
     persisted: false
     configuration:
       partitions: 2
@@ -310,7 +275,42 @@ topics:
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
-  - name: tfl-cameras
+  - name: image-processed
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: image-processed-merged
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: transform
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: max-vehicles
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: output-topic
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: image-vehicles
     persisted: false
     configuration:
       partitions: 2

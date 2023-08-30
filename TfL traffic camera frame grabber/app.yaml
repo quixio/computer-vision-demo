@@ -1,6 +1,11 @@
 name: TfL traffic camera frame grabber
 language: python
-variables: []
+variables:
+  - name: input
+    inputType: InputTopic
+    description: ''
+    defaultValue: tfl-cameras
+    required: true
 dockerfile: build/dockerfile
 runEntryPoint: main.py
 defaultFile: quix_function.py

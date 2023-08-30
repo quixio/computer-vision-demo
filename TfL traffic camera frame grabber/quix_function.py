@@ -3,7 +3,7 @@ import pandas as pd
 import json
 import time
 import os
-import cv2
+#import cv2
 from dateutil import parser
 # old
 

@@ -275,7 +275,7 @@ deployments:
 # This section describes the Topics of the data pipeline
 topics:
   - name: tfl-cameras
-    persisted: false
+    persisted: true
     configuration:
       partitions: 15
       replicationFactor: 2

@@ -13,9 +13,9 @@ const CONSTANTS: any = {};
 
 
 interface MarkerData {
-  title: string;
-  latitude: number;
-  longitude: number;
+  title?: string;
+  latitude?: number;
+  longitude?: number;
   date?: Date;
   value?: number;
   max?: number;
@@ -23,8 +23,8 @@ interface MarkerData {
 }
 
 interface Marker extends MarkerData {
-  label: string | google.maps.MarkerLabel,
-  icon: string | google.maps.Icon | google.maps.Symbol, 
+  label?: string | google.maps.MarkerLabel,
+  icon?: string | google.maps.Icon | google.maps.Symbol, 
 }
 
 @Component({
@@ -49,7 +49,7 @@ export class AppComponent implements OnInit {
   showImages: boolean = true;
   lastMarkers: Marker[] = Array(5);
   connection: HubConnection;
-  parameterId: string = 'car';
+  parameterId: string = 'vehicles';
   private _maxVehicles: { [key: string]: number } = {};
   private _topicName: string;
   private _streamId: string = 'image-feed';
@@ -82,35 +82,38 @@ export class AppComponent implements OnInit {
         if (!dataBuffer.length) return;
 
         dataBuffer.forEach((data) => {
-          let imageBinary: string | undefined;
-          if (data.stringValues['image']) imageBinary = data.stringValues['image'][0];
+          const markerData: MarkerData = {};
+          let key: string | undefined;
 
-          if (data.numericValues['max_vehicles']) {
-            const key: string = data.tagValues['cam'][0];
-            // Update maxVehicles list
-            this._maxVehicles[key] = data.numericValues['max_vehicles'][0];
-            // Update existing marker
-            const index = this.markers.findIndex((f) => f.title === key)
-            if (index > -1) Object.assign(this.markers[index], { max: this._maxVehicles[key] }); 
+          if (data.topicName === this._topicName) {
+            key = data.tagValues['parent_streamId'][0];
+            if (data.numericValues['lat']) markerData.latitude = +data.numericValues['lat'][0];
+            if (data.numericValues['lon']) markerData.longitude = +data.numericValues['lon'][0];
+            if (data.stringValues['image']) markerData.image = data.stringValues['image'][0];
+            if (data.numericValues[this.parameterId]) markerData.value = data.numericValues[this.parameterId][0];
           }
 
-          if (data.numericValues[this.parameterId]) {
-            const key: string = data.tagValues['parent_streamId'][0];
-            const markerData: MarkerData = {
-              title: key,
-              latitude: +data.numericValues['lat'][0],
-              longitude: +data.numericValues['lon'][0],
-              value: data.numericValues[this.parameterId]?.at(0) || 0,
-              max: this._maxVehicles[key],
-              image: imageBinary,
-              date: new Date(data.timestamps[0] / 1000000)
-            }
-            const marker: Marker = this.createMarker(markerData);
-            // Update existing marker
-            const index = this.markers.findIndex((f) => f.title === key)
-            if (index > -1) Object.assign(this.markers[index], marker); 
-            else this.markers.push(marker)
+          if (data.topicName === 'max_vehicles') {
+            key = data.tagValues['cam'][0];
+            if (data.numericValues['max_vehicles']) this._maxVehicles[key] = data.numericValues['max_vehicles'][0];
+            markerData.max = this._maxVehicles[key];
+          }
 
+
+          if (data.topicName === "image-vehicles") {
+            key = data.streamId;
+            if (data.numericValues[this.parameterId]) markerData.value = data.numericValues[this.parameterId][0];
+          }
+
+          markerData.title = key;
+          markerData.date = new Date(data.timestamps[0] / 1000000);
+
+          const index = this.markers.findIndex((f) => f.title === key)
+          const marker: Marker = this.createMarker({ ...this.markers[index], ...markerData });
+          if (index > -1) Object.assign(this.markers[index], marker); 
+          else this.markers.push(marker)
+
+          if (markerData.image) {
             this.lastMarkers.shift();
             this.lastMarkers.push(marker);
           }
@@ -137,19 +140,19 @@ export class AppComponent implements OnInit {
             image: data?.image[0],
           }
           // Filter markers by bounds
-          const latLng = new google.maps.LatLng(markerData.latitude, markerData.longitude);
+          const latLng = new google.maps.LatLng(markerData.latitude!, markerData.longitude!);
           if (this.bounds.contains(latLng)) markers.push(this.createMarker(markerData));
         });
         return markers;
       }))
     })).subscribe((markers: Marker[]) => {
-      // this.markers = markers
-      // CONSTANTS.markers = this.markers;
+      this.markers = markers
+      CONSTANTS.markers = this.markers;
     })
   }
 
-  createMarker(data: MarkerData): Marker {
-    if (!data.max || !data.value) {
+  createMarker(data: MarkerData | Marker): Marker {
+    if (!data.max) {
       const marker: Marker = {
         ...data,
         label: '?',
@@ -159,7 +162,7 @@ export class AppComponent implements OnInit {
       return marker;
     }
 
-    const percent: number = data.value / data.max * 100;
+    const percent: number = (data.value || 0) / data.max * 100;
 
     let index = 0;
     let total = 0;
@@ -194,8 +197,9 @@ export class AppComponent implements OnInit {
     this.connection.invoke('SubscribeToParameter', this._topicName, this._streamId, 'image');
     this.connection.invoke('SubscribeToParameter', this._topicName, this._streamId, 'lat');
     this.connection.invoke('SubscribeToParameter', this._topicName, this._streamId, 'lon');
-    this.connection.invoke('SubscribeToParameter', this._topicName, this._streamId, this.parameterId);
+    // this.connection.invoke('SubscribeToParameter', this._topicName, this._streamId, this.parameterId);
     this.connection.invoke('SubscribeToParameter', 'max-vehicles', '*', 'max_vehicles');
+    this.connection.invoke('SubscribeToParameter', 'image-vehicles', '*', '*');
   }
 
   /**

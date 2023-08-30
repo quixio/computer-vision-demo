@@ -4,6 +4,7 @@ from flask import Flask, request, abort
 from flask_cors import CORS
 import os
 import base64
+import copy
 
 
 pd.set_option('display.max_columns', None)
@@ -105,8 +106,8 @@ def index():
     root = request.url_root
     print(root)
     return f"Endpoints are:" \
-           f"<br/><a href='{root}detected_objects'>{root}detected_objects</a>" \
-           f"<br/><a href='{root}detected_objects/[camera_id]'>{root}detected_objects/[camera_id]</a>" \
+           f"<br/><a href='{root}detected_objects'>{root}detected_objects (without images)</a>" \
+           f"<br/><a href='{root}detected_objects/[camera_id]'>{root}detected_objects/[camera_id] (with images)</a>" \
            f"<br/><a href='{root}max_vehicles'>{root}max_vehicles</a>" \
            f"<br/><a href='{root}vehicles'>{root}vehicles</a>"
 
@@ -118,7 +119,16 @@ def maximum_vehicles():
 # create the detected objects route
 @app.route("/detected_objects")
 def objects():
-    return detected_objects
+
+    print(detected_objects)
+
+    o = copy.deepcopy(detected_objects)
+    for _, val in o.items():
+        val.pop('image', None)
+
+    print(detected_objects)
+
+    return o
 
 # create the detected objects route for specific camera
 @app.route("/detected_objects/<camera_id>")

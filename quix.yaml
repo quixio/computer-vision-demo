@@ -92,7 +92,7 @@ deployments:
   - name: TfL traffic camera frame grabber
     application: TfL traffic camera frame grabber
     deploymentType: Service
-    version: 4358b04aa7084b236b8f91b23cadfa7b9ac46c40
+    version: 50323146775709d7213e9d7c1f5cdbd60d6feca1
     resources:
       cpu: 4000
       memory: 4100

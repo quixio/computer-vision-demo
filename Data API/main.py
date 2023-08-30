@@ -119,15 +119,9 @@ def maximum_vehicles():
 # create the detected objects route
 @app.route("/detected_objects")
 def objects():
-
-    print(detected_objects)
-
     o = copy.deepcopy(detected_objects)
     for _, val in o.items():
         val.pop('image', None)
-
-    print(detected_objects)
-
     return o
 
 # create the detected objects route for specific camera

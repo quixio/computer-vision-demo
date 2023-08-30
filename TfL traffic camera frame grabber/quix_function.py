@@ -4,6 +4,7 @@ import json
 import time
 import os
 import cv2
+from dateutil import parser
 # old
 
 class QuixFunction:
@@ -22,7 +23,10 @@ class QuixFunction:
 
         camera_video_feed = list(filter(lambda x: x["key"] == "videoUrl", camera["additionalProperties"]))[0]
 
-        print( camera_video_feed["modified"])
+        timestamp = parser.parse(camera_video_feed["modified"])
+
+
+        print( timestamp)
 
         return
 

@@ -31,6 +31,8 @@ class QuixFunction:
 
             print( timestamp)
             last_image_state.value = timestamp
+        else:
+            print("Duplicate")
 
         return
 

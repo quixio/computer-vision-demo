@@ -25,7 +25,7 @@ class QuixFunction:
 
         camera_video_feed = list(filter(lambda x: x["key"] == "videoUrl", camera["additionalProperties"]))[0]
 
-        timestamp = parser.parse(camera_video_feed["modified"])
+        timestamp = data.timestamp
 
         if last_image_state.value is None or timestamp > last_image_state.value:
             print(stream_consumer.stream_id + " updated.")

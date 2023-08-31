@@ -34,7 +34,8 @@ def get_data():
         # get root element
         root = tree.getroot()
     
-        print(root.findall("./Contents"))
+        for item in root:
+            print(item)
 
         return
 

@@ -5,6 +5,7 @@ import requests
 import time
 from threading import Thread
 import xml.etree.ElementTree as ET
+from dateutil import parser
 
 
 # should the main loop run?
@@ -25,25 +26,19 @@ def get_data():
 
         resp = requests.get("https://s3-eu-west-1.amazonaws.com/jamcams.tfl.gov.uk/")
 
-        with open('topnewsfeed.xml', 'wb') as f:
+        with open('jamcams.xml', 'wb') as f:
             f.write(resp.content)
 
-        tree = ET.parse('topnewsfeed.xml')
+        tree = ET.parse('jamcams.xml')
 
   
         # get root element
         root = tree.getroot()
     
         files = {}
-        
         for a in root.findall("{http://s3.amazonaws.com/doc/2006-03-01/}Contents"):
-            
             files[a[0].text] = a[1].text
 
-        print(files)
-
-
-        return
 
         cameras = requests.get(
             "https://api.tfl.gov.uk/Place/Type/JamCam/?app_id=QuixFeed&app_key={}".format(api_key))
@@ -53,7 +48,10 @@ def get_data():
         for camera in cameras_list:
             camera_id = camera["id"]
 
-            producer_topic.get_or_create_stream(camera_id).events.add_timestamp_nanoseconds(time.time_ns()) \
+            timestamp_str = files[camera_id + ".mp4"]
+            timestamp = parser.parse(timestamp_str)
+
+            producer_topic.get_or_create_stream(camera_id).events.add_timestamp(timestamp) \
                 .add_value("camera", json.dumps(camera)) \
                 .publish()    
 

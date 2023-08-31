@@ -48,9 +48,9 @@ def get_data():
 
         for camera in cameras_list:
             print(camera)
-            camera_id = camera["id"]
+            camera_id = str(camera["id"])
 
-            timestamp_str = files[camera_id + ".jpg"]
+            timestamp_str = files[camera_id.replace("JamCams_", "") + ".jpg"]
             timestamp = parser.parse(timestamp_str)
 
             producer_topic.get_or_create_stream(camera_id).events.add_timestamp(timestamp) \

@@ -39,7 +39,7 @@ def get_data():
         for a in root:
             print(a.tag)
             
-            files[a.Key] = a.LastModified
+            #files[a.Key] = a.LastModified
 
         print(files)
 

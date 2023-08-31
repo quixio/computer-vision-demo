@@ -37,6 +37,7 @@ def get_data():
         files = {}
         
         for a in root:
+            print(a)
             files[a.get("Key")] = a.get("LastModified")
 
         print(files)

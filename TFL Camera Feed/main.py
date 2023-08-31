@@ -34,8 +34,10 @@ def get_data():
         # get root element
         root = tree.getroot()
     
-        for item in root:
-            print(item)
+        files = [{'id':a["Key"], 'last_modified': a["LastModified"]} for a in root]
+
+        print(files)
+
 
         return
 

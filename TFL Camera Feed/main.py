@@ -47,7 +47,6 @@ def get_data():
         cameras_list = cameras.json()
 
         for camera in cameras_list:
-            print(camera)
             camera_id = str(camera["id"])
             
             try:

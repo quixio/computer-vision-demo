@@ -4,6 +4,8 @@ import json
 import requests
 import time
 from threading import Thread
+import xml.etree.ElementTree as ET
+
 
 # should the main loop run?
 run = True
@@ -20,6 +22,27 @@ def get_data():
     while run:
         start = time.time()
         print("Loading new data.")
+
+        resp = requests.get("https://s3-eu-west-1.amazonaws.com/jamcams.tfl.gov.uk/")
+
+        with open('topnewsfeed.xml', 'wb') as f:
+            f.write(resp.content)
+
+        tree = ET.parse('topnewsfeed.xml')
+
+  
+        # get root element
+        root = tree.getroot()
+    
+        # create empty list for news items
+        newsitems = []
+    
+        # iterate news items
+        for item in root.findall('./ListBucketResult/Contents'):
+            print(item)
+
+        return
+
         cameras = requests.get(
             "https://api.tfl.gov.uk/Place/Type/JamCam/?app_id=QuixFeed&app_key={}".format(api_key))
 

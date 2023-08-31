@@ -37,7 +37,7 @@ def get_data():
         files = {}
         
         for a in root.findall("{http://s3.amazonaws.com/doc/2006-03-01/}Contents"):
-            print(a.get("Key"))
+            print(a[0].tag)
             
             #files[a.Key] = a.LastModified
 

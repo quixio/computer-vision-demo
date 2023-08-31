@@ -47,6 +47,7 @@ def get_data():
         cameras_list = cameras.json()
 
         for camera in cameras_list:
+            print(camera)
             camera_id = camera["id"]
 
             timestamp_str = files[camera_id + ".jpg"]

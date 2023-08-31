@@ -49,8 +49,13 @@ def get_data():
         for camera in cameras_list:
             print(camera)
             camera_id = str(camera["id"])
+            
+            try:
+                timestamp_str = files[camera_id.replace("JamCams_", "") + ".jpg"]
+            except KeyError:
+                print("No data for " + camera_id)
+                continue
 
-            timestamp_str = files[camera_id.replace("JamCams_", "") + ".jpg"]
             timestamp = parser.parse(timestamp_str)
 
             producer_topic.get_or_create_stream(camera_id).events.add_timestamp(timestamp) \

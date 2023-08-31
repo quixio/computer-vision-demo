@@ -39,8 +39,6 @@ def get_data():
         for a in root.findall("{http://s3.amazonaws.com/doc/2006-03-01/}Contents"):
             files[a[0].text] = a[1].text
 
-        print(files)
-
         cameras = requests.get(
             "https://api.tfl.gov.uk/Place/Type/JamCam/?app_id=QuixFeed&app_key={}".format(api_key))
 

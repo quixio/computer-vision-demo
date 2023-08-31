@@ -97,7 +97,7 @@ deployments:
   - name: TfL traffic camera frame grabber
     application: TfL traffic camera frame grabber
     deploymentType: Service
-    version: 50323146775709d7213e9d7c1f5cdbd60d6feca1
+    version: d225676d773568384a4043910f543806b546ccd6
     resources:
       cpu: 4000
       memory: 4100
@@ -122,6 +122,16 @@ deployments:
         description: The numer of images per second
         required: true
         value: 100
+      - name: api_key
+        inputType: HiddenText
+        description: Your TfL API Key
+        required: true
+        value: ba4f0a6e85ce4e02b8ae2864f9147beb
+      - name: sleep_interval
+        inputType: FreeText
+        description: ''
+        required: true
+        value: 60
   - name: S3 new
     application: S3
     deploymentType: Service

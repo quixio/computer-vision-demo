@@ -34,7 +34,7 @@ def get_data():
 
             print("Sent camera " + camera_id)
 
-        sleep_time = 120 - (time.time() - start)
+        sleep_time = int(os.environ["sleep_interval"]) - (time.time() - start)
 
         if sleep_time > 0:
             print("Sleep for " + str(sleep_time))

@@ -34,12 +34,7 @@ def get_data():
         # get root element
         root = tree.getroot()
     
-        # create empty list for news items
-        newsitems = []
-    
-        # iterate news items
-        for item in root.findall('./ListBucketResult/Contents'):
-            print(item)
+        print(root)
 
         return
 

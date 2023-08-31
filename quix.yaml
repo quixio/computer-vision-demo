@@ -9,7 +9,7 @@ deployments:
   - name: TFL Camera Feed
     application: TFL Camera Feed
     deploymentType: Service
-    version: v1
+    version: d225676d773568384a4043910f543806b546ccd6
     resources:
       cpu: 8000
       memory: 10240
@@ -26,6 +26,11 @@ deployments:
         description: Your TfL API Key
         required: true
         value: ba4f0a6e85ce4e02b8ae2864f9147beb
+      - name: sleep_interval
+        inputType: FreeText
+        description: ''
+        required: true
+        value: 60
   - name: Computer vision object detection
     application: Computer vision object detection
     deploymentType: Service

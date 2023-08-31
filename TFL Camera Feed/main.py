@@ -34,7 +34,7 @@ def get_data():
         # get root element
         root = tree.getroot()
     
-        print(root)
+        print(root["ListBucketResult"])
 
         return
 

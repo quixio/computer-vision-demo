@@ -226,7 +226,7 @@ deployments:
     version: e6bb005ff21552be9b0cf2482ea95ad6350abf68
     resources:
       cpu: 2000
-      memory: 500
+      memory: 1100
       replicas: 2
     desiredStatus: Running
     variables:

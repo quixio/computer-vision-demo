@@ -4,7 +4,7 @@ import { HubConnection } from '@microsoft/signalr';
 import { CLUSTER_STYLE } from './constants/cluster';
 import { ParameterData } from './models/parameter-data';
 import { QuixService } from './services/quix.service';
-import { Subject, bufferTime, filter, map, switchMap } from 'rxjs';
+import { Subject, bufferTime, catchError, filter, map, switchMap } from 'rxjs';
 import { DataService } from './services/data.service';
 import { AgmMap } from '@agm/core';
 import { AgmMarkerCluster, ClusterManager } from '@agm/markerclusterer';
@@ -19,12 +19,12 @@ interface MarkerData {
   date?: Date;
   value?: number;
   max?: number;
-  image?: string; 
+  image?: string;
 }
 
 interface Marker extends MarkerData {
   label?: string | google.maps.MarkerLabel,
-  icon?: string | google.maps.Icon | google.maps.Symbol, 
+  icon?: string | google.maps.Icon | google.maps.Symbol,
 }
 
 @Component({
@@ -55,7 +55,7 @@ export class AppComponent implements OnInit {
   private _streamId: string = 'image-feed';
   private _parameterDataReceived$ = new Subject<ParameterData>();
 
-  constructor(private quixService: QuixService, private dataService: DataService) { 
+  constructor(private quixService: QuixService, private dataService: DataService) {
   }
 
   ngOnInit(): void {
@@ -110,7 +110,7 @@ export class AppComponent implements OnInit {
 
           const index = this.markers.findIndex((f) => f.title === key)
           const marker: Marker = this.createMarker({ ...this.markers[index], ...markerData });
-          if (index > -1) Object.assign(this.markers[index], marker); 
+          if (index > -1) Object.assign(this.markers[index], marker);
           else this.markers.push(marker)
 
           if (markerData.image) {
@@ -126,24 +126,27 @@ export class AppComponent implements OnInit {
 
   getInitialData(): void {
     this.dataService.getDetectedObjects().pipe(switchMap((detectedObjects) => {
-      return this.dataService.getMaxVehicles().pipe(map((maxVehicles) => {
-        this._maxVehicles = maxVehicles;
-        const markers: Marker[] = [];
-        Object.keys(detectedObjects).forEach((key) => {
-          const data = detectedObjects[key];
-          const markerData: MarkerData = {
-            title: key,
-            latitude: data.lat[0],
-            longitude: data.lon[0],
-            value: data[this.parameterId] ? data[this.parameterId][0] : 0,
-            max: maxVehicles[key],
-            image: data?.image[0],
-          }
-          // Filter markers by bounds
-          const latLng = new google.maps.LatLng(markerData.latitude!, markerData.longitude!);
-          if (this.bounds.contains(latLng)) markers.push(this.createMarker(markerData));
-        });
-        return markers;
+      return this.dataService.getMaxVehicles().pipe(switchMap((maxVehicles) => {
+        return this.dataService.getVehicles().pipe(map((vehicles) => {
+          console.log(detectedObjects, vehicles, this.parameterId)
+          this._maxVehicles = maxVehicles;
+          const markers: Marker[] = [];
+          Object.keys(detectedObjects).forEach((key) => {
+            const data = detectedObjects[key];
+            const markerData: MarkerData = {
+              title: key,
+              latitude: data.lat,
+              longitude: data.lon,
+              value: data[this.parameterId] ? data[this.parameterId] : 0,
+              max: maxVehicles[key],
+              image: data?.image,
+            }
+            // Filter markers by bounds
+            const latLng = new google.maps.LatLng(markerData.latitude!, markerData.longitude!);
+            if (this.bounds.contains(latLng)) markers.push(this.createMarker(markerData));
+          });
+          return markers;
+        }))
       }))
     })).subscribe((markers: Marker[]) => {
       this.markers = markers
@@ -247,7 +250,7 @@ export class AppComponent implements OnInit {
     }
 
     const percent: number = sum / max * 100;
-    
+
     // If not cluster info
     if (!max) {
       const clusterInfo: ClusterIconInfo = {
@@ -269,7 +272,7 @@ export class AppComponent implements OnInit {
 
     // Tell MarkerCluster this clusters details (and how to style it)
     const clusterInfo: ClusterIconInfo = {
-      text:  Math.round(percent).toString(),
+      text: Math.round(percent).toString(),
       index,
       title: keys.join(', ')
     };

@@ -289,6 +289,26 @@ deployments:
         description: ''
         required: false
         value: image-processed
+  - name: Starter transformation 2
+    application: Starter transformation 2
+    deploymentType: Service
+    version: b63ff04dc4bc4603906d510af0aedb597ded6356
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    desiredStatus: Running
+    variables:
+      - name: input
+        inputType: InputTopic
+        description: Name of the input topic to listen to.
+        required: false
+        value: image-raw
+      - name: output
+        inputType: OutputTopic
+        description: Name of the output topic to write to.
+        required: false
+        value: transform
 
 # This section describes the Topics of the data pipeline
 topics:

@@ -89,7 +89,7 @@ def on_vehicles_stream_received_handler(stream_consumer: qx.StreamConsumer):
         # keep only the timestamp and vehicle count.
         df = df[['timestamp', 'vehicles']]
 
-        #print(f'VEHICLES: stream:{stream_consumer.stream_id}, data={df.to_dict("records")[0]}')
+        print(f'VEHICLES: stream:{stream_consumer.stream_id}, data={df.to_dict("records")[0]}')
         vehicles[stream_consumer.stream_id] = df.to_dict('records')[0]
         storage.set("vehicles", detected_objects)
 

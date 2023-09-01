@@ -82,7 +82,7 @@ def on_object_stream_received_handler(stream_consumer: qx.StreamConsumer):
 
 
 def on_vehicles_stream_received_handler(stream_consumer: qx.StreamConsumer):
-    global detected_objects
+    global vehicles
 
     def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
         print("Receiving vehicles data")
@@ -91,7 +91,7 @@ def on_vehicles_stream_received_handler(stream_consumer: qx.StreamConsumer):
 
         print(f'VEHICLES: stream:{stream_consumer.stream_id}, data={df.to_dict("records")[0]}')
         vehicles[stream_consumer.stream_id] = df.to_dict('records')[0]
-        storage.set("vehicles", detected_objects)
+        storage.set("vehicles", vehicles)
 
     stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
 

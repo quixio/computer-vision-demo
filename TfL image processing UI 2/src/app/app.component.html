@@ -49,7 +49,7 @@
             <mat-label>Select object</mat-label>
             <mat-select [value]="parameterId" (selectionChange)="selectedObjectChanged($event.value)">
               <mat-option class="text-uppercase" disabled><span class="mat-caption">Density</span></mat-option>
-              <mat-option [value]="'vehicles'">
+              <mat-option [value]="''">
                 Traffic density
               </mat-option>
               <mat-divider></mat-divider>
@@ -93,33 +93,27 @@
             [gridSize]="50" #cluster>
             <ng-container *ngFor="let m of markers;">
               <agm-marker *ngIf="m.latitude && m.longitude" [latitude]="m.latitude" [longitude]="m.longitude"
-                [label]="m.label!" [iconUrl]="m.icon!" [title]="m.title!" (markerClick)="selectMarker($event.title)"
-                [opacity]="m.image ? 1 : .5">
+                [label]="m.label!" [iconUrl]="m.icon!" [title]="m.title!" (markerClick)="selectMarker($event.title)">
               </agm-marker>
             </ng-container>
           </agm-marker-cluster>
-          <agm-snazzy-info-window 
-            *ngIf="selectedMarker as m"
-            [isOpen]="!!m" 
-            [closeWhenOthersOpen]="true" 
-            [closeOnMapClick]="true"  
-            [showCloseButton]="true"  
-            [openOnMarkerClick]="true"
-            [panOnOpen]="true"
-            [backgroundColor]="'#FFF'"
-            [padding]="'12px'"
-            [maxWidth]="266"
-            [maxHeight]="300"
-            [latitude]="m.latitude!" 
-            [longitude]="m.longitude!"
-            (afterClose)="selectedMarker = undefined">
+          <agm-snazzy-info-window *ngIf="selectedMarker as m" [isOpen]="!!m" [closeWhenOthersOpen]="true"
+            [closeOnMapClick]="true" [showCloseButton]="true" [openOnMarkerClick]="true" [panOnOpen]="true"
+            [backgroundColor]="'#FFF'" [padding]="'12px'" [maxWidth]="266" [maxHeight]="300" [latitude]="m.latitude!"
+            [longitude]="m.longitude!" (afterClose)="selectedMarker = undefined">
             <ng-template>
-              <img [src]="'data:image/png;base64,' + m?.image" width="240">
-              <div fxLayout="row" fxLayoutAlign="space-between start">
+              <img [src]="'data:image/png;base64,' + m?.image" width="240" height="196" *ngIf="!isLoading">
+              <div [style.width.px]="240" [style.height.px]="196" fxLayout="row" fxLayoutAlign="center center"
+                class="position-relative border" *ngIf="isLoading">
+                <mat-spinner color="primary" mode="indeterminate" [diameter]="24"></mat-spinner>
+              </div>
+              <div fxLayout="row" fxLayoutAlign="space-between start" class="mt-1">
                 <span class="fw-bold">{{ m.title }}</span>
                 <span class="mat-caption text-body">{{ m.date | date: 'HH:mm:ss' }}</span>
               </div>
-              {{ m.value }}, {{ m.max }}
+              <span *ngIf="!parameterId">{{ m.count || 0 }} vehicles</span>
+              <span *ngIf="parameterId">{{ m.value || 0 }} {{ parameterId }}</span>
+              <span *ngIf="m.max" class="ms-1">(max: {{ m.max }} vehicles)</span>
             </ng-template>
           </agm-snazzy-info-window>
         </agm-map>

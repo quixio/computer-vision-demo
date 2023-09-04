@@ -7,7 +7,7 @@ storage = qx.LocalFileStorage()
 
 client = qx.QuixStreamingClient()
 
-topic_consumer = client.get_topic_consumer(os.environ["input"], consumer_group = "empty-transformation", 
+topic_consumer = client.get_topic_consumer(os.environ["input"], consumer_group = "max-vehicle-v1", 
                                             auto_offset_reset = qx.AutoOffsetReset.Latest)
 topic_producer = client.get_topic_producer(os.environ["output"])
 

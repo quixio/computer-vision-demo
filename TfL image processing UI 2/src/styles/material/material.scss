@@ -15,6 +15,7 @@
 @include mat.select-theme($quix-template-theme);
 @include mat.icon-theme($quix-template-theme);
 @include mat.divider-theme($quix-template-theme);
+@include mat.progress-spinner-theme($quix-template-theme);
 
 // Plus custom imports.
 @import 'material-overrides';

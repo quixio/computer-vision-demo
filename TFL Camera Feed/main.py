@@ -4,6 +4,9 @@ import json
 import requests
 import time
 from threading import Thread
+import xml.etree.ElementTree as ET
+from dateutil import parser
+
 
 # should the main loop run?
 run = True
@@ -20,21 +23,45 @@ def get_data():
     while run:
         start = time.time()
         print("Loading new data.")
+
+        resp = requests.get("https://s3-eu-west-1.amazonaws.com/jamcams.tfl.gov.uk/")
+
+        with open('jamcams.xml', 'wb') as f:
+            f.write(resp.content)
+
+        tree = ET.parse('jamcams.xml')
+
+  
+        # get root element
+        root = tree.getroot()
+    
+        files = {}
+        for a in root.findall("{http://s3.amazonaws.com/doc/2006-03-01/}Contents"):
+            files[a[0].text] = a[1].text
+
         cameras = requests.get(
             "https://api.tfl.gov.uk/Place/Type/JamCam/?app_id=QuixFeed&app_key={}".format(api_key))
 
         cameras_list = cameras.json()
 
         for camera in cameras_list:
-            camera_id = camera["id"]
+            camera_id = str(camera["id"])
+            
+            try:
+                timestamp_str = files[camera_id.replace("JamCams_", "") + ".jpg"]
+            except KeyError:
+                print("No data for " + camera_id)
+                continue
 
-            producer_topic.get_or_create_stream(camera_id).events.add_timestamp_nanoseconds(time.time_ns()) \
+            timestamp = parser.parse(timestamp_str)
+
+            producer_topic.get_or_create_stream(camera_id).events.add_timestamp(timestamp) \
                 .add_value("camera", json.dumps(camera)) \
                 .publish()    
 
             print("Sent camera " + camera_id)
 
-        sleep_time = 120 - (time.time() - start)
+        sleep_time = int(os.environ["sleep_interval"]) - (time.time() - start)
 
         if sleep_time > 0:
             print("Sleep for " + str(sleep_time))

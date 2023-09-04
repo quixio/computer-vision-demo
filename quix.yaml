@@ -9,12 +9,12 @@ deployments:
   - name: TFL Camera Feed
     application: TFL Camera Feed
     deploymentType: Service
-    version: 22e46420efd139827d4469ddc049986a4b0f1a87
+    version: f641b39612e7609e486d8a66c7eb757d26ad7d1e
     resources:
       cpu: 8000
       memory: 10240
       replicas: 1
-    desiredStatus: Stopped
+    desiredStatus: Running
     variables:
       - name: output
         inputType: OutputTopic
@@ -26,14 +26,19 @@ deployments:
         description: Your TfL API Key
         required: true
         value: ba4f0a6e85ce4e02b8ae2864f9147beb
+      - name: sleep_interval
+        inputType: FreeText
+        description: ''
+        required: true
+        value: 60
   - name: Computer vision object detection
     application: Computer vision object detection
     deploymentType: Service
-    version: yolov8
+    version: b81c00dd94250a3525c273280243435bcf5cb1da
     resources:
       cpu: 4000
       memory: 16000
-      replicas: 8
+      replicas: 4
     desiredStatus: Running
     variables:
       - name: input
@@ -92,12 +97,15 @@ deployments:
   - name: TfL traffic camera frame grabber
     application: TfL traffic camera frame grabber
     deploymentType: Service
-    version: v1
+    version: 8ceae7e83b0bb056316cf7c51d2388647eadcb90
     resources:
       cpu: 4000
       memory: 4100
       replicas: 15
-    desiredStatus: Running
+    state:
+      enabled: true
+      size: 1
+    desiredStatus: Stopped
     variables:
       - name: input
         inputType: InputTopic
@@ -114,6 +122,16 @@ deployments:
         description: The numer of images per second
         required: true
         value: 100
+      - name: api_key
+        inputType: HiddenText
+        description: Your TfL API Key
+        required: true
+        value: ba4f0a6e85ce4e02b8ae2864f9147beb
+      - name: sleep_interval
+        inputType: FreeText
+        description: ''
+        required: true
+        value: 60
   - name: S3 new
     application: S3
     deploymentType: Service
@@ -190,7 +208,7 @@ deployments:
     version: e6bb005ff21552be9b0cf2482ea95ad6350abf68
     resources:
       cpu: 2000
-      memory: 500
+      memory: 1100
       replicas: 2
     desiredStatus: Running
     variables:
@@ -274,35 +292,14 @@ deployments:
 
 # This section describes the Topics of the data pipeline
 topics:
-  - name: tfl-cameras
+  - name: image-processed
     persisted: true
-    configuration:
-      partitions: 15
-      replicationFactor: 2
-      retentionInMinutes: 5760
-      retentionInBytes: 262144000
-  - name: image-raw
-    persisted: true
-    configuration:
-      partitions: 16
-      replicationFactor: 2
-      retentionInMinutes: 4380
-      retentionInBytes: 262144000
-  - name: transform
-    persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
-  - name: max-vehicles
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: output-topic
+  - name: image-processed-merged
     persisted: false
     configuration:
       partitions: 2
@@ -316,17 +313,38 @@ topics:
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
-  - name: image-processed-merged
+  - name: output-topic
     persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
-  - name: image-processed
+  - name: max-vehicles
     persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2
       retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: transform
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: image-raw
+    persisted: true
+    configuration:
+      partitions: 16
+      replicationFactor: 2
+      retentionInMinutes: 4380
+      retentionInBytes: 262144000
+  - name: tfl-cameras
+    persisted: false
+    configuration:
+      partitions: 15
+      replicationFactor: 2
+      retentionInMinutes: 5760
       retentionInBytes: 262144000

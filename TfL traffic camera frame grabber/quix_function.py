@@ -4,6 +4,7 @@ import json
 import time
 import os
 import cv2
+from dateutil import parser
 # old
 
 class QuixFunction:
@@ -14,6 +15,8 @@ class QuixFunction:
 
     # Callback triggered for each new event.
     def on_event_data_handler(self, stream_consumer: qx.StreamConsumer, data: qx.EventData):
+
+        last_image_state = stream_consumer.get_scalar_state("last_image_v1", lambda: None)
         
         camera = json.loads(data.value)
         camera_id = camera["id"]
@@ -22,7 +25,14 @@ class QuixFunction:
 
         camera_video_feed = list(filter(lambda x: x["key"] == "videoUrl", camera["additionalProperties"]))[0]
 
-        print( camera_video_feed["modified"])
+        timestamp = data.timestamp
+
+        if last_image_state.value is None or timestamp > last_image_state.value:
+            print(stream_consumer.stream_id + " updated.")
+            last_image_state.value = timestamp
+        else:
+            print("{0} from {1} has been processed. Skipping...".format(camera_video_feed["value"], timestamp))
+            return
 
         video_stream = cv2.VideoCapture(camera_video_feed["value"])
 
@@ -41,13 +51,17 @@ class QuixFunction:
             count += 1
 
             if (count - 1) % self.frame_rate == 0:
-                self.stream_producer.timeseries.buffer.add_timestamp_nanoseconds(time.time_ns()) \
+                self.stream_producer.timeseries.buffer.add_timestamp(timestamp) \
                     .add_value("image", bytearray(frame_bytes)) \
                     .add_value("lon", lon) \
                     .add_value("lat", lat) \
                     .publish()
                     
                 print("Sent {0} frame {1}".format(camera_id, count))
+
+
+
+       
 
     # Callback triggered for each new parameter data.
     def on_dataframe_handler(self, stream_consumer: qx.StreamConsumer, df: pd.DataFrame):

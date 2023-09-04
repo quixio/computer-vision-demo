@@ -103,6 +103,7 @@ export class AppComponent implements AfterViewInit {
 
           if (data.topicName === "image-vehicles") {
             key = data.streamId;
+            if (data.numericValues['vehicles']) markerData.count = data.numericValues['vehicles'][0];
             if (data.numericValues[this.parameterId]) markerData.value = data.numericValues[this.parameterId][0];
           }
 
@@ -112,7 +113,7 @@ export class AppComponent implements AfterViewInit {
           const index = this.markers.findIndex((f) => f.title === key)
           const marker: Marker = this.createMarker({ ...this.markers[index], ...markerData });
           if (index > -1) Object.assign(this.markers[index], marker);
-          else this.markers.push(marker)
+          else this.markers.push(marker);
 
           if (markerData.image) {
             this.lastMarkers.shift();
@@ -217,11 +218,15 @@ export class AppComponent implements AfterViewInit {
   * @param newSelectedObject the newly selected object
    */
   selectedObjectChanged(parameterId: string) {
+    // Reset data
     (this.cluster as any)?._clusterManager.clearMarkers();
     this.markers = [];
-    CONSTANTS.markers = this.markers;
+    this.selectedMarker = undefined;
+
+    // Unsubscribe from previous parameter and subscribe to new one
     if (this.parameterId) this.connection?.invoke('UnsubscribeFromParameter', this._topicName, this._streamId, this.parameterId);
-    this.connection?.invoke('SubscribeToParameter', this._topicName, this._streamId, parameterId);
+    if (parameterId) this.connection?.invoke('SubscribeToParameter', this._topicName, this._streamId, parameterId);
+    
     this.parameterId = parameterId;
     this.getInitialData();
   }

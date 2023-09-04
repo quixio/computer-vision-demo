@@ -102,10 +102,9 @@
             [backgroundColor]="'#FFF'" [padding]="'12px'" [maxWidth]="266" [maxHeight]="300" [latitude]="m.latitude!"
             [longitude]="m.longitude!" (afterClose)="selectedMarker = undefined">
             <ng-template>
-              <img [src]="'data:image/png;base64,' + m?.image" width="240" height="196" *ngIf="!isLoading">
-              <div [style.width.px]="240" [style.height.px]="196" fxLayout="row" fxLayoutAlign="center center"
-                class="position-relative border" *ngIf="isLoading">
-                <mat-spinner color="primary" mode="indeterminate" [diameter]="24"></mat-spinner>
+              <div [style.width.px]="240" [style.height.px]="196" fxLayout="row" fxLayoutAlign="center center" class="position-relative border">
+                <img [src]="'data:image/png;base64,' + m?.image" width="100%" height="100%" *ngIf="!isLoading">
+                <mat-spinner color="primary" mode="indeterminate" [diameter]="24" *ngIf="isLoading"></mat-spinner>
               </div>
               <div fxLayout="row" fxLayoutAlign="space-between start" class="mt-1">
                 <span class="fw-bold">{{ m.title }}</span>

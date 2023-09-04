@@ -266,7 +266,7 @@ export class AppComponent implements AfterViewInit {
         index++;
       }
     }
-    
+
     // Tell MarkerCluster this clusters details (and how to style it)
     const text: string = CONSTANTS.parameterId ? `${sum}` : `${percent}%`;
     const clusterInfo: ClusterIconInfo = {
@@ -286,8 +286,8 @@ export class AppComponent implements AfterViewInit {
     this.dataService.getDetectedObjects(title)
       .pipe(catchError(() => of(undefined)))
       .subscribe((data: any) => {
-        if (data) marker.image = data.image;
         this.isLoading = false;
+        if (data) marker.image = data.image;
       });
   }
 }

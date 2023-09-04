@@ -292,14 +292,35 @@ deployments:
 
 # This section describes the Topics of the data pipeline
 topics:
-  - name: image-processed
+  - name: tfl-cameras
+    persisted: false
+    configuration:
+      partitions: 15
+      replicationFactor: 2
+      retentionInMinutes: 5760
+      retentionInBytes: 262144000
+  - name: image-raw
+    persisted: false
+    configuration:
+      partitions: 16
+      replicationFactor: 2
+      retentionInMinutes: 4380
+      retentionInBytes: 262144000
+  - name: transform
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: max-vehicles
     persisted: true
     configuration:
       partitions: 2
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
-  - name: image-processed-merged
+  - name: output-topic
     persisted: false
     configuration:
       partitions: 2
@@ -313,38 +334,17 @@ topics:
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
-  - name: output-topic
+  - name: image-processed-merged
     persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
-  - name: max-vehicles
+  - name: image-processed
     persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2
       retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: transform
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: image-raw
-    persisted: true
-    configuration:
-      partitions: 16
-      replicationFactor: 2
-      retentionInMinutes: 4380
-      retentionInBytes: 262144000
-  - name: tfl-cameras
-    persisted: false
-    configuration:
-      partitions: 15
-      replicationFactor: 2
-      retentionInMinutes: 5760
       retentionInBytes: 262144000

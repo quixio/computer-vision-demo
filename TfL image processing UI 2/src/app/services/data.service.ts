@@ -10,7 +10,7 @@ export class DataService {
   url: string;
 
   constructor(private httpClient: HttpClient, private quixService: QuixService) {
-    this.url = `https://data-api-${this.quixService.workspaceId}.deployments.quix.ai`
+    this.url = `https://data-api-demo-computervisiondemo-apidata.deployments.quix.ai`//`https://data-api-${this.quixService.workspaceId}.deployments.quix.ai`
   }
 
   getMaxVehicles(): Observable<{ [key: string]: number }> {
@@ -18,8 +18,14 @@ export class DataService {
     return this.httpClient.get<{ [key: string]: number }>(url)
   }
 
-  getDetectedObjects(): Observable<{ [key: string]: any }> {
-    const url = `${this.url}/detected_objects`
+  getDetectedObjects(id?: string): Observable<{ [key: string]: any }> {
+    let url = `${this.url}/detected_objects`
+    if (id) url += `/${id}` 
+    return this.httpClient.get<{ [key: string]: number }>(url)
+  }
+
+  getVehicles(): Observable<{ [key: string]: any }> {
+    const url = `${this.url}/vehicles`
     return this.httpClient.get<{ [key: string]: number }>(url)
   }
 }

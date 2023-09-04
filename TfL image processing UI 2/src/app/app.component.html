@@ -31,7 +31,7 @@
           <div fxLayout="row" fxLayoutGap="2">
             <ng-container *ngFor="let m of lastMarkers">
               <img *ngIf="m?.image" [src]="'data:image/png;base64,' + m.image" height="48" fxFlex role="button"
-                (click)="selectMarker(m.title)">
+                (click)="selectMarker(m.title!)">
               <div *ngIf="!m?.image" fxFlex class="bg-secondary"></div>
             </ng-container>
           </div>
@@ -48,11 +48,15 @@
           <mat-form-field appearance="outline" class="w-100">
             <mat-label>Select object</mat-label>
             <mat-select [value]="parameterId" (selectionChange)="selectedObjectChanged($event.value)">
-              <mat-option class="select-title" disabled>Popular objects</mat-option>
+              <mat-option class="text-uppercase" disabled><span class="mat-caption">Density</span></mat-option>
+              <mat-option [value]="''">
+                Traffic density
+              </mat-option>
+              <mat-divider></mat-divider>
+              <mat-option class="text-uppercase" disabled><span class="mat-caption">Object Detection</span></mat-option>
               <mat-option *ngFor="let type of popularObjectTypes" [value]="type">
                 {{ type | titlecase }}
               </mat-option>
-              <mat-divider></mat-divider>
             </mat-select>
           </mat-form-field>
           <div fxLayout="row" fxLayoutGap="2" [style.height.px]="8">
@@ -87,32 +91,29 @@
           [longitude]="longitude" (boundsChange)="bounds = $event" (zoomChange)="zoom = $event" class="w-100 h-100">
           <agm-marker-cluster [styles]="clusterStyle" [calculator]="calculateFunction" [averageCenter]="true"
             [gridSize]="50" #cluster>
-            <agm-marker *ngFor="let m of markers; let i = index" [latitude]="m.latitude" [longitude]="m.longitude"
-              [label]="m.label" [iconUrl]="m.icon" [title]="m.title" (markerClick)="selectMarker($event.title)"
-              [opacity]="m.image ? 1 : .5">
-            </agm-marker>
+            <ng-container *ngFor="let m of markers;">
+              <agm-marker *ngIf="m.latitude && m.longitude" [latitude]="m.latitude" [longitude]="m.longitude"
+                [label]="m.label!" [iconUrl]="m.icon!" [title]="m.title!" (markerClick)="selectMarker($event.title)">
+              </agm-marker>
+            </ng-container>
           </agm-marker-cluster>
-          <agm-snazzy-info-window 
-            *ngIf="selectedMarker as m"
-            [isOpen]="!!m" 
-            [closeWhenOthersOpen]="true" 
-            [closeOnMapClick]="true"  
-            [showCloseButton]="true"  
-            [openOnMarkerClick]="true"
-            [panOnOpen]="true"
-            [backgroundColor]="'#FFF'"
-            [padding]="'12px'"
-            [maxWidth]="266"
-            [maxHeight]="300"
-            [latitude]="m.latitude" 
-            [longitude]="m.longitude"
-            (afterClose)="selectedMarker = undefined">
+          <agm-snazzy-info-window *ngIf="selectedMarker as m" [isOpen]="!!m" [closeWhenOthersOpen]="true"
+            [closeOnMapClick]="true" [showCloseButton]="true" [openOnMarkerClick]="true" [panOnOpen]="true"
+            [backgroundColor]="'#FFF'" [padding]="'12px'" [maxWidth]="266" [maxHeight]="300" [latitude]="m.latitude!"
+            [longitude]="m.longitude!" (afterClose)="selectedMarker = undefined">
             <ng-template>
-              <img [src]="'data:image/png;base64,' + m?.image" width="240">
-              <div fxLayout="row" fxLayoutAlign="space-between start">
+              <img [src]="'data:image/png;base64,' + m?.image" width="240" height="196" *ngIf="!isLoading">
+              <div [style.width.px]="240" [style.height.px]="196" fxLayout="row" fxLayoutAlign="center center"
+                class="position-relative border" *ngIf="isLoading">
+                <mat-spinner color="primary" mode="indeterminate" [diameter]="24"></mat-spinner>
+              </div>
+              <div fxLayout="row" fxLayoutAlign="space-between start" class="mt-1">
                 <span class="fw-bold">{{ m.title }}</span>
                 <span class="mat-caption text-body">{{ m.date | date: 'HH:mm:ss' }}</span>
               </div>
+              <span *ngIf="!parameterId">{{ m.count || 0 }} vehicles</span>
+              <span *ngIf="parameterId">{{ m.value || 0 }} {{ parameterId }}</span>
+              <span *ngIf="m.max" class="ms-1">(max: {{ m.max }} vehicles)</span>
             </ng-template>
           </agm-snazzy-info-window>
         </agm-map>

@@ -9,8 +9,8 @@ import { Observable } from 'rxjs';
 export class DataService {
   url: string;
 
-  constructor(private httpClient: HttpClient) {
-    this.url = `https://data-api-demo-computervisiondemo-apidata.deployments.quix.ai`//`https://data-api-${this.quixService.workspaceId}.deployments.quix.ai`
+  constructor(private httpClient: HttpClient, private quixService: QuixService) {
+    this.url = `https://data-api-${this.quixService.workspaceId}.deployments.quix.ai`
   }
 
   getMaxVehicles(): Observable<{ [key: string]: number }> {

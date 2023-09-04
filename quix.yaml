@@ -302,7 +302,7 @@ topics:
       retentionInMinutes: -1
       retentionInBytes: 262144000
   - name: max-vehicles
-    persisted: false
+    persisted: true
     configuration:
       partitions: 2
       replicationFactor: 2

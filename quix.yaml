@@ -31,6 +31,11 @@ deployments:
         description: ''
         required: true
         value: 60
+      - name: fence_coordinates
+        inputType: FreeText
+        description: Geofence coordinates. e.g. [(LAT1,LON1),(LAT2,LON2),(LAT3,LON3)]
+        required: false
+        value: ''
   - name: Computer vision object detection
     application: Computer vision object detection
     deploymentType: Service
@@ -87,7 +92,7 @@ deployments:
     publicAccess:
       enabled: true
       urlPrefix: tfl-image-processing-ui
-    desiredStatus: Stopped
+    desiredStatus: Running
     variables:
       - name: processed
         inputType: InputTopic
@@ -166,12 +171,12 @@ deployments:
         inputType: HiddenText
         description: AWS S3 access key id
         required: false
-        value: AKIA5JJJFC76CB5S6EAL
+        value: xxx
       - name: aws_access_key
         inputType: HiddenText
         description: AWS S3 access key
         required: false
-        value: 09xDju1fmuWhUqDNqd4EJMy8KL0nILls/YWTHnZI
+        value: xxx
       - name: s3_bucket
         inputType: FreeText
         description: AWS S3 bucket name
@@ -225,9 +230,9 @@ deployments:
   - name: Max Vehicle Window
     application: Starter transformation
     deploymentType: Service
-    version: max_vehicle_window_v4
+    version: 18a239cfebbd5d2b4ec99e0a4ee3487db0ad2a58
     resources:
-      cpu: 200
+      cpu: 4000
       memory: 10100
       replicas: 1
     state:
@@ -245,17 +250,17 @@ deployments:
         description: ''
         required: false
         value: max-vehicles
-  - name: Data API 2
+  - name: Data API
     application: Data API
     deploymentType: Service
-    version: 7fbfafa04d1ada55a27cda770177cadbbbc7862d
+    version: 9de265c869c3d5cab6e34373809c00d6fb7c8c4b
     resources:
-      cpu: 200
-      memory: 2600
+      cpu: 4000
+      memory: 2000
       replicas: 1
     publicAccess:
       enabled: true
-      urlPrefix: dataapi-state-2
+      urlPrefix: data-api
     state:
       enabled: true
       size: 1
@@ -271,6 +276,11 @@ deployments:
         description: ''
         required: false
         value: image-processed
+      - name: vehicles
+        inputType: InputTopic
+        description: The sum of the visible vehicles on a given camera. Vehicles are cars, busses, trucks and motorbikes
+        required: false
+        value: image-vehicles
   - name: TfL image processing UI 2
     application: TfL image processing UI 2
     deploymentType: Service

@@ -16,6 +16,11 @@ variables:
     description: ''
     defaultValue: 60
     required: true
+  - name: fence_coordinates
+    inputType: FreeText
+    description: 'Geofence coordinates. e.g. [(LAT1,LON1),(LAT2,LON2),(LAT3,LON3)]'
+    defaultValue: ''
+    required: false
 dockerfile: build/dockerfile
 runEntryPoint: main.py
 defaultFile: main.py

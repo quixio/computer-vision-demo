@@ -1,9 +1,11 @@
-import quixstreams as qx
+    import quixstreams as qx
 import os
 import json
 import requests
 import time
 from threading import Thread
+from shapely.geometry import Point, Polygon
+import ast
 import xml.etree.ElementTree as ET
 from dateutil import parser
 
@@ -11,6 +13,17 @@ from dateutil import parser
 # should the main loop run?
 run = True
 
+# setup camera coordinates and fence area
+coords = os.environ["fence_coordinates"]
+if coords == "":
+    use_geo_fence = False
+else:
+    use_geo_fence = True
+    area_of_interest = ast.literal_eval(coords)
+    print(f"Area of interest = {area_of_interest}")
+    area_of_interest_polygon = Polygon(area_of_interest)
+
+# create the QuixStreamingClient
 client = qx.QuixStreamingClient()
 api_key = os.environ["api_key"]
 
@@ -18,6 +31,26 @@ api_key = os.environ["api_key"]
 print("Opening input and output topics")
 
 producer_topic = client.get_topic_producer(os.environ["output"])
+
+
+def camera_is_in_fence(camera):
+    if not use_geo_fence: 
+        return False
+    
+    lon = float(camera["lon"])
+    lat = float(camera["lat"])
+
+    # check the ONLINE cameras position.
+    camera_position = Point(lon, lat)
+    return area_of_interest_polygon.contains(camera_position)
+
+
+def camera_is_online(camera):
+    # is the camera online?
+    enabled = next((account for account in camera['additionalProperties'] if account['key'] == "available" and account['value'] == "true"), None)
+    # print(f"Enabled?=={enabled is not None}")
+    return enabled is not None
+
 
 def get_data():
     while run:
@@ -45,21 +78,31 @@ def get_data():
         cameras_list = cameras.json()
 
         for camera in cameras_list:
-            camera_id = str(camera["id"])
+            if camera_is_online(camera):
+                use_camera = True  # it is online. Let's assume it will be used.
+                camera_id = camera["id"]
+          
             
-            try:
-                timestamp_str = files[camera_id.replace("JamCams_", "") + ".jpg"]
-            except KeyError:
-                print("No data for " + camera_id)
-                continue
+                try:
+                    timestamp_str = files[camera_id.replace("JamCams_", "") + ".jpg"]
+                except KeyError:
+                    print("No data for " + camera_id)
+                    continue
 
-            timestamp = parser.parse(timestamp_str)
+                timestamp = parser.parse(timestamp_str)
 
-            producer_topic.get_or_create_stream(camera_id).events.add_timestamp(timestamp) \
-                .add_value("camera", json.dumps(camera)) \
-                .publish()    
+                producer_topic.get_or_create_stream(camera_id).events.add_timestamp(timestamp) \
+                    .add_value("camera", json.dumps(camera)) \
+                    .publish()    
+         
 
-            print("Sent camera " + camera_id)
+                # If we are using geofencing, and the camera is outside the fence:
+                if use_geo_fence and not camera_is_in_fence(camera):
+                    # don't publish it to the producer topic.
+                    use_camera = False
+                else:
+                    message = "inside the geofence" if use_geo_fence else "online"
+                    print(f"Camera {camera_id} is {message}")
 
         sleep_time = int(os.environ["sleep_interval"]) - (time.time() - start)
 

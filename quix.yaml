@@ -14,7 +14,7 @@ deployments:
       cpu: 8000
       memory: 10240
       replicas: 1
-    desiredStatus: Stopped
+    desiredStatus: Running
     variables:
       - name: output
         inputType: OutputTopic
@@ -256,11 +256,14 @@ deployments:
   - name: TfL image processing UI 2
     application: TfL image processing UI 2
     deploymentType: Service
-    version: 77649cdf8ebfe301d207f4eb06630c140a8aed86
+    version: efb8a14e5165f0fc6ff1a04b44076a3d8f694537
     resources:
       cpu: 200
       memory: 500
       replicas: 1
+    publicAccess:
+      enabled: true
+      urlPrefix: app
     desiredStatus: Running
     variables:
       - name: processed

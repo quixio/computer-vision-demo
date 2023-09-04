@@ -212,7 +212,7 @@ deployments:
   - name: Max Vehicle Window
     application: Starter transformation
     deploymentType: Service
-    version: 42ef65af48e695879d5f7593c2924c569a0d00c5
+    version: 8a412e157378250e721f9933665eedc4f6ed84e7
     resources:
       cpu: 4000
       memory: 10100

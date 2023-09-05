@@ -117,19 +117,15 @@ def objects_for_cam(camera_id):
 
     # get the state manager for the topic
     state_manager = object_topic.get_state_manager()
-    # get the stream states
-    stream_ids = state_manager.get_stream_states()
 
-    # for each stream state:
-    for stream_id in stream_ids:
-        # get the vehicle count
-        state_vehicle_counts = state_manager.get_stream_state_manager(stream_id).get_dict_state("detected_objects").items()
-        print("streamID=" + stream_id + f"{state_vehicle_counts}")
+    # get the stream state using the camera id as the stream id
+    state_vehicle_counts = state_manager.get_stream_state_manager(camera_id).get_dict_state("detected_objects").items()
+    print("streamID=" + camera_id + f"{state_vehicle_counts}")
 
-        # if the camera in question is in this state
-        if len(state_vehicle_counts) > 0 and camera_id == state_vehicle_counts[0][0]:
-            # return it to the caller
-            return json.dumps(state_vehicle_counts[0][1])
+    # if the camera in question is in this state and has a row
+    if len(state_vehicle_counts) > 0:
+        # return it to the caller
+        return json.dumps(state_vehicle_counts[0][1])
 
     # else: camera not found in any stream state, 404
     abort(404)

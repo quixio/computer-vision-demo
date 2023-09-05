@@ -11,8 +11,8 @@ deployments:
     deploymentType: Service
     version: v1
     resources:
-      cpu: 8000
-      memory: 10240
+      cpu: 500
+      memory: 500
       replicas: 1
     desiredStatus: Running
     variables:
@@ -31,9 +31,9 @@ deployments:
     deploymentType: Service
     version: 90e2ce416a7230e55ab169885fc23edb68e6cc76
     resources:
-      cpu: 8000
-      memory: 16000
-      replicas: 2
+      cpu: 500
+      memory: 500
+      replicas: 1
     desiredStatus: Running
     variables:
       - name: input
@@ -56,8 +56,8 @@ deployments:
     deploymentType: Service
     version: v1
     resources:
-      cpu: 8000
-      memory: 8000
+      cpu: 500
+      memory: 500
       replicas: 1
     desiredStatus: Running
     variables:
@@ -94,8 +94,8 @@ deployments:
     deploymentType: Service
     version: v1
     resources:
-      cpu: 8000
-      memory: 10240
+      cpu: 500
+      memory: 500
       replicas: 1
     desiredStatus: Running
     variables:

@@ -30,7 +30,7 @@ deployments:
         inputType: FreeText
         description: ''
         required: true
-        value: 60
+        value: 15
       - name: fence_coordinates
         inputType: FreeText
         description: Geofence coordinates. e.g. [(LAT1,LON1),(LAT2,LON2),(LAT3,LON3)]

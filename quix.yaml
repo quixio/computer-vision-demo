@@ -97,7 +97,7 @@ deployments:
   - name: TFL Camera Feed 2
     application: TFL Camera Feed
     deploymentType: Service
-    version: 39aa139bade965aada138bb69758f70c54b9e009
+    version: 1bb079bd9bcc92f96a3bf45f07d10a4535035870
     resources:
       cpu: 200
       memory: 500
@@ -113,7 +113,7 @@ deployments:
         inputType: Secret
         description: ''
         required: false
-        value: api_key
+        value: TFL_feed_api_key
   - name: S3 Secret
     application: S3
     deploymentType: Service

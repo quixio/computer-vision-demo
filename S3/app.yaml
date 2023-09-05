@@ -27,9 +27,9 @@ variables:
     defaultValue: aws_access_key_id
     required: false
   - name: aws_access_key
-    inputType: HiddenText
+    inputType: Secret
     description: AWS S3 access key
-    defaultValue: YN0OO2f/ywQWVY6kQZvVjGYK3tPtsL8ACiOnc3eD
+    defaultValue: aws_access_key
     required: false
   - name: s3_bucket
     inputType: FreeText

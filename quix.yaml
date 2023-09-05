@@ -34,9 +34,9 @@ deployments:
   - name: Stream merge
     application: Stream merge
     deploymentType: Service
-    version: v1
+    version: 6b02f283591c60be15d1b318e943f54ef313f975
     resources:
-      cpu: 500
+      cpu: 900
       memory: 500
       replicas: 1
     desiredStatus: Running

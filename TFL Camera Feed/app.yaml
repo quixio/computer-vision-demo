@@ -7,11 +7,6 @@ variables:
     defaultValue: tfl-cameras
     required: true
   - name: api_key
-    inputType: HiddenText
-    description: Your TfL API Key
-    defaultValue: ba4f0a6e85ce4e02b8ae2864f9147beb
-    required: true
-  - name: api_key
     inputType: Secret
     description: ''
     defaultValue: api_key

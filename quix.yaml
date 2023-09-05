@@ -243,9 +243,6 @@ deployments:
     publicAccess:
       enabled: true
       urlPrefix: data-api
-    state:
-      enabled: true
-      size: 100
     desiredStatus: Stopped
     variables:
       - name: input

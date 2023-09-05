@@ -184,6 +184,26 @@ deployments:
         description: Timezone from the IANA Time Zone Database (e.g. Asia/Singapore) for orchestrating time-based batching and file naming.
         required: true
         value: GMT
+  - name: TFL Camera Feed 2
+    application: TFL Camera Feed
+    deploymentType: Service
+    version: 39aa139bade965aada138bb69758f70c54b9e009
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    desiredStatus: Running
+    variables:
+      - name: output
+        inputType: OutputTopic
+        description: This is the output topic for TfL camera images
+        required: true
+        value: tfl-cameras
+      - name: api_key
+        inputType: Secret
+        description: ''
+        required: false
+        value: api_key
 
 # This section describes the Topics of the data pipeline
 topics:

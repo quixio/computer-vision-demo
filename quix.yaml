@@ -219,6 +219,26 @@ deployments:
         description: ''
         required: false
         value: parameterName
+  - name: fff
+    application: fff
+    deploymentType: Service
+    version: 6edff66934603afce01da1b5c450cb6a2ecba973
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    desiredStatus: Running
+    variables:
+      - name: input
+        inputType: InputTopic
+        description: This is the input topic to read data from
+        required: true
+        value: image-processed
+      - name: output
+        inputType: OutputTopic
+        description: This is the output topic to write data to
+        required: true
+        value: output-topic
 
 # This section describes the Topics of the data pipeline
 topics:

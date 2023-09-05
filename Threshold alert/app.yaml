@@ -23,7 +23,7 @@ variables:
   - name: parameterName
     inputType: HiddenText
     description: ''
-    defaultValue: Brake
+    defaultValue: Gear
     required: false
   - name: parameterName
     inputType: Secret

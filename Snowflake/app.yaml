@@ -31,7 +31,7 @@ variables:
     description: The password of the user
     defaultValue: test
     required: true
-  - name: Snowflake_Password
+  - name: Snowflake__Password
     inputType: Secret
     description: ''
     defaultValue: snowflake_pw

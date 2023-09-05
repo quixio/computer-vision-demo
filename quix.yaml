@@ -315,7 +315,7 @@ topics:
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
-  - name: image-processed
+  - name: image-vehicles
     persisted: false
     configuration:
       partitions: 2

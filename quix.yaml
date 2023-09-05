@@ -104,9 +104,9 @@ deployments:
     deploymentType: Service
     version: 8ceae7e83b0bb056316cf7c51d2388647eadcb90
     resources:
-      cpu: 4000
-      memory: 4100
-      replicas: 15
+      cpu: 2000
+      memory: 500
+      replicas: 4
     state:
       enabled: true
       size: 1

@@ -4,13 +4,9 @@ from flask import Flask, request, abort
 from flask_cors import CORS
 import os
 import base64
+import json
 import copy
 
-
-pd.set_option('display.max_columns', None)
-
-
-print("Checking state for previous values..")
 
 # Quix injects credentials automatically to the client.
 # Alternatively, you can always pass an SDK token manually as an argument.
@@ -22,51 +18,47 @@ object_topic = client.get_topic_consumer(os.environ["objects"])
 veh_topic = client.get_topic_consumer(os.environ["vehicles"])
 
 
-def on_max_veh_stream_received_handler(stream_consumer: qx.StreamConsumer):
+def on_max_veh_stream_received_handler(handler_stream_consumer: qx.StreamConsumer):
 
     def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
-        print("Receiving max vehicle data")
+        print(f"Receiving max vehicle data {stream_consumer.stream_id}")
 
-        state = stream_consumer.get_scalar_state("max_vehicles", lambda : 0)
-
-        #print(f'MAX_VEHICLES: stream:{stream_consumer.stream_id}, data={df["max_vehicles"][0]}')
+        state = stream_consumer.get_dict_state("max_vehicles", lambda: 0)
         state[stream_consumer.stream_id] = df["max_vehicles"][0]
     
-    stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
+    handler_stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
 
-def on_object_stream_received_handler(stream_consumer: qx.StreamConsumer):
-    global detected_objects
+def on_object_stream_received_handler(handler_stream_consumer: qx.StreamConsumer):
     encoding = 'utf-8'
 
     def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
-        print("Receiving detected object data")
+        print(f"Receiving detected object data for {stream_consumer.stream_id}")
 
         base64_bytes = base64.b64encode(df["image"][0])
         base64_string = base64_bytes.decode(encoding)
 
         df["image"] = base64_string
 
-        #print(f'OBJECT DETECTED: stream:{stream_consumer.stream_id}, data={df.to_dict()}')
-        detected_objects[stream_consumer.stream_id] = df.to_dict("records")[0]
+        state = stream_consumer.get_dict_state("detected_objects", lambda: 0)
+        state[stream_consumer.stream_id] = df.to_dict("records")[0]
 
-        storage.set("detected_objects", detected_objects)
-        
-    stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
+        print(f"detected_objects::Stream Id={stream_consumer.stream_id}")
+
+    handler_stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
 
 
-def on_vehicles_stream_received_handler(stream_consumer: qx.StreamConsumer):
-    global vehicles
+def on_vehicles_stream_received_handler(handler_stream_consumer: qx.StreamConsumer):
 
     def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
-        print("Receiving vehicles data")
+        print(f"Receiving vehicles data for {stream_consumer.stream_id}")
+
         # keep only the timestamp and vehicle count.
         df = df[['timestamp', 'vehicles']]
 
-        print(f'VEHICLES: stream:{stream_consumer.stream_id}, data={df.to_dict("records")[0]}')
-        vehicles[stream_consumer.stream_id] = df.to_dict('records')[0]
-        storage.set("vehicles", vehicles)
+        state = stream_consumer.get_dict_state("vehicles", lambda: 0)
+        state[stream_consumer.stream_id] = df.to_dict("records")[0]
 
-    stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
+    handler_stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
 
 
 # init the flask app
@@ -87,35 +79,75 @@ def index():
 # create the max_vehicles route
 @app.route("/max_vehicles")
 def maximum_vehicles():
+    # get the state manager for the topic
     state_manager = max_veh_topic.get_state_manager()
+    # get the stream states
     stream_ids = state_manager.get_stream_states()
     result = {}
+    # for each stream, get the items of interest
     for stream_id in stream_ids:
-        result[stream_id] = state_manager.get_stream_state_manager(stream_id).get_scalar_state("max_vehicles")
+        result[stream_id] = state_manager.get_stream_state_manager(stream_id).get_dict_state("max_vehicles").items()
 
     return result
 
 # create the detected objects route
 @app.route("/detected_objects")
 def objects():
-    o = copy.deepcopy(detected_objects)
-    for _, val in o.items():
-        val.pop('image', None)
-    return o
+    # get the state manager for the topic
+    state_manager = object_topic.get_state_manager()
+    # get the stream states
+    stream_ids = state_manager.get_stream_states()
+
+    result = {}
+    # for each stream, get the items of interest
+    for stream_id in stream_ids:
+        state_objects = state_manager.get_stream_state_manager(stream_id).get_dict_state("detected_objects")
+        state_objects_copy = copy.deepcopy(state_objects.items())
+
+        # remove any images, we don't want them here
+        for _, val in state_objects_copy:
+            val.pop('image', None)
+        result[stream_id] = state_objects_copy
+
+    return result
 
 # create the detected objects route for specific camera
 @app.route("/detected_objects/<camera_id>")
 def objects_for_cam(camera_id):
-    print(camera_id)
-    if camera_id in detected_objects:
-        return detected_objects[camera_id]
-    else:
-        abort(404)
+
+    # get the state manager for the topic
+    state_manager = object_topic.get_state_manager()
+    # get the stream states
+    stream_ids = state_manager.get_stream_states()
+
+    # for each stream state:
+    for stream_id in stream_ids:
+        # get the vehicle count
+        state_vehicle_counts = state_manager.get_stream_state_manager(stream_id).get_dict_state("detected_objects").items()
+        print("streamID=" + stream_id + f"{state_vehicle_counts}")
+
+        # if the camera in question is in this state
+        if len(state_vehicle_counts) > 0 and camera_id == state_vehicle_counts[0][0]:
+            # return it to the caller
+            return json.dumps(state_vehicle_counts[0][1])
+
+    # else: camera not found in any stream state, 404
+    abort(404)
 
 # create the vehicles route
 @app.route("/vehicles")
 def cam_vehicles():
-    return vehicles
+    state_manager = veh_topic.get_state_manager()
+    stream_ids = state_manager.get_stream_states()
+
+    result = {}
+    # for each stream state:
+    for stream_id in stream_ids:
+        # get the vehicle count
+        state_vehicle_counts = state_manager.get_stream_state_manager(stream_id).get_dict_state("vehicles").items()
+        result[stream_id] = state_vehicle_counts
+
+    return result
 
 
 if __name__ == "__main__":

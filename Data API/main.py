@@ -9,35 +9,8 @@ import copy
 
 pd.set_option('display.max_columns', None)
 
-# keep the max vehicles for each cam
-max_vehicles = {}
-#keep the latest detected objects for each cam
-detected_objects = {}
-# keep the vehicles for each cam
-vehicles = {}
-
-# get a state manager from the Quix client library
-storage = qx.LocalFileStorage()
 
 print("Checking state for previous values..")
-# if max_vehicles is in state, init the property with it
-if storage.contains_key("max_vehicles"):
-    max_vehicles = storage.get("max_vehicles")
-    print("max_vehicles loaded from state")
-
-# if detected_objects is in state, init the property with it
-if storage.contains_key("detected_objects"):
-    detected_objects = storage.get("detected_objects")
-    print("detected_objects loaded from state")
-
-# if vehicles is in state, init the property with it
-if storage.contains_key("vehicles"):
-    vehicles = storage.get("vehicles")
-    # sometimes image is seen in this data.
-    # it's not needed so remove it.
-    for key, value in vehicles.items():
-        value.pop('image', None)
-    print("vehicles loaded from state")
 
 # Quix injects credentials automatically to the client.
 # Alternatively, you can always pass an SDK token manually as an argument.
@@ -50,14 +23,14 @@ veh_topic = client.get_topic_consumer(os.environ["vehicles"])
 
 
 def on_max_veh_stream_received_handler(stream_consumer: qx.StreamConsumer):
-    global max_vehicles
 
     def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
         print("Receiving max vehicle data")
 
+        state = stream_consumer.get_scalar_state("max_vehicles", lambda : 0)
+
         #print(f'MAX_VEHICLES: stream:{stream_consumer.stream_id}, data={df["max_vehicles"][0]}')
-        max_vehicles[stream_consumer.stream_id] = df["max_vehicles"][0]
-        storage.set("max_vehicles", max_vehicles)
+        state[stream_consumer.stream_id] = df["max_vehicles"][0]
     
     stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
 
@@ -82,7 +55,7 @@ def on_object_stream_received_handler(stream_consumer: qx.StreamConsumer):
 
 
 def on_vehicles_stream_received_handler(stream_consumer: qx.StreamConsumer):
-    global detected_objects
+    global vehicles
 
     def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
         print("Receiving vehicles data")
@@ -91,7 +64,7 @@ def on_vehicles_stream_received_handler(stream_consumer: qx.StreamConsumer):
 
         print(f'VEHICLES: stream:{stream_consumer.stream_id}, data={df.to_dict("records")[0]}')
         vehicles[stream_consumer.stream_id] = df.to_dict('records')[0]
-        storage.set("vehicles", detected_objects)
+        storage.set("vehicles", vehicles)
 
     stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
 
@@ -114,7 +87,13 @@ def index():
 # create the max_vehicles route
 @app.route("/max_vehicles")
 def maximum_vehicles():
-    return max_vehicles
+    state_manager = max_veh_topic.get_state_manager()
+    stream_ids = state_manager.get_stream_states()
+    result = {}
+    for stream_id in stream_ids:
+        result[stream_id] = state_manager.get_stream_state_manager(stream_id).get_scalar_state("max_vehicles")
+
+    return result
 
 # create the detected objects route
 @app.route("/detected_objects")

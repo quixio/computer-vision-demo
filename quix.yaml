@@ -184,7 +184,7 @@ deployments:
         description: ''
         required: false
         value: api_key
-  - name: S3
+  - name: S3 Secret
     application: S3
     deploymentType: Service
     version: 9710bfa39389e3a97ec632c67f86d6f1eb6ad870

@@ -42,7 +42,7 @@ deployments:
     version: b81c00dd94250a3525c273280243435bcf5cb1da
     resources:
       cpu: 4000
-      memory: 4000
+      memory: 2000
       replicas: 4
     desiredStatus: Running
     variables:

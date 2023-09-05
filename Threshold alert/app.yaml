@@ -21,11 +21,6 @@ variables:
     defaultValue: 1
     required: true
   - name: parameterName
-    inputType: HiddenText
-    description: ''
-    defaultValue: Gear
-    required: false
-  - name: parameterName
     inputType: Secret
     description: ''
     defaultValue: parameterName

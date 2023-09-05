@@ -242,7 +242,7 @@ deployments:
     resources:
       cpu: 4000
       memory: 2000
-      replicas: 1
+      replicas: 20
     publicAccess:
       enabled: true
       urlPrefix: data-api

@@ -250,3 +250,10 @@ topics:
       replicationFactor: 1
       retentionInMinutes: 3200
       retentionInBytes: 262144000
+  - name: threshold-alert-output
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: 43200
+      retentionInBytes: 262144000

@@ -208,7 +208,7 @@ deployments:
         inputType: FreeText
         description: Message count in the batch (0 saves data as they arrive, -1 disables batching based on message count)
         required: false
-        value: 0
+        value: 1000
       - name: parameters
         inputType: FreeText
         description: Comma separated list of parameters to look for in the received data

@@ -11,8 +11,8 @@ deployments:
     deploymentType: Service
     version: f641b39612e7609e486d8a66c7eb757d26ad7d1e
     resources:
-      cpu: 8000
-      memory: 10240
+      cpu: 1000
+      memory: 1000
       replicas: 1
     desiredStatus: Running
     variables:
@@ -42,7 +42,7 @@ deployments:
     version: b81c00dd94250a3525c273280243435bcf5cb1da
     resources:
       cpu: 4000
-      memory: 16000
+      memory: 2000
       replicas: 4
     desiredStatus: Running
     variables:
@@ -64,11 +64,11 @@ deployments:
   - name: Stream merge
     application: Stream merge
     deploymentType: Service
-    version: 1fd04bb26cabab9b08d5ff171ab04d0f57f0865d
+    version: 6b02f283591c60be15d1b318e943f54ef313f975
     resources:
-      cpu: 8000
-      memory: 8000
-      replicas: 1
+      cpu: 2000
+      memory: 1000
+      replicas: 2
     desiredStatus: Running
     variables:
       - name: input
@@ -104,9 +104,9 @@ deployments:
     deploymentType: Service
     version: 8ceae7e83b0bb056316cf7c51d2388647eadcb90
     resources:
-      cpu: 4000
-      memory: 4100
-      replicas: 15
+      cpu: 2000
+      memory: 500
+      replicas: 4
     state:
       enabled: true
       size: 1
@@ -352,7 +352,7 @@ topics:
       retentionInMinutes: -1
       retentionInBytes: 262144000
   - name: image-processed
-    persisted: true
+    persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2

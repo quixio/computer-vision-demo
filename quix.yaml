@@ -245,7 +245,7 @@ deployments:
       urlPrefix: data-api
     state:
       enabled: true
-      size: 2
+      size: 100
     desiredStatus: Stopped
     variables:
       - name: input

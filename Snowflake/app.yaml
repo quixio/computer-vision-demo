@@ -31,6 +31,11 @@ variables:
     description: The password of the user
     defaultValue: test
     required: true
+  - name: Snowflake_Password
+    inputType: Secret
+    description: ''
+    defaultValue: snowflake_pw
+    required: false
 dockerfile: build/dockerfile
 runEntryPoint: Quix.Snowflake.Writer/Quix.Snowflake.Writer.csproj
 defaultFile: Quix.Snowflake.Writer/Worker.cs

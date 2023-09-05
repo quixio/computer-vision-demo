@@ -274,6 +274,20 @@ deployments:
         description: ''
         required: false
         value: parameterName
+  - name: Secret Demo
+    application: Secret Demo
+    deploymentType: Service
+    version: 1980ca38df7dfec1f048afba814a31922e461a06
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    variables:
+      - name: Topic
+        inputType: OutputTopic
+        description: Name of the output topic to write into
+        required: true
+        value: f1-data
 
 # This section describes the Topics of the data pipeline
 topics:
@@ -313,6 +327,13 @@ topics:
       retentionInMinutes: 60
       retentionInBytes: 52428800
   - name: output-topic
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: 43200
+      retentionInBytes: 262144000
+  - name: f1-data
     persisted: false
     configuration:
       partitions: 2

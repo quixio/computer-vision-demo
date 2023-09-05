@@ -11,8 +11,8 @@ deployments:
     deploymentType: Service
     version: v1.2-geofence
     resources:
-      cpu: 8000
-      memory: 10240
+      cpu: 1000
+      memory: 1000
       replicas: 1
     desiredStatus: Stopped
     variables:
@@ -36,10 +36,10 @@ deployments:
     deploymentType: Service
     version: 1fd04bb26cabab9b08d5ff171ab04d0f57f0865d
     resources:
-      cpu: 8000
-      memory: 16000
-      replicas: 2
-    desiredStatus: Stopped
+      cpu: 4000
+      memory: 2000
+      replicas: 4
+    desiredStatus: Running
     variables:
       - name: input
         inputType: InputTopic
@@ -59,11 +59,11 @@ deployments:
   - name: Stream merge
     application: Stream merge
     deploymentType: Service
-    version: 1fd04bb26cabab9b08d5ff171ab04d0f57f0865d
+    version: 6b02f283591c60be15d1b318e943f54ef313f975
     resources:
-      cpu: 8000
-      memory: 8000
-      replicas: 1
+      cpu: 2000
+      memory: 1000
+      replicas: 2
     desiredStatus: Running
     variables:
       - name: input
@@ -99,10 +99,13 @@ deployments:
     deploymentType: Service
     version: v1
     resources:
-      cpu: 8000
-      memory: 10240
-      replicas: 1
-    desiredStatus: Stopped
+      cpu: 2000
+      memory: 500
+      replicas: 4
+    state:
+      enabled: true
+      size: 1
+    desiredStatus: Running
     variables:
       - name: input
         inputType: InputTopic
@@ -312,7 +315,7 @@ topics:
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
-  - name: image-vehicles
+  - name: image-processed
     persisted: false
     configuration:
       partitions: 2

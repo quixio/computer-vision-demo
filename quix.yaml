@@ -192,7 +192,7 @@ deployments:
       cpu: 700
       memory: 500
       replicas: 1
-    desiredStatus: Running
+    desiredStatus: Stopped
     variables:
       - name: Broker__TopicName
         inputType: InputTopic

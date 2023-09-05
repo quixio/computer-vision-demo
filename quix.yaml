@@ -97,7 +97,7 @@ deployments:
       cpu: 200
       memory: 200
       replicas: 1
-    desiredStatus: Running
+    desiredStatus: Stopped
     variables:
       - name: input
         inputType: InputTopic
@@ -207,35 +207,7 @@ deployments:
 
 # This section describes the Topics of the data pipeline
 topics:
-  - name: output-topic
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: 60
-      retentionInBytes: 52428800
-  - name: topic
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: 60
-      retentionInBytes: 52428800
-  - name: help-me
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: 60
-      retentionInBytes: 52428800
-  - name: tfl-cameras
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: 500
-      retentionInBytes: 262144000
-  - name: image-raw
+  - name: image-processed-merged
     persisted: false
     configuration:
       partitions: 2
@@ -249,10 +221,38 @@ topics:
       replicationFactor: 2
       retentionInMinutes: 500
       retentionInBytes: 262144000
-  - name: image-processed-merged
+  - name: image-raw
     persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2
       retentionInMinutes: 500
       retentionInBytes: 262144000
+  - name: tfl-cameras
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: 500
+      retentionInBytes: 262144000
+  - name: help-me
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: 60
+      retentionInBytes: 52428800
+  - name: topic
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: 60
+      retentionInBytes: 52428800
+  - name: output-topic
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: 60
+      retentionInBytes: 52428800

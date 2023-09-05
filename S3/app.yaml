@@ -19,7 +19,7 @@ variables:
   - name: parameters
     inputType: FreeText
     description: Comma separated list of parameters to look for in the received data
-    defaultValue: ''
+    defaultValue: bicycle, car, truck, person
     required: true
   - name: aws_access_key_id
     inputType: Secret

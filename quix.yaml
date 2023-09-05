@@ -184,6 +184,76 @@ deployments:
         description: ''
         required: false
         value: api_key
+  - name: S3
+    application: S3
+    deploymentType: Service
+    version: 9710bfa39389e3a97ec632c67f86d6f1eb6ad870
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    desiredStatus: Running
+    variables:
+      - name: input
+        inputType: InputTopic
+        description: Input topic
+        required: true
+        value: image-processed
+      - name: batch_time_interval
+        inputType: FreeText
+        description: Time interval in seconds to save data to S3 (set -1 to disable batching based on time)
+        required: false
+        value: 3600
+      - name: batch_msg_count
+        inputType: FreeText
+        description: Message count in the batch (0 saves data as they arrive, -1 disables batching based on message count)
+        required: false
+        value: 0
+      - name: parameters
+        inputType: FreeText
+        description: Comma separated list of parameters to look for in the received data
+        required: true
+        value: bicycle, car, truck, person
+      - name: aws_access_key_id
+        inputType: Secret
+        description: AWS S3 access key id
+        required: false
+        value: aws_access_key_id
+      - name: aws_access_key
+        inputType: Secret
+        description: AWS S3 access key
+        required: false
+        value: aws_access_key
+      - name: s3_bucket
+        inputType: FreeText
+        description: AWS S3 bucket name
+        required: true
+        value: steve-demo-quix
+      - name: prefix
+        inputType: FreeText
+        description: File name prefix
+        required: false
+        value: demo_
+      - name: s3_folder
+        inputType: FreeText
+        description: Name of the S3 folder to save to
+        required: false
+        value: computer_vision_demo
+      - name: s3_folder_per_stream
+        inputType: FreeText
+        description: Flag to save different streams to different S3 folders.
+        required: false
+        value: false
+      - name: suffix
+        inputType: FreeText
+        description: File suffix (e.g. file type extension)
+        required: false
+        value: .csv
+      - name: timezone
+        inputType: FreeText
+        description: Timezone from the IANA Time Zone Database (e.g. Asia/Singapore) for orchestrating time-based batching and file naming.
+        required: true
+        value: GMT
 
 # This section describes the Topics of the data pipeline
 topics:

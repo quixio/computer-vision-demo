@@ -190,28 +190,28 @@ topics:
   - name: image-processed-merged
     persisted: false
     configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
+      partitions: 1
+      replicationFactor: 1
+      retentionInMinutes: 3200
+      retentionInBytes: 3200
   - name: image-processed
     persisted: false
     configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
+      partitions: 1
+      replicationFactor: 1
+      retentionInMinutes: 3200
+      retentionInBytes: 3200
   - name: image-raw
     persisted: false
     configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
+      partitions: 1
+      replicationFactor: 1
+      retentionInMinutes: 3200
       retentionInBytes: 262144000
   - name: tfl-cameras
     persisted: false
     configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
+      partitions: 1
+      replicationFactor: 1
+      retentionInMinutes: 3200
       retentionInBytes: 262144000

@@ -238,7 +238,7 @@ deployments:
   - name: Data API
     application: Data API
     deploymentType: Service
-    version: c3c2376e7b97d1cae49457bd52efe2197deefc3a
+    version: e63541f0c1a6731116684c55819e5ad2a8f0cc20
     resources:
       cpu: 4000
       memory: 2000

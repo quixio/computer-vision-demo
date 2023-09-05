@@ -25,6 +25,11 @@ variables:
     description: ''
     defaultValue: parameterName
     required: false
+  - name: parameterName
+    inputType: HiddenText
+    description: ''
+    defaultValue: Gear
+    required: false
 dockerfile: build/dockerfile
 runEntryPoint: main.py
 defaultFile: threshold_function.py

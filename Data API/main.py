@@ -86,7 +86,8 @@ def maximum_vehicles():
     result = {}
     # for each stream, get the items of interest
     for stream_id in stream_ids:
-        result[stream_id] = state_manager.get_stream_state_manager(stream_id).get_dict_state("max_vehicles").items()
+        if state_manager.get_stream_state_manager(stream_id).get_dict_state("max_vehicles").items():
+            result[stream_id] = state_manager.get_stream_state_manager(stream_id).get_dict_state("max_vehicles").items()[0][1]
 
     return result
 

@@ -263,6 +263,24 @@ deployments:
         description: The sum of the visible vehicles on a given camera. Vehicles are cars, busses, trucks and motorbikes
         required: false
         value: image-vehicles
+  - name: TfL image processing UI 2
+    application: TfL image processing UI 2
+    deploymentType: Service
+    version: 93e95f7ba3e7c50f3f0d60b1958d471d8ad8b47a
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    publicAccess:
+      enabled: true
+      urlPrefix: tflimageprocessingui2-93e95f7
+    desiredStatus: Running
+    variables:
+      - name: processed
+        inputType: InputTopic
+        description: The topic to read from
+        required: true
+        value: image-processed-merged
 
 # This section describes the Topics of the data pipeline
 topics:

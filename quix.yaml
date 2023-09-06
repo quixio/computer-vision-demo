@@ -173,7 +173,7 @@ deployments:
         inputType: Secret
         description: AWS S3 access key
         required: false
-        value: aws_access_key
+        value: Banana
       - name: s3_bucket
         inputType: FreeText
         description: AWS S3 bucket name

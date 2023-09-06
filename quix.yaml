@@ -113,7 +113,7 @@ deployments:
         inputType: Secret
         description: ''
         required: false
-        value: TFL_feed_api_key
+        value: camerana
   - name: S3 Secret
     application: S3
     deploymentType: Service

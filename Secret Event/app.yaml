@@ -10,11 +10,6 @@ variables:
     description: This is the output topic for alerts
     defaultValue: threshold-alert-output
     required: true
-  - name: parameterName
-    inputType: FreeText
-    description: This is the stream's parameter to track
-    defaultValue: ParameterA
-    required: true
   - name: thresholdValue
     inputType: FreeText
     description: This is the threshold's numerical value

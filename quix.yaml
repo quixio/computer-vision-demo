@@ -31,9 +31,9 @@ deployments:
     deploymentType: Service
     version: 90e2ce416a7230e55ab169885fc23edb68e6cc76
     resources:
-      cpu: 200
-      memory: 200
-      replicas: 2
+      cpu: 500
+      memory: 500
+      replicas: 1
     desiredStatus: Stopped
     variables:
       - name: input
@@ -54,10 +54,10 @@ deployments:
   - name: Stream merge
     application: Stream merge
     deploymentType: Service
-    version: v1
+    version: 6b02f283591c60be15d1b318e943f54ef313f975
     resources:
-      cpu: 200
-      memory: 200
+      cpu: 900
+      memory: 500
       replicas: 1
     desiredStatus: Stopped
     variables:
@@ -94,8 +94,8 @@ deployments:
     deploymentType: Service
     version: v1
     resources:
-      cpu: 200
-      memory: 200
+      cpu: 500
+      memory: 500
       replicas: 1
     desiredStatus: Stopped
     variables:
@@ -114,10 +114,30 @@ deployments:
         description: The numer of images per second
         required: true
         value: 100
-  - name: S3 new
+  - name: TFL Camera Feed 2
+    application: TFL Camera Feed
+    deploymentType: Service
+    version: 1bb079bd9bcc92f96a3bf45f07d10a4535035870
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    desiredStatus: Stopped
+    variables:
+      - name: output
+        inputType: OutputTopic
+        description: This is the output topic for TfL camera images
+        required: true
+        value: tfl-cameras
+      - name: api_key
+        inputType: Secret
+        description: ''
+        required: false
+        value: camerana
+  - name: S3 Secret
     application: S3
     deploymentType: Service
-    version: 75b6abfe2842349b1fc13453e07bc30e4d7a2747
+    version: 9710bfa39389e3a97ec632c67f86d6f1eb6ad870
     resources:
       cpu: 200
       memory: 500
@@ -145,15 +165,15 @@ deployments:
         required: true
         value: bicycle, car, truck, person
       - name: aws_access_key_id
-        inputType: HiddenText
+        inputType: Secret
         description: AWS S3 access key id
         required: false
-        value: AKIA5JJJFC76H52H62WO
+        value: aws_access_key_id
       - name: aws_access_key
-        inputType: HiddenText
+        inputType: Secret
         description: AWS S3 access key
         required: false
-        value: BQla1KEQr5WoptF9TsDxTFeP48Wa+Sh8H7gR2ji5
+        value: aws_access_key
       - name: s3_bucket
         inputType: FreeText
         description: AWS S3 bucket name
@@ -168,7 +188,7 @@ deployments:
         inputType: FreeText
         description: Name of the S3 folder to save to
         required: false
-        value: computer_vision_demo_data
+        value: computer_vision_demo
       - name: s3_folder_per_stream
         inputType: FreeText
         description: Flag to save different streams to different S3 folders.
@@ -184,72 +204,159 @@ deployments:
         description: Timezone from the IANA Time Zone Database (e.g. Asia/Singapore) for orchestrating time-based batching and file naming.
         required: true
         value: GMT
-  - name: bob
-    application: bob
+  - name: Snowflake
+    application: Snowflake
     deploymentType: Service
-    version: 5f4c507bf2923541e799c06a2830ba2174649c9f
+    version: d169c7593bf684467c5c24df8a35f9c962279cc1
+    resources:
+      cpu: 700
+      memory: 500
+      replicas: 1
+    desiredStatus: Stopped
+    variables:
+      - name: Broker__TopicName
+        inputType: InputTopic
+        description: Name of the input topic to read from
+        required: true
+        value: image-raw
+      - name: Snowflake__Locator
+        inputType: FreeText
+        description: The locator be found under Admin/Accounts or in the URL
+        required: true
+        value: test
+      - name: Snowflake__Region
+        inputType: FreeText
+        description: Check your snowflake url or readme for details to acquire the region
+        required: true
+        value: test
+      - name: Snowflake__Database
+        inputType: FreeText
+        description: The name of the database to persist to
+        required: true
+        value: test
+      - name: Snowflake__User
+        inputType: FreeText
+        description: The username of the user the sink should use to interact with the database
+        required: true
+        value: test
+      - name: Snowflake__Password
+        inputType: Secret
+        description: ''
+        required: false
+        value: snowflake_pw
+  - name: Snowflake 2
+    application: Snowflake
+    deploymentType: Service
+    version: 3262b3533c8e89ff1ee5502b30d204c47dfe7479
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    desiredStatus: Stopped
+    variables:
+      - name: Broker__TopicName
+        inputType: InputTopic
+        description: Name of the input topic to read from
+        required: true
+        value: image-raw
+      - name: Snowflake__Locator
+        inputType: FreeText
+        description: The locator be found under Admin/Accounts or in the URL
+        required: true
+        value: test
+      - name: Snowflake__Region
+        inputType: FreeText
+        description: Check your snowflake url or readme for details to acquire the region
+        required: true
+        value: test
+      - name: Snowflake__Database
+        inputType: FreeText
+        description: The name of the database to persist to
+        required: true
+        value: test
+      - name: Snowflake__User
+        inputType: FreeText
+        description: The username of the user the sink should use to interact with the database
+        required: true
+        value: test
+      - name: Snowflake__Password
+        inputType: HiddenText
+        description: The password of the user
+        required: true
+        value: test
+  - name: TFL Camera Feed
+    application: TFL Camera Feed
+    deploymentType: Service
+    version: 1bb079bd9bcc92f96a3bf45f07d10a4535035870
     resources:
       cpu: 200
       memory: 500
       replicas: 1
     desiredStatus: Running
     variables:
-      - name: input
-        inputType: InputTopic
-        description: This is the input topic to read data from
-        required: true
-        value: help-me
       - name: output
         inputType: OutputTopic
-        description: This is the output topic to write data to
+        description: This is the output topic for TfL camera images
         required: true
-        value: output-topic
+        value: tfl-cameras
+      - name: api_key
+        inputType: Secret
+        description: ''
+        required: false
+        value: TFL_feed_api_key
+  - name: Demo Data
+    application: Demo Data
+    deploymentType: Job
+    version: 6ef79a7a04a854fed1939aacbccbfca45737337b
+    resources:
+      cpu: 200
+      memory: 200
+      replicas: 1
+    variables:
+      - name: Topic
+        inputType: OutputTopic
+        description: Name of the output topic to write into
+        required: true
+        value: f1-data
 
 # This section describes the Topics of the data pipeline
 topics:
   - name: image-processed-merged
     persisted: false
     configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: 500
-      retentionInBytes: 262144000
+      partitions: 1
+      replicationFactor: 1
+      retentionInMinutes: 3200
+      retentionInBytes: 3200
   - name: image-processed
     persisted: false
     configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: 500
-      retentionInBytes: 262144000
+      partitions: 1
+      replicationFactor: 1
+      retentionInMinutes: 3200
+      retentionInBytes: 3200
   - name: image-raw
     persisted: false
     configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: 500
+      partitions: 1
+      replicationFactor: 1
+      retentionInMinutes: 3200
       retentionInBytes: 262144000
   - name: tfl-cameras
     persisted: false
     configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: 500
+      partitions: 1
+      replicationFactor: 1
+      retentionInMinutes: 3200
       retentionInBytes: 262144000
-  - name: help-me
+  - name: threshold-alert-output
     persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2
       retentionInMinutes: 60
       retentionInBytes: 52428800
-  - name: topic
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: 60
-      retentionInBytes: 52428800
-  - name: output-topic
+  - name: f1-data
     persisted: false
     configuration:
       partitions: 2

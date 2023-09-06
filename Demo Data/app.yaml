@@ -1,0 +1,11 @@
+name: Demo Data
+language: python
+variables:
+  - name: Topic
+    inputType: OutputTopic
+    description: Name of the output topic to write into
+    defaultValue: f1-data
+    required: true
+dockerfile: build/dockerfile
+runEntryPoint: main.py
+defaultFile: main.py

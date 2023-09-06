@@ -1,0 +1,30 @@
+name: Secret Event
+language: python
+variables:
+  - name: input
+    inputType: InputTopic
+    description: This is the input topic for raw data
+    required: true
+  - name: output
+    inputType: OutputTopic
+    description: This is the output topic for alerts
+    defaultValue: threshold-alert-output
+    required: true
+  - name: thresholdValue
+    inputType: FreeText
+    description: This is the threshold's numerical value
+    defaultValue: 100
+    required: true
+  - name: bufferMilliSeconds
+    inputType: FreeText
+    description: How long to wait before waiting for threshold checking (milliseconds)
+    defaultValue: 1
+    required: true
+  - name: parameterName
+    inputType: Secret
+    description: ''
+    defaultValue: Banana
+    required: false
+dockerfile: build/dockerfile
+runEntryPoint: main.py
+defaultFile: threshold_function.py

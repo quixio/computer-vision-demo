@@ -108,7 +108,8 @@ def objects():
         # remove any images, we don't want them here
         for _, val in state_objects_copy:
             val.pop('image', None)
-        result[stream_id] = state_objects_copy
+        if len(state_objects_copy) > 0:
+            result[stream_id] = state_objects_copy[0][1]
 
     return result
 
@@ -142,7 +143,8 @@ def cam_vehicles():
     for stream_id in stream_ids:
         # get the vehicle count
         state_vehicle_counts = state_manager.get_stream_state_manager(stream_id).get_dict_state("vehicles").items()
-        result[stream_id] = state_vehicle_counts
+        if len(state_vehicle_counts) > 0:
+            result[stream_id] = state_vehicle_counts[0][1]
 
     return result
 

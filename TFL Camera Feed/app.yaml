@@ -9,7 +9,7 @@ variables:
   - name: api_key
     inputType: Secret
     description: ''
-    defaultValue: TFL_feed_api_key
+    defaultValue: api_key
     required: false
 dockerfile: build/dockerfile
 runEntryPoint: main.py

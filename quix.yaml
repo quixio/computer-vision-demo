@@ -274,7 +274,7 @@ deployments:
     publicAccess:
       enabled: true
       urlPrefix: tflimageprocessingui2-93e95f7
-    desiredStatus: Running
+    desiredStatus: Stopped
     variables:
       - name: processed
         inputType: InputTopic

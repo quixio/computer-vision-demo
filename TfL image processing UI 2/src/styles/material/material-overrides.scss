@@ -1,0 +1,35 @@
+.mat-raised-button,
+.mat-stroked-button,
+.mat-flat-button {
+  font-size: 18px;
+  min-width: 80px;
+  line-height: 40px;
+
+  &.small {
+    font-size: 14px;
+    line-height: 30px;
+    min-width: 60px;
+    padding: 0 8px;
+  }
+}
+
+// Form field
+.mat-form-field {
+  &.mat-form-field-has-label {
+    .mat-form-field-infix {
+      padding: 0 !important;
+      line-height: 2.6em;
+    }
+    &.mat-form-field-appearance-outline {
+      .mat-form-field-label {
+        top: 0.84375em;
+        margin-top: -0.25em;
+      }
+    }
+    &.mat-form-field-should-float {
+      .mat-form-field-label {
+        transform: translateY(-1.2em) scale(.75);
+      }
+    }
+  }
+}

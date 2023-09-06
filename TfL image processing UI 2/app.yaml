@@ -1,0 +1,10 @@
+name: TfL image processing UI 2
+language: nodejs
+variables:
+  - name: processed
+    inputType: InputTopic
+    description: The topic to read from
+    defaultValue: image-processed-merged
+    required: true
+dockerfile: src/build/dockerfile
+defaultFile: src/app/services/quix.service.ts

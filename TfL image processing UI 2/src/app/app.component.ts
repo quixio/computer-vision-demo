@@ -94,7 +94,7 @@ export class AppComponent implements AfterViewInit {
             if (data.numericValues[this.parameterId]) markerData.value = data.numericValues[this.parameterId][0];
           }
 
-          if (data.topicName === 'max_vehicles') {
+          if (data.topicName === 'max-vehicles') {
             key = data.tagValues['cam'][0];
             if (data.numericValues['max_vehicles']) this._maxVehicles[key] = data.numericValues['max_vehicles'][0];
             markerData.max = this._maxVehicles[key];
@@ -146,7 +146,7 @@ export class AppComponent implements AfterViewInit {
               max: maxVehicles[key],
               image: data?.image,
               date: new Date(data.timestamp / 1000000),
-              count: vehicles[key].vehicles || 0,
+              count: vehicles[key]?.vehicles || 0,
               value: data[this.parameterId] || 0
             }
             markersData.push(markerData);

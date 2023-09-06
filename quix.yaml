@@ -168,7 +168,7 @@ deployments:
         inputType: Secret
         description: AWS S3 access key id
         required: false
-        value: aws_access_key_id
+        value: Bonana
       - name: aws_access_key
         inputType: Secret
         description: AWS S3 access key

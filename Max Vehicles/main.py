@@ -7,11 +7,13 @@ storage = qx.LocalFileStorage()
 
 client = qx.QuixStreamingClient()
 
-topic_consumer = client.get_topic_consumer(os.environ["input"], consumer_group = "empty-transformation", 
-                                            auto_offset_reset = qx.AutoOffsetReset.Latest)
+topic_consumer = client.get_topic_consumer(os.environ["input"], consumer_group="max-vehicles",
+                                           auto_offset_reset=qx.AutoOffsetReset.Latest)
 topic_producer = client.get_topic_producer(os.environ["output"])
 
 pd.set_option('display.max_columns', None)
+
+# todo load cams from state
 
 cams = {
     'window_data': {},
@@ -25,39 +27,6 @@ window_length_mins = 0
 window_length_secs = 0
 window = ""
 
-def set_state():
-    # build the object we want to store in state
-    o = {
-        'start_of_window': start_of_window,
-        'end_of_window': end_of_window,
-        'window': window,
-        'cams': cams
-    }
-    storage.set("state", o)
-
-def get_state():
-    global start_of_window
-    global end_of_window
-    global window
-    global cams
-
-    # return without changing anything if there is nothing in state
-    if not storage.contains_key("state"):
-        return
-
-    print("Loading properties from state..")
-    
-    # get the state value and set the properties with it
-    o = storage.get("state")
-
-    print("==STATE OBJECT==")
-    print(o)
-    print("================")
-
-    start_of_window = o['start_of_window']
-    end_of_window = o['end_of_window']
-    window = o['window']
-    cams = o['cams']
 
 def update_window():
     global end_of_window
@@ -65,7 +34,8 @@ def update_window():
     global window
 
     end_of_window = datetime.datetime.utcnow()
-    start_of_window = end_of_window - datetime.timedelta(days = window_length_days, minutes = window_length_mins, seconds = window_length_secs)
+    start_of_window = end_of_window - datetime.timedelta(days=window_length_days, minutes=window_length_mins,
+                                                         seconds=window_length_secs)
 
     time_difference = end_of_window - start_of_window
     days = time_difference.days
@@ -81,15 +51,17 @@ def ts_to_date(ts):
     return dt
 
 
-def process_data(stream_id, new_data_frame):
+def process_data(stream_consumer, new_data_frame):
     global cams
 
-    new_data_frame["image"] = "" # we dont need the image for this path in the pipeline
+    stream_id = stream_consumer.stream_id
+
+    new_data_frame["image"] = ""  # we don't need the image for this path in the pipeline
 
     new_data_frame['ts'] = ts_to_date(new_data_frame["timestamp"][0])
 
     if stream_id not in cams:
-        cams[stream_id] = { "window_data": {}, "stream_vehicles": {} }
+        cams[stream_id] = {"window_data": {}, "stream_vehicles": {}}
 
     update_window()
     for i, row in new_data_frame.iterrows():
@@ -102,12 +74,10 @@ def process_data(stream_id, new_data_frame):
             # add to dict
             cams[stream_id]["window_data"][check_date] = row
 
-            # update state with this new information
-            set_state()
-
     # remove any data outside the new start and end window values
-    window_data_inside = {key: value for key, value in cams[stream_id]["window_data"].items() if start_of_window <= key <= end_of_window}
-    
+    window_data_inside = {key: value for key, value in cams[stream_id]["window_data"].items() if
+                          start_of_window <= key <= end_of_window}
+
     if window_data_inside:
         # update the data with the data that is currently in the window
         cams[stream_id]["window_data"] = window_data_inside
@@ -119,17 +89,22 @@ def process_data(stream_id, new_data_frame):
         # for each row inside the window, find the highest vehicle count
         for key, df in window_data_inside.items():
             max_vehicles_in_df = df['vehicles']
-            if max_vehicles_in_df > highest_vehicles:
+
+            # get the highest vehicles for stream
+            state = stream_consumer.get_dict_state("highest_vehicles", lambda: 0)
+            state_value = 0
+            if len(state.items()) > 0:
+                state_value = state[stream_id]["max"]
+            else:
+                state[stream_id] = {'max': 0}
+
+            if max_vehicles_in_df > state_value:
+                state[stream_id] = {'max': max_vehicles_in_df}
                 highest_vehicles = max_vehicles_in_df
-                highest_vehicles_ts = df["ts"]
+            else:
+                highest_vehicles = state_value
 
         print(f"Highest Number of Vehicles:{highest_vehicles} found at {highest_vehicles_ts}")
-        
-        # record the highest vehicle count against the stream id
-        cams[stream_id]["stream_vehicles"][stream_id] = highest_vehicles
-        
-        # update state with this new information
-        set_state()
 
         data = {'timestamp': datetime.datetime.utcnow(),
                 'max_vehicles': [highest_vehicles],
@@ -140,16 +115,16 @@ def process_data(stream_id, new_data_frame):
         df2 = pd.DataFrame(data)
 
         # publish the new dataframe
-        stream_producer = topic_producer.get_or_create_stream(stream_id = stream_id)
+        stream_producer = topic_producer.get_or_create_stream(stream_id=stream_id)
         stream_producer.timeseries.buffer.publish(df2)
 
 
 def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
     print(stream_consumer.stream_id)
-    #if stream_consumer.stream_id == "JamCams_00002.00635":
-    
+    # if stream_consumer.stream_id == "JamCams_00002.00635":
+
     update_window()
-    process_data(stream_consumer.stream_id, df)
+    process_data(stream_consumer, df)
 
 
 def on_stream_received_handler(stream_consumer: qx.StreamConsumer):
@@ -160,9 +135,6 @@ def on_stream_received_handler(stream_consumer: qx.StreamConsumer):
 topic_consumer.on_stream_received = on_stream_received_handler
 
 print("Listening to streams. Press CTRL-C to exit.")
-
-# before starting, initialize properties from state
-get_state()
 
 # Handle termination signals and provide a graceful exit
 qx.App.run()

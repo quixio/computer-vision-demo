@@ -13,6 +13,11 @@ topic_producer = client.get_topic_producer(os.environ["output"])
 
 pd.set_option('display.max_columns', None)
 
+
+stream_producer = topic_producer.get_or_create_stream(stream_id="max_vehicle_view")
+stream_producer.timeseries.buffer.time_span_in_milliseconds = 1000
+stream_producer.timeseries.buffer.buffer_timeout = 1000
+
 # todo load cams from state
 
 cams = {
@@ -115,7 +120,7 @@ def process_data(stream_consumer, new_data_frame):
         df2 = pd.DataFrame(data)
 
         # publish the new dataframe
-        stream_producer = topic_producer.get_or_create_stream(stream_id=stream_id)
+
         stream_producer.timeseries.buffer.publish(df2)
 
 

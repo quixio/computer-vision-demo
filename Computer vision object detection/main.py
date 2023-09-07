@@ -10,7 +10,7 @@ import cv2
 client = qx.QuixStreamingClient()
 
 topic_consumer = client.get_topic_consumer(os.environ["input"], consumer_group = "empty-transformation")
-# topic_producer_videos = client.get_topic_producer(os.environ["output_videos"])
+# topic_producer_videos =awefawefawef client.get_topic_producer(os.environ["output_videos"])
 topic_producer_vehicles = client.get_topic_producer(os.environ["output"])
 
 yolo_8 = YOLO(os.environ["yolo_model"])

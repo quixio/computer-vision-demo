@@ -6,6 +6,26 @@ metadata:
 
 # This section describes the Deployments of the aewfawefawdata pipeline
 deployments:
+  - name: TFL Camera Feed
+    application: TFL Camera Feed
+    deploymentType: Service
+    version: v1
+    resources:
+      cpu: 200
+      memory: 200
+      replicas: 1
+    desiredStatus: Stopped
+    variables:
+      - name: output
+        inputType: OutputTopic
+        description: This is the output topic for TfL camera images
+        required: true
+        value: tfl-cameras
+      - name: api_key
+        inputType: HiddenText
+        description: Your TfL API Key
+        required: true
+        value: ba4f0a6e85ce4e02b8ae2864f9147beb
   - name: Computer vision object detection
     application: Computer vision object detection
     deploymentType: Service

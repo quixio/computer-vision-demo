@@ -1,134 +1,78 @@
 import quixstreams as qx
 import os
 import pandas as pd
-import datetime
+from datetime import datetime, timedelta
+
 
 storage = qx.LocalFileStorage()
 
 client = qx.QuixStreamingClient()
 
-topic_consumer = client.get_topic_consumer(os.environ["input"], consumer_group="max-vehicles",
+topic_consumer = client.get_topic_consumer(os.environ["input"], consumer_group="max-vehicles2",
                                            auto_offset_reset=qx.AutoOffsetReset.Latest)
 topic_producer = client.get_topic_producer(os.environ["output"])
 
 pd.set_option('display.max_columns', None)
 
-# todo load cams from state
 
-cams = {
-    'window_data': {},
-    'stream_vehicles': {}
-}
+# Define a function to calculate the maximum vehicles seen over the last 24 hours
+def calculate_max_vehicles(stream_data):
+    max_vehicles = 0
 
-start_of_window = None
-end_of_window = None
-window_length_days = 1
-window_length_mins = 0
-window_length_secs = 0
-window = ""
+    # calculate the start of the window
+    start_time = datetime.utcnow() - timedelta(hours=24)
 
+    # remove any entries with a date more than 24 hours in the past
+    filtered = []
+    for item in stream_data["count"]:
+        print(f"{item[0]} - {start_time}")
+        if item[0] > start_time:
+            filtered.append(item)
 
-def update_window():
-    global end_of_window
-    global start_of_window
-    global window
+    # store the newly cleaned data in state
+    stream_data["count"] = filtered
 
-    end_of_window = datetime.datetime.utcnow()
-    start_of_window = end_of_window - datetime.timedelta(days=window_length_days, minutes=window_length_mins,
-                                                         seconds=window_length_secs)
+    # determine the max vehicles in the last 24 hours
+    for _, vehicles in stream_data["count"]:
+        max_vehicles = max(max_vehicles, vehicles)
 
-    time_difference = end_of_window - start_of_window
-    days = time_difference.days
-    hours, remainder = divmod(time_difference.seconds, 3600)
-    minutes = remainder // 60
-
-    window = "{}d {}h {}m".format(days, hours, minutes)
+    return max_vehicles
 
 
-def ts_to_date(ts):
-    sec = ts / 1_000_000_000
-    dt = datetime.datetime.utcfromtimestamp(sec)
-    return dt
-
-
-def process_data(stream_consumer, new_data_frame):
-    global cams
-
+def process_max_window_data(stream_consumer, new_data_frame):
     stream_id = stream_consumer.stream_id
+    stream_data = stream_consumer.get_dict_state("data", lambda missing_key: [])
+    last_max = stream_consumer.get_scalar_state("last_max", lambda: 0)
 
-    new_data_frame["image"] = ""  # we don't need the image for this path in the pipeline
+    for i, dataframe in new_data_frame.iterrows():
+        timestamp = datetime.utcfromtimestamp(dataframe["timestamp"] / 1e9)  # Convert timestamp to datetime
+        num_vehicles = dataframe["vehicles"]
 
-    new_data_frame['ts'] = ts_to_date(new_data_frame["timestamp"][0])
+        stream_data["count"].append((timestamp, num_vehicles))
 
-    if stream_id not in cams:
-        cams[stream_id] = {"window_data": {}, "stream_vehicles": {}}
+        # Calculate and print the maximum vehicles seen over the last 24 hours for the stream
+        max_vehicles = calculate_max_vehicles(stream_data)
 
-    update_window()
-    for i, row in new_data_frame.iterrows():
-        # convert the nanosecond timestamp to a datetime
-        check_date = ts_to_date(row["timestamp"])
+        print(f"Stream {stream_id}: Maximum vehicles seen in the last 24 hours: {max_vehicles}")
 
-        # add to the dictionary if the new data is inside the window.
-        # it should be.
-        if start_of_window <= check_date <= end_of_window:
-            # add to dict
-            cams[stream_id]["window_data"][check_date] = row
-
-    # remove any data outside the new start and end window values
-    window_data_inside = {key: value for key, value in cams[stream_id]["window_data"].items() if
-                          start_of_window <= key <= end_of_window}
-
-    if window_data_inside:
-        # update the data with the data that is currently in the window
-        cams[stream_id]["window_data"] = window_data_inside
-
-        # Find the highest number of vehicles across all DataFrames
-        highest_vehicles = float('-inf')  # Initialize with negative infinity
-        highest_vehicles_ts = datetime.datetime.utcnow()
-
-        # for each row inside the window, find the highest vehicle count
-        for key, df in window_data_inside.items():
-            max_vehicles_in_df = df['vehicles']
-
-            # get the highest vehicles for stream
-            state = stream_consumer.get_dict_state("highest_vehicles", lambda: 0)
-            state_value = 0
-            if len(state.items()) > 0:
-                state_value = state[stream_id]["max"]
-            else:
-                state[stream_id] = {'max': 0}
-
-            if max_vehicles_in_df > state_value:
-                state[stream_id] = {'max': max_vehicles_in_df}
-                highest_vehicles = max_vehicles_in_df
-            else:
-                highest_vehicles = state_value
-
-        print(f"Highest Number of Vehicles:{highest_vehicles} found at {highest_vehicles_ts}")
-
-        data = {'timestamp': datetime.datetime.utcnow(),
-                'max_vehicles': [highest_vehicles],
-                'TAG__window_start': start_of_window,
-                'TAG__window_end': end_of_window,
-                'TAG__window': window,
+        data = {'timestamp': datetime.utcnow(),
+                'max_vehicles': [max_vehicles],
                 'TAG__cam': stream_id}
         df2 = pd.DataFrame(data)
 
-        # publish the new dataframe
-        stream_producer = topic_producer.get_or_create_stream(stream_id=stream_id)
-        stream_producer.timeseries.buffer.publish(df2)
+        # publish any changes to max_vehicles
+        if max_vehicles != last_max.value:
+            last_max.value = max_vehicles
+            stream_producer = topic_producer.get_or_create_stream(stream_id=stream_id)
+            stream_producer.timeseries.buffer.publish(df2)
 
 
-def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
-    print(stream_consumer.stream_id)
-    # if stream_consumer.stream_id == "JamCams_00002.00635":
+def on_stream_received_handler(outer_stream_consumer: qx.StreamConsumer):
+    def on_dataframe_received_handler(inner_stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
+        #print(inner_stream_consumer.stream_id)
+        process_max_window_data(inner_stream_consumer, df)
 
-    update_window()
-    process_data(stream_consumer, df)
-
-
-def on_stream_received_handler(stream_consumer: qx.StreamConsumer):
-    stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
+    outer_stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
 
 
 # subscribe to new streams being received
@@ -136,5 +80,11 @@ topic_consumer.on_stream_received = on_stream_received_handler
 
 print("Listening to streams. Press CTRL-C to exit.")
 
+def before_shutdown():
+    topic_producer.flush()
+    topic_producer.dispose()
+    topic_consumer.dispose()
+
+
 # Handle termination signals and provide a graceful exit
-qx.App.run()
+qx.App.run(before_shutdown=before_shutdown)

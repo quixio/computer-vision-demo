@@ -200,7 +200,7 @@ deployments:
       cpu: 4000
       memory: 2000
       replicas: 1
-    desiredStatus: Running
+    desiredStatus: Stopped
     variables:
       - name: input
         inputType: InputTopic
@@ -246,7 +246,7 @@ deployments:
     publicAccess:
       enabled: true
       urlPrefix: data-api
-    desiredStatus: Running
+    desiredStatus: Stopped
     variables:
       - name: input
         inputType: InputTopic

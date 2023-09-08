@@ -1,0 +1,15 @@
+name: Starter transformation
+language: python
+variables:
+  - name: input
+    inputType: InputTopic
+    description: Name of the input topic to listen to.
+    required: false
+  - name: output
+    inputType: OutputTopic
+    description: Name of the output topic to write to.
+    defaultValue: transform
+    required: false
+dockerfile: build/dockerfile
+runEntryPoint: main.py
+defaultFile: main.py

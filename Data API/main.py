@@ -19,8 +19,9 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
     def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
         print(f"Receiving buffered data {stream_consumer.stream_id}")
 
-        match stream_consumer.stream_id:
-            case 'buffered_processed_images':
+
+
+        if stream_consumer.stream_id == 'buffered_processed_images':
                 print("Processing images")
 
                 encoding = 'utf-8'
@@ -39,7 +40,7 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
                     state[camera] = row.to_dict()
                     print(state[camera])
 
-            case 'buffered_vehicle_counts':
+            elif stream_consumer.stream_id == 'buffered_vehicle_counts':
                 print("Processing vehicles")
 
                 state = stream_consumer.get_dict_state("vehicles", lambda: 0)
@@ -48,7 +49,7 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
                     camera = row["TAG__camera"]
                     state[camera] = row["vehicles"]
 
-            case 'buffered_max_vehicles':
+            elif stream_consumer.stream_id == 'buffered_max_vehicles':
                 print("Processing max_vehicles")
 
                 state = stream_consumer.get_dict_state("max_vehicles", lambda: 0)
@@ -57,7 +58,7 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
                     camera = row["TAG__camera"]
                     state[camera] = row["max_vehicles"]
 
-            case _:
+            else:
                 print("Ignoring unknown Stream Id.")
 
     handler_stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler

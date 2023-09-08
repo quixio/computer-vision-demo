@@ -61,7 +61,7 @@ deployments:
       replicas: 1
     publicAccess:
       enabled: true
-      urlPrefix: tfl-image-processing-ui
+      urlPrefix: tfl-ima
     desiredStatus: Stopped
     variables:
       - name: processed

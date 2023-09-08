@@ -16,6 +16,11 @@ variables:
     description: ''
     defaultValue: image-vehicles
     required: false
+  - name: buffered_stream
+    inputType: OutputTopic
+    description: ''
+    defaultValue: buffered-data
+    required: false
 dockerfile: build/dockerfile
 runEntryPoint: main.py
 defaultFile: main.py

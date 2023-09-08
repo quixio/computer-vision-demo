@@ -280,6 +280,21 @@ deployments:
         description: ''
         required: false
         value: buffered-data
+  - name: Data API
+    application: Data API
+    deploymentType: Service
+    version: 667ada1abeeffe7782dc62e0360a449c92546ff1
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    desiredStatus: Running
+    variables:
+      - name: buffered_stream
+        inputType: InputTopic
+        description: The output from the Image Processing stage
+        required: false
+        value: buffered-data
 
 # This section describes the Topics of the data pipeline
 topics:

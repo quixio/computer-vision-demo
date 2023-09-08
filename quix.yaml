@@ -258,6 +258,29 @@ deployments:
         description: The topic to read from
         required: true
         value: image-processed-merged
+  - name: Max Vehicle Window
+    application: Max Vehicles
+    deploymentType: Service
+    version: c05862451d476c4943bccce1f002afe0847b4d0c
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    state:
+      enabled: true
+      size: 1
+    desiredStatus: Running
+    variables:
+      - name: input
+        inputType: InputTopic
+        description: ''
+        required: false
+        value: image-vehicles
+      - name: output
+        inputType: OutputTopic
+        description: ''
+        required: false
+        value: max-vehicles
 
 # This section describes the Topics of the data pipeline
 topics:

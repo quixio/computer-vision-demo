@@ -9,7 +9,7 @@ variables:
   - name: api_key
     inputType: Secret
     description: ''
-    defaultValue: api_key
+    defaultValue: camera_api_key
     required: false
 dockerfile: build/dockerfile
 runEntryPoint: main.py

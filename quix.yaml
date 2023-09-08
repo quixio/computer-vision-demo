@@ -267,7 +267,7 @@ deployments:
   - name: TFL Camera Feed
     application: TFL Camera Feed
     deploymentType: Service
-    version: 1bb079bd9bcc92f96a3bf45f07d10a4535035870
+    version: caeb24cbdd59074167db83d3b8cf5abb18f32c88
     resources:
       cpu: 200
       memory: 500
@@ -283,7 +283,7 @@ deployments:
         inputType: Secret
         description: ''
         required: false
-        value: TFL_feed_api_key
+        value: camera_api_key
 
 # This section describes the Topics of the data pipeline
 topics:

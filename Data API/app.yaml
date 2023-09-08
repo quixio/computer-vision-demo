@@ -1,11 +1,16 @@
 name: Data API
 language: python
 variables:
-  - name: buffered_stream
+  - name: objects
     inputType: InputTopic
-    description: This is the input topic to read data from
-    defaultValue: buffered-data
-    required: true
+    description: The output from the Image Processing stage
+    defaultValue: image-processed
+    required: false
+  - name: vehicles
+    inputType: InputTopic
+    description: The sum of the visible vehicles on a given camera. Vehicles are cars, busses, trucks and motorbikes
+    defaultValue: image-vehicles
+    required: false
 dockerfile: build/dockerfile
 runEntryPoint: main.py
 defaultFile: main.py

@@ -4,7 +4,7 @@
 metadata:
   version: 1.0
 
-# This section describes the Deployments of the aewfawefawdata pipeline
+# This section describes the Deployments of the data pipeline
 deployments:
   - name: Computer vision object detection
     application: Computer vision object detection
@@ -284,20 +284,6 @@ deployments:
         description: ''
         required: false
         value: TFL_feed_api_key
-  - name: Demo Data
-    application: Demo Data
-    deploymentType: Job
-    version: 6ef79a7a04a854fed1939aacbccbfca45737337b
-    resources:
-      cpu: 200
-      memory: 200
-      replicas: 1
-    variables:
-      - name: Topic
-        inputType: OutputTopic
-        description: Name of the output topic to write into
-        required: true
-        value: f1-data
 
 # This section describes the Topics of the data pipeline
 topics:

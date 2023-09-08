@@ -278,6 +278,36 @@ deployments:
         description: ''
         required: false
         value: max-vehicles
+  - name: Data Buffer
+    application: Data Buffer
+    deploymentType: Service
+    version: b1af2785d32185c47f920cff8dd08eb2f4443a81
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    desiredStatus: Running
+    variables:
+      - name: max_vehicles
+        inputType: InputTopic
+        description: ''
+        required: false
+        value: max-vehicles
+      - name: processed_images
+        inputType: InputTopic
+        description: ''
+        required: false
+        value: image-processed
+      - name: vehicle_counts
+        inputType: InputTopic
+        description: ''
+        required: false
+        value: image-vehicles
+      - name: buffered_stream
+        inputType: OutputTopic
+        description: ''
+        required: false
+        value: buffered-data
 
 # This section describes the Topics of the data pipeline
 topics:

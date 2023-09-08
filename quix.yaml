@@ -266,9 +266,6 @@ deployments:
       cpu: 200
       memory: 500
       replicas: 1
-    state:
-      enabled: true
-      size: 1
     desiredStatus: Running
     variables:
       - name: input
@@ -284,6 +281,13 @@ deployments:
 
 # This section describes the Topics of the data pipeline
 topics:
+  - name: buffered-data
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
   - name: tfl-cameras
     persisted: false
     configuration:

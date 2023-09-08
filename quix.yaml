@@ -128,12 +128,12 @@ deployments:
         inputType: Secret
         description: AWS S3 access key id
         required: false
-        value: aws_access_key_id
+        value: aws_key_id
       - name: aws_access_key
         inputType: Secret
         description: AWS S3 access key
         required: false
-        value: aws_access_key
+        value: aws_key
       - name: s3_bucket
         inputType: FreeText
         description: AWS S3 bucket name

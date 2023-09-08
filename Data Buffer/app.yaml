@@ -6,6 +6,11 @@ variables:
     description: ''
     defaultValue: max-vehicles
     required: false
+  - name: processed_images
+    inputType: InputTopic
+    description: ''
+    defaultValue: image-processed
+    required: false
 dockerfile: build/dockerfile
 runEntryPoint: main.py
 defaultFile: main.py

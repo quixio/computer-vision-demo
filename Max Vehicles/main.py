@@ -25,7 +25,6 @@ def calculate_max_vehicles(stream_data):
     # remove any entries with a date more than 24 hours in the past
     filtered = []
     for item in stream_data["count"]:
-        print(f"{item[0]} - {start_time}")
         if item[0] > start_time:
             filtered.append(item)
 

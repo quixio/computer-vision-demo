@@ -19,8 +19,6 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
     def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
         print(f"Receiving buffered data {stream_consumer.stream_id}")
 
-
-
         if stream_consumer.stream_id == 'buffered_processed_images':
                 print("Processing images")
 

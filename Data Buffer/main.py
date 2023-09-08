@@ -3,38 +3,61 @@ import os
 import pandas as pd
 
 
+buffer_duration = 1000
+
 client = qx.QuixStreamingClient()
 
-topic_consumer = client.get_topic_consumer(os.environ["input"], consumer_group = "empty-transformation")
-topic_producer = client.get_topic_producer(os.environ["output"])
+processed_image_consumer = client.get_topic_consumer(os.environ["processed-images"], consumer_group = "data-buffer")
+vehicle_count_consumer = client.get_topic_consumer(os.environ["vehicle-counts"], consumer_group = "data-buffer")
+max_vehicles_consumer = client.get_topic_consumer(os.environ["max-vehicles"], consumer_group = "data-buffer")
+
+buffered_data = client.get_topic_producer(os.environ["buffered-stream"])
+
+def on_image_stream_received_handler(stream_consumer: qx.StreamConsumer):
+    def on_dataframe_received_handler(_: qx.StreamConsumer, df: pd.DataFrame):
+        print("Received PROCESSED IMAGES data")
+
+        stream_producer = buffered_data.get_or_create_stream(stream_id ="buffered_processed_images")
+        df["TAG__camera"] = stream_consumer.stream_id
+
+        stream_producer.timeseries.buffer.buffer_timeout = buffer_duration
+        stream_producer.timeseries.buffer.time_span_in_milliseconds = buffer_duration
+        stream_producer.timeseries.buffer.publish(df)
+
+    stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
 
 
-def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
+def on_vehicle_counts_stream_received_handler(stream_consumer: qx.StreamConsumer):
+    def on_dataframe_received_handler(_: qx.StreamConsumer, df: pd.DataFrame):
+        print("Received VEHICLE COUNTS data")
 
-    # Transform data frame here in this method. You can filter data or add new features.
-    # Pass modified data frame to output stream using stream producer.
-    # Set the output stream id to the same as the input stream or change it,
-    # if you grouped or merged data with different key.
-    stream_producer = topic_producer.get_or_create_stream(stream_id = stream_consumer.stream_id)
-    stream_producer.timeseries.buffer.publish(df)
+        stream_producer = buffered_data.get_or_create_stream(stream_id ="buffered_vehicle_counts")
+        df["TAG__camera"] = stream_consumer.stream_id
 
+        stream_producer.timeseries.buffer.buffer_timeout = buffer_duration
+        stream_producer.timeseries.buffer.time_span_in_milliseconds = buffer_duration
+        stream_producer.timeseries.buffer.publish(df)
 
-# Handle event data from samples that emit event data
-def on_event_data_received_handler(stream_consumer: qx.StreamConsumer, data: qx.EventData):
-    print(data)
-    # handle your event data here
+    stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
 
 
-def on_stream_received_handler(stream_consumer: qx.StreamConsumer):
-    # subscribe to new DataFrames being received
-    # if you aren't familiar with DataFrames there are other callbacks available
-    # refer to the docs here: https://docs.quix.io/sdk/subscribe.html
-    stream_consumer.events.on_data_received = on_event_data_received_handler # register the event data callback
+def on_max_vehicles_stream_received_handler(stream_consumer: qx.StreamConsumer):
+    def on_dataframe_received_handler(_: qx.StreamConsumer, df: pd.DataFrame):
+        print("Received MAX_VEHICLES data")
+        stream_producer = buffered_data.get_or_create_stream(stream_id ="buffered_max_vehicles")
+        df["TAG__camera"] = stream_consumer.stream_id
+
+        stream_producer.timeseries.buffer.buffer_timeout = buffer_duration
+        stream_producer.timeseries.buffer.time_span_in_milliseconds = buffer_duration
+        stream_producer.timeseries.buffer.publish(df)
+
     stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
 
 
 # subscribe to new streams being received
-topic_consumer.on_stream_received = on_stream_received_handler
+processed_image_consumer.on_stream_received = on_image_stream_received_handler
+vehicle_count_consumer.on_stream_received = on_vehicle_counts_stream_received_handler
+max_vehicles_consumer.on_stream_received = on_max_vehicles_stream_received_handler
 
 print("Listening to streams. Press CTRL-C to exit.")
 

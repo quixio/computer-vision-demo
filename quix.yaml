@@ -212,29 +212,6 @@ deployments:
         description: This is the output topic to write data to
         required: true
         value: image-vehicles
-  - name: Max Vehicle Window
-    application: Starter transformation
-    deploymentType: Service
-    version: 18a239cfebbd5d2b4ec99e0a4ee3487db0ad2a58
-    resources:
-      cpu: 4000
-      memory: 10100
-      replicas: 1
-    state:
-      enabled: true
-      size: 1
-    desiredStatus: Stopped
-    variables:
-      - name: input
-        inputType: InputTopic
-        description: ''
-        required: false
-        value: image-vehicles
-      - name: output
-        inputType: OutputTopic
-        description: ''
-        required: false
-        value: max-vehicles
   - name: Data API
     application: Data API
     deploymentType: Service

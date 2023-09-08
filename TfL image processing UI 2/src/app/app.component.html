@@ -1,23 +1,46 @@
 <mat-drawer-container class="example-container mat-body-2">
   <mat-drawer-content>
     <header>
-      <mat-toolbar>
-        <a routerLink="/lobby" routerLinkActive="active" class="logo">
-          <img src="assets/quix-logo.svg" alt="Quix" height="32" />
-        </a>
-        <span [style.fontSize.px]="18" class="ms-2">BLUEPRINT</span>
+      <mat-toolbar fxLayout="row" fxLayoutAlign="space-between center">
+        <div>
+          <a routerLink="/lobby" routerLinkActive="active" class="logo">
+            <img src="assets/quix-logo.svg" alt="Quix" height="32" />
+          </a>
+          <span [style.fontSize.px]="18" class="ms-2 mt-2">TEMPLATES</span>
+        </div>
+        <div fxLayout="row" fxHide.xs>
+          <a mat-raised-button color="primary" class="small me-2" fxLayout="row" fxLayoutAlign="center center"
+            [href]="'https://portal.platform.quix.ai/pipeline?workspace=' + workspaceId" target="_blank">
+            <img src="assets/quix.svg" alt="Quix" height="12" class="me-2" />
+            <span>Explore the pipeline</span>
+          </a>
+          <a mat-raised-button color="accent" class="small" fxLayout="row" fxLayoutAlign="center center"
+            href="https://github.com/quixio/computer-vision-demo" target="_blank">
+            <img src="assets/github.svg" alt="Quix" height="16" class="me-2" />
+            <span>View repo</span>
+          </a>
+        </div>
       </mat-toolbar>
     </header>
     <main fxFlex fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap.xs="0">
       <!-- Live feed Section -->
-      <div fxLayout="column" fxFlex.gt-xs="50" fxFlex.gt-sm="400px" class="overflow-auto p-5">
+      <div fxLayout="column" fxFlex.gt-xs="50" fxFlex.gt-sm="400px" class="overflow-auto p-5 mat-elevation-z4">
         <div class="mb-5">
           <h1 class="mb-1">London traffic</h1>
           <p class="mb-3 text-body">Real-time image processing demo</p>
-          <p class="mat-body">Explore London traffic in realtime, with a ML image processing pipeline built in Quix.
-          </p>
-          <button mat-raised-button color="primary" class="small me-2">Explore the pipeline</button>
-          <button mat-raised-button color="accent" class="small">View repo</button>
+          <p class="mat-body">Explore London traffic in realtime, with a ML image processing pipeline built in Quix.</p>
+          <div fxLayout="row">
+            <a mat-raised-button color="primary" class="small me-2" fxLayout="row" fxLayoutAlign="center center"
+              [href]="'https://portal.platform.quix.ai/pipeline?workspace=' + workspaceId" target="_blank">
+              <img src="assets/quix.svg" alt="Quix" height="12" class="me-2" />
+              <span>Explore the pipeline</span>
+            </a>
+            <a mat-raised-button color="accent" class="small" fxLayout="row" fxLayoutAlign="center center"
+              href="https://github.com/quixio/computer-vision-demo" target="_blank">
+              <img src="assets/github.svg" alt="Quix" height="16" class="me-2" />
+              <span>View repo</span>
+            </a>
+          </div>
         </div>
 
         <div class="mb-5">
@@ -31,8 +54,8 @@
           <div fxLayout="row" fxLayoutGap="2">
             <ng-container *ngFor="let m of lastMarkers">
               <img *ngIf="m?.image" [src]="'data:image/png;base64,' + m.image" height="48" fxFlex role="button"
-                (click)="selectMarker(m.title!)">
-              <div *ngIf="!m?.image" fxFlex class="bg-secondary"></div>
+                (click)="selectMarker(m.title!)" class="lastMarker">
+              <div *ngIf="!m?.image" fxFlex class="bg-secondary" [style.height.px]="48"></div>
             </ng-container>
           </div>
         </div>
@@ -59,19 +82,23 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
-          <div fxLayout="row" fxLayoutGap="2" [style.height.px]="8">
-            <div fxFlex [style.backgroundColor]="'#63FFB1'"></div>
-            <div fxFlex [style.backgroundColor]="'#FFBE00'"></div>
-            <div fxFlex [style.backgroundColor]="'#FF7828'"></div>
-            <div fxFlex [style.backgroundColor]="'#FF4040'"></div>
-            <div fxFlex [style.backgroundColor]="'#C23131'"></div>
-          </div>
-          <div fxLayout="row" fxLayoutGap="2" class="mat-caption text-body ms-n2 me-2 mt-1">
-            <div fxFlex><span class="ms-2">0</span></div>
-            <div fxFlex>20%</div>
-            <div fxFlex>40%</div>
-            <div fxFlex>60%</div>
-            <div fxFlex>80%</div>
+
+          <div>
+            <p class="mat-caption text-body mb-1">Traffic density</p>
+            <div fxLayout="row" fxLayoutGap="2" [style.height.px]="8">
+              <div fxFlex [style.backgroundColor]="'#63FFB1'"></div>
+              <div fxFlex [style.backgroundColor]="'#FFBE00'"></div>
+              <div fxFlex [style.backgroundColor]="'#FF7828'"></div>
+              <div fxFlex [style.backgroundColor]="'#FF4040'"></div>
+              <div fxFlex [style.backgroundColor]="'#C23131'"></div>
+            </div>
+            <div fxLayout="row" fxLayoutGap="2" class="mat-caption text-body ms-n2 me-2 mt-1">
+              <div fxFlex><span class="ms-2">0</span></div>
+              <div fxFlex>20%</div>
+              <div fxFlex>40%</div>
+              <div fxFlex>60%</div>
+              <div fxFlex>80%</div>
+            </div>
           </div>
         </div>
 
@@ -80,13 +107,20 @@
           <p class="text-body mb-3">
             Try Quix for free to build your own pipeline. Or visit other demos to explore what else is possible.
           </p>
-          <button mat-raised-button color="primary" class="small me-2">Explore the pipeline</button>
-          <button mat-raised-button color="accent" class="small">View repo</button>
+          <div fxLayout="row">
+            <a mat-raised-button color="primary" class="small me-2" fxLayout="row" fxLayoutAlign="center center"
+              href="https://portal.platform.quix.ai/self-sign-up" target="_blank">
+              <span>Sign up for free</span>
+            </a>
+            <a mat-raised-button color="accent" class="small" fxLayout="row" fxLayoutAlign="center center">
+              <span>Explore other demos</span>
+            </a>
+          </div>
         </div>
       </div>
 
       <!-- Map Section -->
-      <div fxFlex.gt-xs="50" fxFlex.gt-sm="100" fxFlex fxLayout="column">
+      <div fxFlexOrder.xs="-1" fxFlex.gt-xs="50" fxFlex.gt-sm="100" fxFlex="360px" fxLayout="column">
         <agm-map #map [zoom]="zoom" [maxZoom]="18" [minZoom]="10" [fitBounds]="false" [latitude]="latitude"
           [longitude]="longitude" (boundsChange)="bounds = $event" (zoomChange)="zoom = $event" class="w-100 h-100">
           <agm-marker-cluster [styles]="clusterStyle" [calculator]="calculateFunction" [averageCenter]="true"
@@ -102,7 +136,8 @@
             [backgroundColor]="'#FFF'" [padding]="'12px'" [maxWidth]="266" [maxHeight]="300" [latitude]="m.latitude!"
             [longitude]="m.longitude!" (afterClose)="selectedMarker = undefined">
             <ng-template>
-              <div [style.width.px]="240" [style.height.px]="196" fxLayout="row" fxLayoutAlign="center center" class="position-relative border">
+              <div [style.width.px]="240" [style.height.px]="196" fxLayout="row" fxLayoutAlign="center center"
+                class="position-relative border">
                 <img [src]="'data:image/png;base64,' + m?.image" width="100%" height="100%" *ngIf="!isLoading">
                 <mat-spinner color="primary" mode="indeterminate" [diameter]="24" *ngIf="isLoading"></mat-spinner>
               </div>

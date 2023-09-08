@@ -4,7 +4,7 @@ import { HubConnection } from '@microsoft/signalr';
 import { CLUSTER_STYLE } from './constants/cluster';
 import { ParameterData } from './models/parameter-data';
 import { QuixService } from './services/quix.service';
-import { Subject, bufferTime, catchError, filter, map, of, switchMap } from 'rxjs';
+import { Subject, bufferTime, catchError, delay, filter, map, of, switchMap } from 'rxjs';
 import { DataService } from './services/data.service';
 import { AgmMap } from '@agm/core';
 import { AgmMarkerCluster, ClusterManager } from '@agm/markerclusterer';
@@ -51,12 +51,14 @@ export class AppComponent implements AfterViewInit {
   connection: HubConnection;
   parameterId: string = '';
   isLoading: boolean;
+  workspaceId: string;
   private _maxVehicles: { [key: string]: number } = {};
   private _topicName: string;
   private _streamId: string = 'image-feed';
   private _parameterDataReceived$ = new Subject<ParameterData>();
 
   constructor(private quixService: QuixService, private dataService: DataService) {
+    this.workspaceId = this.quixService.workspaceId;
   }
 
   ngAfterViewInit(): void {
@@ -94,7 +96,7 @@ export class AppComponent implements AfterViewInit {
             if (data.numericValues[this.parameterId]) markerData.value = data.numericValues[this.parameterId][0];
           }
 
-          if (data.topicName === 'max_vehicles') {
+          if (data.topicName === 'max-vehicles') {
             key = data.tagValues['cam'][0];
             if (data.numericValues['max_vehicles']) this._maxVehicles[key] = data.numericValues['max_vehicles'][0];
             markerData.max = this._maxVehicles[key];
@@ -146,7 +148,7 @@ export class AppComponent implements AfterViewInit {
               max: maxVehicles[key],
               image: data?.image,
               date: new Date(data.timestamp / 1000000),
-              count: vehicles[key].vehicles || 0,
+              count: vehicles[key]?.vehicles || 0,
               value: data[this.parameterId] || 0
             }
             markersData.push(markerData);
@@ -155,7 +157,7 @@ export class AppComponent implements AfterViewInit {
           return markersData;
         }))
       }))
-    })).subscribe((markersData: MarkerData[]) => {
+    }), delay(0)).subscribe((markersData: MarkerData[]) => {
       markersData.forEach((markerData) => {
         const index = this.markers.findIndex((f) => f.title === markerData.title);
         const marker: Marker = this.createMarker({ ...this.markers[index], ...markerData });
@@ -203,6 +205,7 @@ export class AppComponent implements AfterViewInit {
    * @param quixTopic the topic we want to retrieve data for
    */
   subscribeToData() {
+
     this.connection.invoke('SubscribeToParameter', this._topicName, this._streamId, 'image');
     this.connection.invoke('SubscribeToParameter', this._topicName, this._streamId, 'lat');
     this.connection.invoke('SubscribeToParameter', this._topicName, this._streamId, 'lon');
@@ -226,7 +229,7 @@ export class AppComponent implements AfterViewInit {
     // Unsubscribe from previous parameter and subscribe to new one
     if (this.parameterId) this.connection?.invoke('UnsubscribeFromParameter', this._topicName, this._streamId, this.parameterId);
     if (parameterId) this.connection?.invoke('SubscribeToParameter', this._topicName, this._streamId, parameterId);
-    
+
     this.parameterId = parameterId;
     this.getInitialData();
   }

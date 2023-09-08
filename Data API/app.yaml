@@ -1,10 +1,10 @@
 name: Data API
 language: python
 variables:
-  - name: objects
+  - name: buffered_stream
     inputType: InputTopic
     description: The output from the Image Processing stage
-    defaultValue: image-processed
+    defaultValue: buffered-data
     required: false
 dockerfile: build/dockerfile
 runEntryPoint: main.py

@@ -11,6 +11,11 @@ variables:
     description: ''
     defaultValue: image-processed
     required: false
+  - name: vehicle_counts
+    inputType: InputTopic
+    description: ''
+    defaultValue: image-vehicles
+    required: false
 dockerfile: build/dockerfile
 runEntryPoint: main.py
 defaultFile: main.py

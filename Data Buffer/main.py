@@ -7,11 +7,11 @@ buffer_duration = 1000
 
 client = qx.QuixStreamingClient()
 
-processed_image_consumer = client.get_topic_consumer(os.environ["processed-images"], consumer_group = "data-buffer")
-vehicle_count_consumer = client.get_topic_consumer(os.environ["vehicle-counts"], consumer_group = "data-buffer")
-max_vehicles_consumer = client.get_topic_consumer(os.environ["max-vehicles"], consumer_group = "data-buffer")
+processed_image_consumer = client.get_topic_consumer(os.environ["processed_images"], consumer_group = "data-buffer")
+vehicle_count_consumer = client.get_topic_consumer(os.environ["vehicle_counts"], consumer_group = "data-buffer")
+max_vehicles_consumer = client.get_topic_consumer(os.environ["max_vehicles"], consumer_group = "data-buffer")
 
-buffered_data = client.get_topic_producer(os.environ["buffered-stream"])
+buffered_data = client.get_topic_producer(os.environ["buffered_stream"])
 
 def on_image_stream_received_handler(stream_consumer: qx.StreamConsumer):
     def on_dataframe_received_handler(_: qx.StreamConsumer, df: pd.DataFrame):

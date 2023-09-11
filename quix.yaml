@@ -282,12 +282,18 @@ deployments:
         value: buffered-data
   - name: Data API
     application: Data API
-    deploymentType: Job
+    deploymentType: Service
     version: 667ada1abeeffe7782dc62e0360a449c92546ff1
     resources:
       cpu: 1500
       memory: 4100
       replicas: 1
+    publicAccess:
+      enabled: true
+      urlPrefix: dataapi-667ada1
+    state:
+      enabled: true
+      size: 1
     variables:
       - name: buffered_stream
         inputType: InputTopic

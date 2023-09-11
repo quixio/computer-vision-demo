@@ -285,8 +285,8 @@ deployments:
     deploymentType: Job
     version: 667ada1abeeffe7782dc62e0360a449c92546ff1
     resources:
-      cpu: 200
-      memory: 500
+      cpu: 1500
+      memory: 4100
       replicas: 1
     variables:
       - name: buffered_stream

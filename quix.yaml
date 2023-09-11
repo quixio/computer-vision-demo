@@ -294,6 +294,7 @@ deployments:
     state:
       enabled: true
       size: 1
+    desiredStatus: Running
     variables:
       - name: buffered_stream
         inputType: InputTopic

@@ -32,11 +32,11 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
                 state = stream_consumer.get_dict_state("detected_objects", lambda: 0)
 
                 for i, row in df.iterrows():
-                    print(f"{i} -- {row}")
+                    #print(f"{i} -- {row}")
                     camera = row["TAG__camera"]
 
                     state[camera] = row.to_dict()
-                    print(state[camera])
+                    #print(state[camera])
 
         elif stream_consumer.stream_id == 'buffered_vehicle_counts':
             print("Processing vehicles")

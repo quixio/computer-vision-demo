@@ -38,26 +38,26 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
                     state[camera] = row.to_dict()
                     print(state[camera])
 
-            elif stream_consumer.stream_id == 'buffered_vehicle_counts':
-                print("Processing vehicles")
+        elif stream_consumer.stream_id == 'buffered_vehicle_counts':
+            print("Processing vehicles")
 
-                state = stream_consumer.get_dict_state("vehicles", lambda: 0)
+            state = stream_consumer.get_dict_state("vehicles", lambda: 0)
 
-                for i, row in df.iterrows():
-                    camera = row["TAG__camera"]
-                    state[camera] = row["vehicles"]
+            for i, row in df.iterrows():
+                camera = row["TAG__camera"]
+                state[camera] = row["vehicles"]
 
-            elif stream_consumer.stream_id == 'buffered_max_vehicles':
-                print("Processing max_vehicles")
+        elif stream_consumer.stream_id == 'buffered_max_vehicles':
+            print("Processing max_vehicles")
 
-                state = stream_consumer.get_dict_state("max_vehicles", lambda: 0)
+            state = stream_consumer.get_dict_state("max_vehicles", lambda: 0)
 
-                for i, row in df.iterrows():
-                    camera = row["TAG__camera"]
-                    state[camera] = row["max_vehicles"]
+            for i, row in df.iterrows():
+                camera = row["TAG__camera"]
+                state[camera] = row["max_vehicles"]
 
-            else:
-                print("Ignoring unknown Stream Id.")
+        else:
+            print("Ignoring unknown Stream Id.")
 
     handler_stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
 

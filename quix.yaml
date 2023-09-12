@@ -255,9 +255,9 @@ deployments:
     deploymentType: Service
     version: b1af2785d32185c47f920cff8dd08eb2f4443a81
     resources:
-      cpu: 200
-      memory: 500
-      replicas: 1
+      cpu: 1000
+      memory: 1100
+      replicas: 2
     desiredStatus: Running
     variables:
       - name: max_vehicles

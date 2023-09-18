@@ -227,29 +227,6 @@ deployments:
         description: This is the output topic to write data to
         required: true
         value: image-vehicles
-  - name: Data API
-    application: Data API
-    deploymentType: Service
-    version: 0f5e2eff9a5ab426db9536008fe3b2bf9df2c4d6
-    resources:
-      cpu: 1500
-      memory: 4100
-      replicas: 1
-    publicAccess:
-      enabled: true
-      urlPrefix: data-api
-    desiredStatus: Stopped
-    variables:
-      - name: buffered_stream
-        inputType: InputTopic
-        description: The output from the Image Processing stage
-        required: false
-        value: buffered-data
-      - name: vehicles
-        inputType: InputTopic
-        description: The sum of the visible vehicles on a given camera. Vehicles are cars, busses, trucks and motorbikes
-        required: false
-        value: image-vehicles
   - name: Max Vehicle Window
     application: Max Vehicles
     deploymentType: Service

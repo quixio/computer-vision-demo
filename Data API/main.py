@@ -12,7 +12,11 @@ import copy
 client = qx.QuixStreamingClient()
 
 print("Opening input topic")
-buffered_stream_data = client.get_topic_consumer(os.environ["buffered_stream"], "data-api-v1", auto_offset_reset=qx.AutoOffsetReset.Earliest)
+buffered_stream_data = client.get_topic_consumer(
+    os.environ["buffered_stream"], 
+    "data-api-v1", 
+    commit_settings=qx.CommitMode.Manual,
+    auto_offset_reset=qx.AutoOffsetReset.Earliest)
 
 
 def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsumer):
@@ -58,6 +62,8 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
 
         else:
             print("Ignoring unknown Stream Id.")
+
+        buffered_stream_data.commit()
 
     handler_stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
 

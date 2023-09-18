@@ -287,7 +287,7 @@ deployments:
       replicas: 1
     publicAccess:
       enabled: true
-      urlPrefix: data-api
+      urlPrefix: data-api2
     desiredStatus: Running
     variables:
       - name: buffered_stream

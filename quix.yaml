@@ -230,7 +230,7 @@ deployments:
   - name: TfL image processing UI 2
     application: TfL image processing UI 2
     deploymentType: Service
-    version: 5260100445bf4d8f52a723e00df353ef1be10d85
+    version: 5ccd0916084b81743b3e78a80a5aca9d4d47d8fd
     resources:
       cpu: 200
       memory: 500
@@ -238,7 +238,7 @@ deployments:
     publicAccess:
       enabled: true
       urlPrefix: tflimageprocessingui2-93e95f7
-    desiredStatus: Running
+    desiredStatus: Stopped
     variables:
       - name: processed
         inputType: InputTopic

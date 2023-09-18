@@ -1,4 +1,4 @@
-name: TfL image processing UI 2
+name: TfL image processing UI
 language: nodejs
 variables:
   - name: processed

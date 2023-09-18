@@ -1,0 +1,21 @@
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+
+@import 'material-variables';
+
+@include mat.core($quix-template-typography-config);
+
+// Include theme and typography styles for core and each component used in your app.
+@include mat.core-theme($quix-template-theme);
+@include mat.button-theme($quix-template-theme);
+@include mat.form-field-theme($quix-template-theme);
+@include mat.input-theme($quix-template-theme);
+@include mat.select-theme($quix-template-theme);
+@include mat.icon-theme($quix-template-theme);
+@include mat.divider-theme($quix-template-theme);
+@include mat.progress-spinner-theme($quix-template-theme);
+
+// Plus custom imports.
+@import 'material-overrides';

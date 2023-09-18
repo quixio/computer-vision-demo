@@ -1,9 +1,10 @@
 FROM node:14 as build
 WORKDIR /app
 COPY --from=git /project/package*.json /app/
-RUN npm install
+RUN npm install --force
 COPY --from=git /project /app/
-RUN npm run build -- --output-path=./dist/out --configuration=development
+RUN ls
+RUN npm run build -- --output-path=./dist/out --configuration=production
 
 FROM nginx:latest
 COPY --from=build /app/dist/out/ /usr/share/nginx/html

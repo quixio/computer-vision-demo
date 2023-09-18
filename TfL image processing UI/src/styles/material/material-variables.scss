@@ -22,7 +22,7 @@ $quix-template-typography-config: mat.define-typography-config(
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
 $quix-template-primary: mat.define-palette(mat.$blue-palette, A700);
-$quix-template-accent: mat.define-palette(mat.$green-palette, 600);
+$quix-template-accent: mat.define-palette(mat.$grey-palette, 800);
 // The warn palette is optional (defaults to red).
 $quix-template-warn: mat.define-palette(mat.$red-palette);
 

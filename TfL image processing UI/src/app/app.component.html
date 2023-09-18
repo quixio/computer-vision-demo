@@ -1,49 +1,156 @@
-<mat-drawer-container class="example-container">
+<mat-drawer-container class="example-container mat-body-2">
   <mat-drawer-content>
     <header>
-      <mat-toolbar>
-        <a routerLink="/lobby" routerLinkActive="active" class="logo" [style.marginRight.px]="30">
-          <img src="assets/quix-logo.svg" alt="Quix" width="40" />
-        </a>
-        <span class="mat-h3 m-0">Image recognition demo</span>
+      <mat-toolbar fxLayout="row" fxLayoutAlign="space-between center">
+        <div>
+          <a routerLink="/lobby" routerLinkActive="active" class="logo">
+            <img src="assets/quix-logo.svg" alt="Quix" height="32" />
+          </a>
+          <span [style.fontSize.px]="18" class="ms-2 mt-2">TEMPLATES</span>
+        </div>
+        <div fxLayout="row" fxHide.xs>
+          <a mat-raised-button color="primary" class="small me-2" fxLayout="row" fxLayoutAlign="center center"
+            [href]="'https://portal.platform.quix.ai/pipeline?workspace=' + workspaceId" target="_blank">
+            <img src="assets/quix.svg" alt="Quix" height="12" class="me-2" />
+            <span>Explore the pipeline</span>
+          </a>
+          <a mat-raised-button color="accent" class="small" fxLayout="row" fxLayoutAlign="center center"
+            href="https://github.com/quixio/computer-vision-demo" target="_blank">
+            <img src="assets/github.svg" alt="Quix" height="16" class="me-2" />
+            <span>View repo</span>
+          </a>
+        </div>
       </mat-toolbar>
     </header>
-    <main>
-      <div fxFlex fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap.xs="0" fxLayoutGap.gt-xs="40">
-        
-        <!-- Live feed Section -->
-        <div fxLayout="column" fxFlex.gt-xs="50" fxFlex.gt-sm="400px">
-          <div fxLayout="row" fxLayoutAlign="space-between center">
-            <div class="mat-h2 m-0">Image Feed</div>
-            <button mat-raised-button class="toggle-feed" [color]="!showImages ? 'primary' : undefined" (click)="toggleFeed()">{{ showImages ? 'Pause feed' : 'Resume feed' }}</button>
+    <main fxFlex fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap.xs="0">
+      <!-- Live feed Section -->
+      <div fxLayout="column" fxFlex.gt-xs="50" fxFlex.gt-sm="400px" class="overflow-auto p-5 mat-elevation-z4">
+        <div class="mb-5">
+          <h1 class="mb-1">London traffic</h1>
+          <p class="mb-3 text-body">Real-time image processing demo</p>
+          <p class="mat-body">Explore London traffic in realtime, with a ML image processing pipeline built in Quix.</p>
+          <div fxLayout="row">
+            <a mat-raised-button color="primary" class="small me-2" fxLayout="row" fxLayoutAlign="center center"
+              [href]="'https://portal.platform.quix.ai/pipeline?workspace=' + workspaceId" target="_blank">
+              <img src="assets/quix.svg" alt="Quix" height="12" class="me-2" />
+              <span>Explore the pipeline</span>
+            </a>
+            <a mat-raised-button color="accent" class="small" fxLayout="row" fxLayoutAlign="center center"
+              href="https://github.com/quixio/computer-vision-demo" target="_blank">
+              <img src="assets/github.svg" alt="Quix" height="16" class="me-2" />
+              <span>View repo</span>
+            </a>
           </div>
-          <img class="img" [src]="last_image" width="100%">
+        </div>
 
-          <mat-form-field appearance="outline" class="mt-2">
+        <div class="mb-5">
+          <h4 class="mb-2">Real-time image processing demo</h4>
+          <p class="text-body mb-3">
+            We <a class="text-primary fw-bold">ingest data</a> from Transport for London (TfL) traffic cameras. A YOLO
+            v3
+            <a class="text-primary fw-bold">ML model</a> is used to detect
+            vehicles in realtime. round <b class="text-black">x images</b> (x GB), are analysed per min.
+          </p>
+          <div fxLayout="row" fxLayoutGap="2">
+            <ng-container *ngFor="let m of lastMarkers">
+              <img *ngIf="m?.image" [src]="'data:image/png;base64,' + m.image" height="48" fxFlex role="button"
+                (click)="selectMarker(m.title!)" class="lastMarker">
+              <div *ngIf="!m?.image" fxFlex class="bg-secondary" [style.height.px]="48"></div>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="mb-5">
+          <h4 class="mb-2">Real-time image processing demo</h4>
+          <p class="text-body mb-3">
+            Traffic density is <a class="text-primary fw-bold">calculated in real time</a> as a fraction of the road max
+            capacity and represented in the colour scale. You can also select a specific vehicle to see the total sum.
+            The <a class="text-primary fw-bold">code can be customised</a> to identify any other object (like...
+            bananas, yes, for real).
+          </p>
+          <mat-form-field appearance="outline" class="w-100">
             <mat-label>Select object</mat-label>
-            <mat-select [value]="selectedObject" (selectionChange)="selectedObjectChanged($event)">
-              <mat-option class="select-title" disabled>Popular objects</mat-option>
-              <mat-option *ngFor="let type of popularObjectTypes" [value]="type">
-                {{ type | titlecase }}
+            <mat-select [value]="parameterId" (selectionChange)="selectedObjectChanged($event.value)">
+              <mat-option class="text-uppercase" disabled><span class="mat-caption">Density</span></mat-option>
+              <mat-option [value]="''">
+                Traffic density
               </mat-option>
               <mat-divider></mat-divider>
-              <mat-option class="select-title" disabled>Other objects</mat-option>
-              <mat-option *ngFor="let type of otherObjectTypes" [value]="type">
+              <mat-option class="text-uppercase" disabled><span class="mat-caption">Object Detection</span></mat-option>
+              <mat-option *ngFor="let type of popularObjectTypes" [value]="type">
                 {{ type | titlecase }}
               </mat-option>
             </mat-select>
           </mat-form-field>
 
-          <div [style.fontSize.px]="14" [style.marginBottom.px]="40">Searching for {{ selectedObject }}...</div>
+          <div>
+            <p class="mat-caption text-body mb-1">Traffic density</p>
+            <div fxLayout="row" fxLayoutGap="2" [style.height.px]="8">
+              <div fxFlex [style.backgroundColor]="'#63FFB1'"></div>
+              <div fxFlex [style.backgroundColor]="'#FFBE00'"></div>
+              <div fxFlex [style.backgroundColor]="'#FF7828'"></div>
+              <div fxFlex [style.backgroundColor]="'#FF4040'"></div>
+              <div fxFlex [style.backgroundColor]="'#C23131'"></div>
+            </div>
+            <div fxLayout="row" fxLayoutGap="2" class="mat-caption text-body ms-n2 me-2 mt-1">
+              <div fxFlex><span class="ms-2">0</span></div>
+              <div fxFlex>20%</div>
+              <div fxFlex>40%</div>
+              <div fxFlex>60%</div>
+              <div fxFlex>80%</div>
+            </div>
+          </div>
         </div>
 
-        <!-- Map Section -->
-        <div fxFlex.gt-xs="50" fxFlex.gt-sm="100" fxFlex fxLayout="column" class="map-container">
-          <agm-map #map [zoom]="10" [maxZoom]="25" [fitBounds]="false" [latitude]="latitude" [longitude]="longitude"
-            (mapReady)="onMapReady($event)">
-          </agm-map>
+        <div class="mb-5">
+          <h4 class="mb-2">Are you intrigued?</h4>
+          <p class="text-body mb-3">
+            Try Quix for free to build your own pipeline. Or visit other demos to explore what else is possible.
+          </p>
+          <div fxLayout="row">
+            <a mat-raised-button color="primary" class="small me-2" fxLayout="row" fxLayoutAlign="center center"
+              href="https://portal.platform.quix.ai/self-sign-up" target="_blank">
+              <span>Sign up for free</span>
+            </a>
+            <a mat-raised-button color="accent" class="small" fxLayout="row" fxLayoutAlign="center center">
+              <span>Explore other demos</span>
+            </a>
+          </div>
         </div>
-        
+      </div>
+
+      <!-- Map Section -->
+      <div fxFlexOrder.xs="-1" fxFlex.gt-xs="50" fxFlex.gt-sm="100" fxFlex="360px" fxLayout="column">
+        <agm-map #map [zoom]="zoom" [maxZoom]="18" [minZoom]="10" [fitBounds]="false" [latitude]="latitude"
+          [longitude]="longitude" (boundsChange)="bounds = $event" (zoomChange)="zoom = $event" class="w-100 h-100">
+          <agm-marker-cluster [styles]="clusterStyle" [calculator]="calculateFunction" [averageCenter]="true"
+            [gridSize]="50" #cluster>
+            <ng-container *ngFor="let m of markers;">
+              <agm-marker *ngIf="m.latitude && m.longitude" [latitude]="m.latitude" [longitude]="m.longitude"
+                [label]="m.label!" [iconUrl]="m.icon!" [title]="m.title!" (markerClick)="selectMarker($event.title)">
+              </agm-marker>
+            </ng-container>
+          </agm-marker-cluster>
+          <agm-snazzy-info-window *ngIf="selectedMarker as m" [isOpen]="!!m" [closeWhenOthersOpen]="true"
+            [closeOnMapClick]="true" [showCloseButton]="true" [openOnMarkerClick]="true" [panOnOpen]="true"
+            [backgroundColor]="'#FFF'" [padding]="'12px'" [maxWidth]="266" [maxHeight]="300" [latitude]="m.latitude!"
+            [longitude]="m.longitude!" (afterClose)="selectedMarker = undefined">
+            <ng-template>
+              <div [style.width.px]="240" [style.height.px]="196" fxLayout="row" fxLayoutAlign="center center"
+                class="position-relative border">
+                <img [src]="'data:image/png;base64,' + m?.image" width="100%" height="100%" *ngIf="!isLoading">
+                <mat-spinner color="primary" mode="indeterminate" [diameter]="24" *ngIf="isLoading"></mat-spinner>
+              </div>
+              <div fxLayout="row" fxLayoutAlign="space-between start" class="mt-1">
+                <span class="fw-bold">{{ m.title }}</span>
+                <span class="mat-caption text-body">{{ m.date | date: 'HH:mm:ss' }}</span>
+              </div>
+              <span *ngIf="!parameterId">{{ m.count || 0 }} vehicles</span>
+              <span *ngIf="parameterId">{{ m.value || 0 }} {{ parameterId }}</span>
+              <span *ngIf="m.max" class="ms-1">(max: {{ m.max }} vehicles)</span>
+            </ng-template>
+          </agm-snazzy-info-window>
+        </agm-map>
       </div>
     </main>
   </mat-drawer-content>

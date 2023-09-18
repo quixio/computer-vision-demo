@@ -5,6 +5,9 @@ from flask_cors import CORS
 import os
 import base64
 import copy
+from threading import Thread, Lock
+
+mutex = Lock()
 
 
 
@@ -24,49 +27,50 @@ buffered_stream_data = client.get_topic_consumer(
 
 def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsumer):
     def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
-        print(f"Receiving buffered data {stream_consumer.stream_id}")
+        with mutex:
+            print(f"Receiving buffered data {stream_consumer.stream_id}")
 
-        if stream_consumer.stream_id == 'buffered_processed_images':
-                print("Processing images")
+            if stream_consumer.stream_id == 'buffered_processed_images':
+                    print("Processing images")
 
-                encoding = 'utf-8'
+                    encoding = 'utf-8'
 
-                base64_bytes = base64.b64encode(df["image"][0])
-                base64_string = base64_bytes.decode(encoding)
+                    base64_bytes = base64.b64encode(df["image"][0])
+                    base64_string = base64_bytes.decode(encoding)
 
-                df["image"] = base64_string
+                    df["image"] = base64_string
 
-                state = stream_consumer.get_dict_state("detected_objects", lambda: 0)
+                    state = stream_consumer.get_dict_state("detected_objects", lambda: 0)
+
+                    for i, row in df.iterrows():
+                        #print(f"{i} -- {row}")
+                        camera = row["TAG__camera"]
+
+                        state[camera] = row.to_dict()
+                        #print(state[camera])
+
+            elif stream_consumer.stream_id == 'buffered_vehicle_counts':
+                print("Processing vehicles")
+
+                state = stream_consumer.get_dict_state("vehicles", lambda: 0)
 
                 for i, row in df.iterrows():
-                    #print(f"{i} -- {row}")
                     camera = row["TAG__camera"]
+                    state[camera] = row["vehicles"]
 
-                    state[camera] = row.to_dict()
-                    #print(state[camera])
+            elif stream_consumer.stream_id == 'buffered_max_vehicles':
+                print("Processing max_vehicles")
 
-        elif stream_consumer.stream_id == 'buffered_vehicle_counts':
-            print("Processing vehicles")
+                state = stream_consumer.get_dict_state("max_vehicles", lambda: 0)
 
-            state = stream_consumer.get_dict_state("vehicles", lambda: 0)
+                for i, row in df.iterrows():
+                    camera = row["TAG__camera"]
+                    state[camera] = row["max_vehicles"]
 
-            for i, row in df.iterrows():
-                camera = row["TAG__camera"]
-                state[camera] = row["vehicles"]
+            else:
+                print("Ignoring unknown Stream Id.")
 
-        elif stream_consumer.stream_id == 'buffered_max_vehicles':
-            print("Processing max_vehicles")
-
-            state = stream_consumer.get_dict_state("max_vehicles", lambda: 0)
-
-            for i, row in df.iterrows():
-                camera = row["TAG__camera"]
-                state[camera] = row["max_vehicles"]
-
-        else:
-            print("Ignoring unknown Stream Id.")
-
-        buffered_stream_data.commit()
+            buffered_stream_data.commit()
 
     handler_stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
 
@@ -103,23 +107,24 @@ def maximum_vehicles():
 # create the detected objects route
 @app.route("/detected_objects")
 def objects():
-    print("/detected_objects started")
-    # get the state manager for the topic
-    state_manager = buffered_stream_data.get_state_manager()
+    with mutex:
+        print("/detected_objects started")
+        # get the state manager for the topic
+        state_manager = buffered_stream_data.get_state_manager()
 
-    result = {}
-    # for each stream, get the items of interest
-    state_objects = state_manager.get_stream_state_manager("buffered_processed_images").get_dict_state("detected_objects")
-    #state_objects_copy = copy.deepcopy(state_objects.items())
+        result = {}
+        # for each stream, get the items of interest
+        state_objects = state_manager.get_stream_state_manager("buffered_processed_images").get_dict_state("detected_objects")
+        #state_objects_copy = copy.deepcopy(state_objects.items())
 
-    # remove any images, we don't want them here
-    #for _, val in state_objects:
-        #val.pop('image', None)
+        # remove any images, we don't want them here
+        #for _, val in state_objects:
+            #val.pop('image', None)
 
-    for i, row in state_objects:
-        result[i] = row
+        for i, row in state_objects:
+            result[i] = row
 
-    return result
+        return result
 
 # create the detected objects route for specific camera
 @app.route("/detected_objects/<camera_id>")

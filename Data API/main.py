@@ -7,14 +7,17 @@ import base64
 import copy
 
 
+
 # Quix injects credentials automatically to the client.
 # Alternatively, you can always pass an SDK token manually as an argument.
 client = qx.QuixStreamingClient()
 
+qx.Logging.update_factory(qx.LogLevel.Debug)
+
 print("Opening input topic")
 buffered_stream_data = client.get_topic_consumer(
     os.environ["buffered_stream"], 
-    "data-api-v1", 
+    "data-api-v2", 
     commit_settings=qx.CommitMode.Manual,
     auto_offset_reset=qx.AutoOffsetReset.Earliest)
 

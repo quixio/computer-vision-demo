@@ -21,7 +21,9 @@ import { AgmSnazzyInfoWindowModule } from '@agm/snazzy-info-window';
     BrowserAnimationsModule,
     MaterialModule,
     FlexLayoutModule,
-    AgmCoreModule.forRoot({}),
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyBR3UT38XbBV3RKeMXxveFQnMf23ueQJNE'
+    }),
     AgmMarkerClustererModule,
     AgmSnazzyInfoWindowModule
   ],

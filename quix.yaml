@@ -280,14 +280,14 @@ deployments:
   - name: Data API
     application: Data API
     deploymentType: Service
-    version: fd5a98781d25cf6bc30928e161af6251c529e63c
+    version: bec65d1495f8a8620a9679b58ea6f9c3b62974ce
     resources:
       cpu: 2000
       memory: 500
       replicas: 1
     publicAccess:
       enabled: true
-      urlPrefix: data-api2
+      urlPrefix: data-api
     state:
       enabled: true
       size: 11

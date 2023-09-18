@@ -237,7 +237,7 @@ deployments:
       replicas: 1
     publicAccess:
       enabled: true
-      urlPrefix: data-api-demo
+      urlPrefix: data-api
     state:
       enabled: true
       size: 1

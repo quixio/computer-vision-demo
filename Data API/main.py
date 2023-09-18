@@ -103,6 +103,7 @@ def maximum_vehicles():
 # create the detected objects route
 @app.route("/detected_objects")
 def objects():
+    print("/detected_objects started")
     # get the state manager for the topic
     state_manager = buffered_stream_data.get_state_manager()
 

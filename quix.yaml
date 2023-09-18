@@ -230,14 +230,14 @@ deployments:
   - name: Data API
     application: Data API
     deploymentType: Service
-    version: d0b1fdd40c79d45d8319bec18a5cbbce800dc7d3
+    version: 5260100445bf4d8f52a723e00df353ef1be10d85
     resources:
       cpu: 1500
       memory: 4100
       replicas: 1
     publicAccess:
       enabled: true
-      urlPrefix: dataapi-667ada1
+      urlPrefix: data-api-demo
     state:
       enabled: true
       size: 1
@@ -248,6 +248,11 @@ deployments:
         description: The output from the Image Processing stage
         required: false
         value: buffered-data
+      - name: vehicles
+        inputType: InputTopic
+        description: The sum of the visible vehicles on a given camera. Vehicles are cars, busses, trucks and motorbikes
+        required: false
+        value: image-vehicles
   - name: Max Vehicle Window
     application: Max Vehicles
     deploymentType: Service

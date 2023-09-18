@@ -3,7 +3,7 @@
 This Data API allows the UI to instantly obtain data for all of the traffic cameras in London.
 It is used to prime the UI with the most recent data rather than waiting for data from each camera to flow through the pipeline.
 
-There are 2 endpoints:
+There are 4 endpoints:
 
  - `max_vehicles` - A rolling 24-hour window of the maximum number of vehicles seen on a given traffic camera.
  - `detected_objects` - The latest detected object counts for each camera.
@@ -15,9 +15,7 @@ The API is written in Python and uses Flask and [Waitress](https://flask.pallets
 
 This code sample uses the following environment variables:
 
-- **input**: The topic containing maximum vehicle counts.
-- **objects**: The topic containing detected objects.
-- **vehicles**: The topic containing an aggregated count of vehicles.
+- **buffered-data**: The topic containing buffered data for vehicles, max_vehicles, .
 
 ## Open source
 

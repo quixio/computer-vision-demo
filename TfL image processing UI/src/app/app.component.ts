@@ -148,7 +148,7 @@ export class AppComponent implements AfterViewInit {
               max: maxVehicles[key],
               image: data?.image,
               date: new Date(data.timestamp / 1000000),
-              count: vehicles[key]?.vehicles || 0,
+              count: vehicles[key] || 0,
               value: data[this.parameterId] || 0
             }
             markersData.push(markerData);

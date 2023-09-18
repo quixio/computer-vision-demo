@@ -117,8 +117,7 @@ def objects():
         #val.pop('image', None)
 
     for i, row in state_objects:
-        result[i] = row.copy()
-        result[i].pop("image")
+        result[i] = row
 
     return result
 

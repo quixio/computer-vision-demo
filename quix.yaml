@@ -255,7 +255,7 @@ deployments:
       cpu: 1000
       memory: 1100
       replicas: 2
-    desiredStatus: Running
+    desiredStatus: Stopped
     variables:
       - name: max_vehicles
         inputType: InputTopic

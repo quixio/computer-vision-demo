@@ -15,7 +15,7 @@ The API is written in Python and uses Flask and [Waitress](https://flask.pallets
 
 This code sample uses the following environment variables:
 
-- **buffered-data**: The topic containing buffered data for vehicles, max_vehicles, .
+- **buffered-data**: The topic containing buffered data for vehicle counts, max_vehicles and the individual objects detected on a given camera.
 
 ## Open source
 

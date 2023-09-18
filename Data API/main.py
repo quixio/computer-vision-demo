@@ -7,93 +7,59 @@ import base64
 import copy
 
 
-pd.set_option('display.max_columns', None)
-
-# keep the max vehicles for each cam
-max_vehicles = {}
-#keep the latest detected objects for each cam
-detected_objects = {}
-# keep the vehicles for each cam
-vehicles = {}
-
-# get a state manager from the Quix client library
-storage = qx.LocalFileStorage()
-
-print("Checking state for previous values..")
-# if max_vehicles is in state, init the property with it
-if storage.contains_key("max_vehicles"):
-    max_vehicles = storage.get("max_vehicles")
-    print("max_vehicles loaded from state")
-
-# if detected_objects is in state, init the property with it
-if storage.contains_key("detected_objects"):
-    detected_objects = storage.get("detected_objects")
-    print("detected_objects loaded from state")
-
-# if vehicles is in state, init the property with it
-if storage.contains_key("vehicles"):
-    vehicles = storage.get("vehicles")
-    # sometimes image is seen in this data.
-    # it's not needed so remove it.
-    for key, value in vehicles.items():
-        value.pop('image', None)
-    print("vehicles loaded from state")
-
 # Quix injects credentials automatically to the client.
 # Alternatively, you can always pass an SDK token manually as an argument.
 client = qx.QuixStreamingClient()
 
 print("Opening input topic")
-max_veh_topic = client.get_topic_consumer(os.environ["input"])
-object_topic = client.get_topic_consumer(os.environ["objects"])
-veh_topic = client.get_topic_consumer(os.environ["vehicles"])
+buffered_stream_data = client.get_topic_consumer(os.environ["buffered_stream"])
 
 
-def on_max_veh_stream_received_handler(stream_consumer: qx.StreamConsumer):
-    global max_vehicles
-
+def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsumer):
     def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
-        print("Receiving max vehicle data")
+        print(f"Receiving buffered data {stream_consumer.stream_id}")
 
-        #print(f'MAX_VEHICLES: stream:{stream_consumer.stream_id}, data={df["max_vehicles"][0]}')
-        max_vehicles[stream_consumer.stream_id] = df["max_vehicles"][0]
-        storage.set("max_vehicles", max_vehicles)
-    
-    stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
+        if stream_consumer.stream_id == 'buffered_processed_images':
+                print("Processing images")
 
-def on_object_stream_received_handler(stream_consumer: qx.StreamConsumer):
-    global detected_objects
-    encoding = 'utf-8'
+                encoding = 'utf-8'
 
-    def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
-        print("Receiving detected object data")
+                base64_bytes = base64.b64encode(df["image"][0])
+                base64_string = base64_bytes.decode(encoding)
 
-        base64_bytes = base64.b64encode(df["image"][0])
-        base64_string = base64_bytes.decode(encoding)
+                df["image"] = base64_string
 
-        df["image"] = base64_string
+                state = stream_consumer.get_dict_state("detected_objects", lambda: 0)
 
-        #print(f'OBJECT DETECTED: stream:{stream_consumer.stream_id}, data={df.to_dict()}')
-        detected_objects[stream_consumer.stream_id] = df.to_dict("records")[0]
+                for i, row in df.iterrows():
+                    #print(f"{i} -- {row}")
+                    camera = row["TAG__camera"]
 
-        storage.set("detected_objects", detected_objects)
-        
-    stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
+                    state[camera] = row.to_dict()
+                    #print(state[camera])
 
+        elif stream_consumer.stream_id == 'buffered_vehicle_counts':
+            print("Processing vehicles")
 
-def on_vehicles_stream_received_handler(stream_consumer: qx.StreamConsumer):
-    global detected_objects
+            state = stream_consumer.get_dict_state("vehicles", lambda: 0)
 
-    def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
-        print("Receiving vehicles data")
-        # keep only the timestamp and vehicle count.
-        df = df[['timestamp', 'vehicles']]
+            for i, row in df.iterrows():
+                camera = row["TAG__camera"]
+                state[camera] = row["vehicles"]
 
-        print(f'VEHICLES: stream:{stream_consumer.stream_id}, data={df.to_dict("records")[0]}')
-        vehicles[stream_consumer.stream_id] = df.to_dict('records')[0]
-        storage.set("vehicles", detected_objects)
+        elif stream_consumer.stream_id == 'buffered_max_vehicles':
+            print("Processing max_vehicles")
 
-    stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
+            state = stream_consumer.get_dict_state("max_vehicles", lambda: 0)
+
+            for i, row in df.iterrows():
+                camera = row["TAG__camera"]
+                state[camera] = row["max_vehicles"]
+
+        else:
+            print("Ignoring unknown Stream Id.")
+
+    handler_stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
 
 
 # init the flask app
@@ -114,29 +80,65 @@ def index():
 # create the max_vehicles route
 @app.route("/max_vehicles")
 def maximum_vehicles():
-    return max_vehicles
+
+    # get the state manager for the topic
+    state_manager = buffered_stream_data.get_state_manager()
+
+    result = {}
+
+    for cam in state_manager.get_stream_state_manager("buffered_max_vehicles").get_dict_state("max_vehicles").items():
+        result[cam[0]] = cam[1]
+
+    return result
 
 # create the detected objects route
 @app.route("/detected_objects")
 def objects():
-    o = copy.deepcopy(detected_objects)
-    for _, val in o.items():
+    # get the state manager for the topic
+    state_manager = buffered_stream_data.get_state_manager()
+
+    result = {}
+    # for each stream, get the items of interest
+    state_objects = state_manager.get_stream_state_manager("buffered_processed_images").get_dict_state("detected_objects")
+    state_objects_copy = copy.deepcopy(state_objects.items())
+
+    # remove any images, we don't want them here
+    for _, val in state_objects_copy:
         val.pop('image', None)
-    return o
+
+    for i, row in state_objects_copy:
+        result[i] = row
+
+    return result
 
 # create the detected objects route for specific camera
 @app.route("/detected_objects/<camera_id>")
 def objects_for_cam(camera_id):
-    print(camera_id)
-    if camera_id in detected_objects:
-        return detected_objects[camera_id]
-    else:
-        abort(404)
+    # get the state manager for the topic
+    state_manager = buffered_stream_data.get_state_manager()
+
+    # for each stream, get the items of interest
+    state_objects = state_manager.get_stream_state_manager("buffered_processed_images").get_dict_state("detected_objects")
+    #state_objects_copy = copy.deepcopy(state_objects.items())
+
+    # there should be only one (1) row per camera. But just in case, loop through and add any that are there.
+    for idx, row in state_objects:
+        if idx == camera_id:
+            return row
+
+    abort(404)
 
 # create the vehicles route
 @app.route("/vehicles")
 def cam_vehicles():
-    return vehicles
+    state_manager = buffered_stream_data.get_state_manager()
+
+    result = {}
+
+    for cam in state_manager.get_stream_state_manager("buffered_vehicle_counts").get_dict_state("vehicles").items():
+        result[cam[0]] = cam[1]
+
+    return result
 
 
 if __name__ == "__main__":
@@ -144,19 +146,9 @@ if __name__ == "__main__":
     from waitress import serve
 
     # hook up the stream received handler
-    max_veh_topic.on_stream_received = on_max_veh_stream_received_handler
+    buffered_stream_data.on_stream_received = on_buffered_stream_received_handler
     # subscribe to data arriving into the topic
-    max_veh_topic.subscribe()
-
-    # hook up the stream received handler
-    object_topic.on_stream_received = on_object_stream_received_handler
-    # subscribe to data arriving into the topic
-    object_topic.subscribe()
-
-    # hook up the stream received handler
-    veh_topic.on_stream_received = on_vehicles_stream_received_handler
-    # subscribe to data arriving into the topic
-    veh_topic.subscribe()
+    buffered_stream_data.subscribe()
 
     # you can use app.run for dev, but it's not secure, stable or particularly efficient
     # app.run(debug=True, host="0.0.0.0", port=80)

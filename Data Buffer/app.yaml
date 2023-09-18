@@ -1,0 +1,26 @@
+name: Data Buffer
+language: python
+variables:
+  - name: max_vehicles
+    inputType: InputTopic
+    description: ''
+    defaultValue: max-vehicles
+    required: false
+  - name: processed_images
+    inputType: InputTopic
+    description: ''
+    defaultValue: image-processed
+    required: false
+  - name: vehicle_counts
+    inputType: InputTopic
+    description: ''
+    defaultValue: image-vehicles
+    required: false
+  - name: buffered_stream
+    inputType: OutputTopic
+    description: ''
+    defaultValue: buffered-data
+    required: false
+dockerfile: build/dockerfile
+runEntryPoint: main.py
+defaultFile: main.py

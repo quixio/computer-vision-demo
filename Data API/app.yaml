@@ -1,15 +1,10 @@
 name: Data API
 language: python
 variables:
-  - name: input
+  - name: buffered_stream
     inputType: InputTopic
-    description: This is the input topic to read data from
-    defaultValue: max-vehicles
-    required: true
-  - name: objects
-    inputType: InputTopic
-    description: ''
-    defaultValue: image-processed
+    description: The output from the Image Processing stage
+    defaultValue: buffered-data
     required: false
 dockerfile: build/dockerfile
 runEntryPoint: main.py

@@ -11,8 +11,8 @@ deployments:
     deploymentType: Service
     version: v1.2-geofence
     resources:
-      cpu: 8000
-      memory: 10240
+      cpu: 1000
+      memory: 1000
       replicas: 1
     desiredStatus: Running
     variables:
@@ -36,9 +36,9 @@ deployments:
     deploymentType: Service
     version: 1fd04bb26cabab9b08d5ff171ab04d0f57f0865d
     resources:
-      cpu: 8000
-      memory: 16000
-      replicas: 2
+      cpu: 4000
+      memory: 2000
+      replicas: 4
     desiredStatus: Running
     variables:
       - name: input
@@ -59,11 +59,11 @@ deployments:
   - name: Stream merge
     application: Stream merge
     deploymentType: Service
-    version: 1fd04bb26cabab9b08d5ff171ab04d0f57f0865d
+    version: 6b02f283591c60be15d1b318e943f54ef313f975
     resources:
-      cpu: 8000
-      memory: 8000
-      replicas: 1
+      cpu: 2000
+      memory: 1000
+      replicas: 2
     desiredStatus: Running
     variables:
       - name: input
@@ -87,7 +87,7 @@ deployments:
     publicAccess:
       enabled: true
       urlPrefix: tfl-image-processing-ui
-    desiredStatus: Running
+    desiredStatus: Stopped
     variables:
       - name: processed
         inputType: InputTopic
@@ -99,9 +99,12 @@ deployments:
     deploymentType: Service
     version: v1
     resources:
-      cpu: 8000
-      memory: 10240
-      replicas: 1
+      cpu: 2000
+      memory: 500
+      replicas: 4
+    state:
+      enabled: true
+      size: 1
     desiredStatus: Running
     variables:
       - name: input
@@ -194,8 +197,8 @@ deployments:
     deploymentType: Service
     version: e6bb005ff21552be9b0cf2482ea95ad6350abf68
     resources:
-      cpu: 200
-      memory: 500
+      cpu: 4000
+      memory: 2000
       replicas: 1
     desiredStatus: Running
     variables:
@@ -209,17 +212,32 @@ deployments:
         description: This is the output topic to write data to
         required: true
         value: image-vehicles
-  - name: Max Vehicle Window
-    application: Starter transformation
+  - name: TfL image processing UI 2
+    application: TfL image processing UI 2
     deploymentType: Service
-    version: max_vehicle_window_v4
+    version: 5ccd0916084b81743b3e78a80a5aca9d4d47d8fd
     resources:
       cpu: 200
-      memory: 10100
+      memory: 500
       replicas: 1
-    state:
+    publicAccess:
       enabled: true
-      size: 1
+      urlPrefix: tflimageprocessingui2-93e95f7
+    desiredStatus: Running
+    variables:
+      - name: processed
+        inputType: InputTopic
+        description: The topic to read from
+        required: true
+        value: image-processed-merged
+  - name: Max Vehicle Window
+    application: Max Vehicles
+    deploymentType: Service
+    version: 9555868946b31969470d73fa4699c780d20d4c8e
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
     desiredStatus: Running
     variables:
       - name: input
@@ -232,39 +250,64 @@ deployments:
         description: ''
         required: false
         value: max-vehicles
+  - name: Data Buffer
+    application: Data Buffer
+    deploymentType: Service
+    version: b1af2785d32185c47f920cff8dd08eb2f4443a81
+    resources:
+      cpu: 1000
+      memory: 1100
+      replicas: 2
+    desiredStatus: Running
+    variables:
+      - name: max_vehicles
+        inputType: InputTopic
+        description: ''
+        required: false
+        value: max-vehicles
+      - name: processed_images
+        inputType: InputTopic
+        description: ''
+        required: false
+        value: image-processed
+      - name: vehicle_counts
+        inputType: InputTopic
+        description: ''
+        required: false
+        value: image-vehicles
+      - name: buffered_stream
+        inputType: OutputTopic
+        description: ''
+        required: false
+        value: buffered-data
   - name: Data API
     application: Data API
     deploymentType: Service
-    version: c3c2376e7b97d1cae49457bd52efe2197deefc3a
+    version: d0b1fdd40c79d45d8319bec18a5cbbce800dc7d3
     resources:
-      cpu: 200
-      memory: 1000
+      cpu: 1500
+      memory: 4100
       replicas: 1
     publicAccess:
       enabled: true
-      urlPrefix: data-api
+      urlPrefix: dataapi-667ada1
     state:
       enabled: true
       size: 1
     desiredStatus: Running
     variables:
-      - name: input
+      - name: buffered_stream
         inputType: InputTopic
-        description: This is the input topic to read data from
-        required: true
-        value: max-vehicles
-      - name: objects
-        inputType: InputTopic
-        description: ''
+        description: The output from the Image Processing stage
         required: false
-        value: image-processed
+        value: buffered-data
 
 # This section describes the Topics of the data pipeline
 topics:
   - name: image-vehicles
     persisted: false
     configuration:
-      partitions: 2
+      partitions: 4
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
@@ -299,18 +342,25 @@ topics:
   - name: image-processed
     persisted: false
     configuration:
-      partitions: 2
+      partitions: 4
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
   - name: image-raw
     persisted: false
     configuration:
-      partitions: 2
+      partitions: 8
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
   - name: tfl-cameras
+    persisted: false
+    configuration:
+      partitions: 8
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: buffered-data
     persisted: false
     configuration:
       partitions: 2

@@ -17,7 +17,7 @@ client = qx.QuixStreamingClient()
 print("Opening input topic")
 buffered_stream_data = client.get_topic_consumer(
     os.environ["buffered_stream"], 
-    "data-api-v3", 
+    "data-api-v4", 
     commit_settings=qx.CommitMode.Manual,
     auto_offset_reset=qx.AutoOffsetReset.Earliest)
 

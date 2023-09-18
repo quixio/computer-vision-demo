@@ -93,16 +93,16 @@ def index():
 # create the max_vehicles route
 @app.route("/max_vehicles")
 def maximum_vehicles():
+    with mutex:
+        # get the state manager for the topic
+        state_manager = buffered_stream_data.get_state_manager()
 
-    # get the state manager for the topic
-    state_manager = buffered_stream_data.get_state_manager()
+        result = {}
 
-    result = {}
+        for cam in state_manager.get_stream_state_manager("buffered_max_vehicles").get_dict_state("max_vehicles").items():
+            result[cam[0]] = cam[1]
 
-    for cam in state_manager.get_stream_state_manager("buffered_max_vehicles").get_dict_state("max_vehicles").items():
-        result[cam[0]] = cam[1]
-
-    return result
+        return result
 
 # create the detected objects route
 @app.route("/detected_objects")
@@ -129,31 +129,33 @@ def objects():
 # create the detected objects route for specific camera
 @app.route("/detected_objects/<camera_id>")
 def objects_for_cam(camera_id):
-    # get the state manager for the topic
-    state_manager = buffered_stream_data.get_state_manager()
+    with mutex:
+        # get the state manager for the topic
+        state_manager = buffered_stream_data.get_state_manager()
 
-    # for each stream, get the items of interest
-    state_objects = state_manager.get_stream_state_manager("buffered_processed_images").get_dict_state("detected_objects")
-    #state_objects_copy = copy.deepcopy(state_objects.items())
+        # for each stream, get the items of interest
+        state_objects = state_manager.get_stream_state_manager("buffered_processed_images").get_dict_state("detected_objects")
+        #state_objects_copy = copy.deepcopy(state_objects.items())
 
-    # there should be only one (1) row per camera. But just in case, loop through and add any that are there.
-    for idx, row in state_objects:
-        if idx == camera_id:
-            return row
+        # there should be only one (1) row per camera. But just in case, loop through and add any that are there.
+        for idx, row in state_objects:
+            if idx == camera_id:
+                return row
 
-    abort(404)
+        abort(404)
 
 # create the vehicles route
 @app.route("/vehicles")
 def cam_vehicles():
-    state_manager = buffered_stream_data.get_state_manager()
+    with mutex:
+        state_manager = buffered_stream_data.get_state_manager()
 
-    result = {}
+        result = {}
 
-    for cam in state_manager.get_stream_state_manager("buffered_vehicle_counts").get_dict_state("vehicles").items():
-        result[cam[0]] = cam[1]
+        for cam in state_manager.get_stream_state_manager("buffered_vehicle_counts").get_dict_state("vehicles").items():
+            result[cam[0]] = cam[1]
 
-    return result
+        return result
 
 
 if __name__ == "__main__":

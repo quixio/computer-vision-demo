@@ -280,7 +280,7 @@ deployments:
   - name: Data API
     application: Data API
     deploymentType: Service
-    version: c5419fec8bbecc7c6de7ee85733bfabe90254cf7
+    version: d2c138b61f18903eba0dede65c9114cc82bb7a6d
     resources:
       cpu: 200
       memory: 500
@@ -288,6 +288,9 @@ deployments:
     publicAccess:
       enabled: true
       urlPrefix: data-api2
+    state:
+      enabled: true
+      size: 11
     desiredStatus: Running
     variables:
       - name: buffered_stream

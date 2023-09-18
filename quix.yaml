@@ -245,6 +245,27 @@ deployments:
         description: The topic to read from
         required: true
         value: image-processed-merged
+  - name: Data API
+    application: Data API
+    deploymentType: Service
+    version: d0b1fdd40c79d45d8319bec18a5cbbce800dc7d3
+    resources:
+      cpu: 1500
+      memory: 4100
+      replicas: 1
+    publicAccess:
+      enabled: true
+      urlPrefix: dataapi-667ada1
+    state:
+      enabled: true
+      size: 1
+    desiredStatus: Running
+    variables:
+      - name: buffered_stream
+        inputType: InputTopic
+        description: The output from the Image Processing stage
+        required: false
+        value: buffered-data
   - name: Max Vehicle Window
     application: Max Vehicles
     deploymentType: Service
@@ -295,34 +316,13 @@ deployments:
         description: ''
         required: false
         value: buffered-data
-  - name: Data API
-    application: Data API
-    deploymentType: Service
-    version: d0b1fdd40c79d45d8319bec18a5cbbce800dc7d3
-    resources:
-      cpu: 1500
-      memory: 4100
-      replicas: 1
-    publicAccess:
-      enabled: true
-      urlPrefix: dataapi-667ada1
-    state:
-      enabled: true
-      size: 1
-    desiredStatus: Running
-    variables:
-      - name: buffered_stream
-        inputType: InputTopic
-        description: The output from the Image Processing stage
-        required: false
-        value: buffered-data
 
 # This section describes the Topics of the data pipeline
 topics:
   - name: image-processed
     persisted: false
     configuration:
-      partitions: 4
+      partitions: 2
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
@@ -357,28 +357,28 @@ topics:
   - name: transform
     persisted: false
     configuration:
-      partitions: 4
+      partitions: 2
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
   - name: image-raw
     persisted: false
     configuration:
-      partitions: 8
+      partitions: 16
       replicationFactor: 2
       retentionInMinutes: 4380
       retentionInBytes: 262144000
   - name: tfl-cameras
     persisted: false
     configuration:
-      partitions: 8
-      retentionInMinutes: -1
+      partitions: 15
+      replicationFactor: 2
+      retentionInMinutes: 5760
       retentionInBytes: 262144000
   - name: buffered-data
     persisted: false
     configuration:
       partitions: 2
-      replicationFactor: 2
       replicationFactor: 2
       retentionInMinutes: 5760
       retentionInBytes: 262144000

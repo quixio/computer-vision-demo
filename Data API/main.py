@@ -109,14 +109,15 @@ def objects():
     result = {}
     # for each stream, get the items of interest
     state_objects = state_manager.get_stream_state_manager("buffered_processed_images").get_dict_state("detected_objects")
-    state_objects_copy = copy.deepcopy(state_objects.items())
+    #state_objects_copy = copy.deepcopy(state_objects.items())
 
     # remove any images, we don't want them here
-    for _, val in state_objects_copy:
-        val.pop('image', None)
+    #for _, val in state_objects:
+        #val.pop('image', None)
 
-    for i, row in state_objects_copy:
-        result[i] = row
+    for i, row in state_objects:
+        result[i] = row.copy()
+        result[i].pop("image")
 
     return result
 

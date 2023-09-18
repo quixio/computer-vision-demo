@@ -87,7 +87,7 @@ deployments:
     publicAccess:
       enabled: true
       urlPrefix: tfl-image-processing-ui
-    desiredStatus: Stopped
+    desiredStatus: Running
     variables:
       - name: processed
         inputType: InputTopic

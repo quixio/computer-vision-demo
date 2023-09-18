@@ -6,7 +6,8 @@ It is used to prime the UI with the most recent data rather than waiting for dat
 There are 4 endpoints:
 
  - `max_vehicles` - A rolling 24-hour window of the maximum number of vehicles seen on a given traffic camera.
- - `detected_objects` - The latest detected object counts for each camera.
+ - `detected_objects` - The latest detected object counts for each camera. Excludes images.
+ - `detected_objects/camera_id` - The latest detected object counts for a specific camera. This one includes the last image too.
  - `vehicles` - Latest vehicle counts from each camera, vehicles are defines in a previous stage. e.g. cars, busses, trucks and motorbikes.
 
 The API is written in Python and uses Flask and [Waitress](https://flask.palletsprojects.com/en/2.3.x/deploying/waitress/).

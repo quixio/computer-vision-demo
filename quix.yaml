@@ -84,14 +84,14 @@ deployments:
   - name: TfL image processing UI
     application: TfL image processing UI
     deploymentType: Service
-    version: v1
+    version: 859d1357d31784d36a13ce363e45f41ab86a59e0
     resources:
-      cpu: 200
+      cpu: 900
       memory: 200
       replicas: 1
     publicAccess:
       enabled: true
-      urlPrefix: tfl-image-processing-ui
+      urlPrefix: app
     desiredStatus: Stopped
     variables:
       - name: processed

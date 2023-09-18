@@ -12,7 +12,7 @@ import copy
 client = qx.QuixStreamingClient()
 
 print("Opening input topic")
-buffered_stream_data = client.get_topic_consumer(os.environ["buffered_stream"], "data-api", auto_offset_reset=qx.AutoOffsetReset.Earliest)
+buffered_stream_data = client.get_topic_consumer(os.environ["buffered_stream"], "data-api-v1", auto_offset_reset=qx.AutoOffsetReset.Earliest)
 
 
 def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsumer):

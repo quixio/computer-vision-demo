@@ -238,9 +238,6 @@ deployments:
     publicAccess:
       enabled: true
       urlPrefix: data-api
-    state:
-      enabled: true
-      size: 1
     desiredStatus: Running
     variables:
       - name: buffered_stream

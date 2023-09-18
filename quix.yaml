@@ -282,7 +282,7 @@ deployments:
     deploymentType: Service
     version: 9c5822f106b193399c612acb35cdcf68550220b4
     resources:
-      cpu: 200
+      cpu: 2000
       memory: 500
       replicas: 1
     publicAccess:

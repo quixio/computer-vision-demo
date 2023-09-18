@@ -227,24 +227,6 @@ deployments:
         description: This is the output topic to write data to
         required: true
         value: image-vehicles
-  - name: TfL image processing UI 2
-    application: TfL image processing UI 2
-    deploymentType: Service
-    version: 5ccd0916084b81743b3e78a80a5aca9d4d47d8fd
-    resources:
-      cpu: 200
-      memory: 500
-      replicas: 1
-    publicAccess:
-      enabled: true
-      urlPrefix: tflimageprocessingui2-93e95f7
-    desiredStatus: Stopped
-    variables:
-      - name: processed
-        inputType: InputTopic
-        description: The topic to read from
-        required: true
-        value: image-processed-merged
   - name: Data API
     application: Data API
     deploymentType: Service

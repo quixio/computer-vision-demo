@@ -70,8 +70,10 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
             else:
                 print("Ignoring unknown Stream Id.")
 
-            buffered_stream_data.commit()
             print(f"Processed buffered data {stream_consumer.stream_id}")
+
+            buffered_stream_data.commit()
+            print(f"Commited buffered data {stream_consumer.stream_id}")
 
 
     handler_stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler

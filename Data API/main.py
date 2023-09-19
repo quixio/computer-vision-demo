@@ -6,6 +6,7 @@ import os
 import base64
 import copy
 from threading import Thread, Lock
+import datetime
 
 mutex = Lock()
 
@@ -28,7 +29,7 @@ buffered_stream_data = client.get_topic_consumer(
 def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsumer):
     def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
         with mutex:
-            print(f"Receiving buffered data {stream_consumer.stream_id}")
+            print(f"{str(datetime.datetime.utcnow())} Receiving buffered data {stream_consumer.stream_id}")
 
             if stream_consumer.stream_id == 'buffered_processed_images':
                     print("Processing images")
@@ -70,10 +71,10 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
             else:
                 print("Ignoring unknown Stream Id.")
 
-            print(f"Processed buffered data {stream_consumer.stream_id}")
+            print(f"{str(datetime.datetime.utcnow())} Processed buffered data {stream_consumer.stream_id}")
 
             buffered_stream_data.commit()
-            print(f"Commited buffered data {stream_consumer.stream_id}")
+            print(f"{str(datetime.datetime.utcnow())} Commited buffered data {stream_consumer.stream_id}")
 
 
     handler_stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler

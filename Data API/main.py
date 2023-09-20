@@ -22,7 +22,7 @@ qx.Logging.update_factory(qx.LogLevel.Debug)
 print("Opening input topic")
 buffered_stream_data = client.get_topic_consumer(
     os.environ["buffered_stream"], 
-    "data-api-v6", 
+    "data-api-v7", 
     auto_offset_reset=qx.AutoOffsetReset.Earliest)
 
 

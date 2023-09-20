@@ -169,11 +169,11 @@ if __name__ == "__main__":
     
     def on_committing(stream_consumer):
         mutex.acquire()
-        print(f"{str(datetime.datetime.utcnow())} on_committing {stream_consumer.stream_id}")
+        print(f"{str(datetime.datetime.utcnow())} on_committing")
 
     def on_committed(stream_consumer):
         mutex.acquire()
-        print(f"{str(datetime.datetime.utcnow())} on_committed {stream_consumer.stream_id}")
+        print(f"{str(datetime.datetime.utcnow())} on_committed")
 
 
     buffered_stream_data.on_committing = on_committing

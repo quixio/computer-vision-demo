@@ -37,10 +37,13 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
                     encoding = 'utf-8'
 
                     state = stream_consumer.get_dict_state("detected_objects", lambda: 0)
+                    image_state = stream_consumer.get_dict_state("detected_objects_images", lambda: 0)
 
                     for i, row in df.iterrows():
 
                         camera = row["TAG__camera"]
+
+                        image_state[camera] = row["image"]
 
                         with open("state/camera_images/" + camera + ".png", "wb") as fh:
                             fh.write(row["image"])

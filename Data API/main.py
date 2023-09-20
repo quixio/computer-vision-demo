@@ -35,16 +35,21 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
 
                     encoding = 'utf-8'
 
-                    base64_bytes = base64.b64encode(df["image"][0])
-                    base64_string = base64_bytes.decode(encoding)
-
-                    df["image"] = base64_string
-
                     state = stream_consumer.get_dict_state("detected_objects", lambda: 0)
 
                     for i, row in df.iterrows():
-                        #print(f"{i} -- {row}")
+
                         camera = row["TAG__camera"]
+
+
+                        base64_bytes = base64.b64encode(row["image"])
+
+                        with open("state/camera_images/" + camera + ".png", "wb") as fh:
+                            fh.write(base64_bytes)
+
+                        del df["image"]
+
+                        #print(f"{i} -- {row}")
 
                         state[camera] = row.to_dict()
                         #print(state[camera])

@@ -138,8 +138,7 @@
             <ng-template>
               <div [style.width.px]="240" [style.height.px]="196" fxLayout="row" fxLayoutAlign="center center"
                 class="position-relative border">
-                <img [src]="'data:image/png;base64,' + m?.image" width="100%" height="100%" *ngIf="!isLoading">
-                <mat-spinner color="primary" mode="indeterminate" [diameter]="24" *ngIf="isLoading"></mat-spinner>
+                <img [src]="'https://data-api-' + workspaceId + '.deployments.quix.ai/detected_objects/' + m.title + '.png'" width="100%" height="100%" >
               </div>
               <div fxLayout="row" fxLayoutAlign="space-between start" class="mt-1">
                 <span class="fw-bold">{{ m.title }}</span>

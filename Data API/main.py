@@ -172,7 +172,7 @@ if __name__ == "__main__":
         print(f"{str(datetime.datetime.utcnow())} on_committing")
 
     def on_committed(stream_consumer):
-        mutex.acquire()
+        mutex.release()
         print(f"{str(datetime.datetime.utcnow())} on_committed")
 
 

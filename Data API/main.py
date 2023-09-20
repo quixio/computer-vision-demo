@@ -138,8 +138,15 @@ def objects():
 @app.route("/detected_objects/<camera_id>")
 def objects_for_cam(camera_id):
     with mutex:
-        if os.path.isfile("state/camera_images/"+ camera_id): 
-            return send_file("state/camera_images/"+ camera_id, mimetype='image/png')
+        state_manager = buffered_stream_data.get_state_manager()
+
+        state_objects = state_manager.get_stream_state_manager("buffered_processed_images").get_dict_state("detected_objects_images")
+
+        if camera_id in state_objects:
+            with open(camera_id + ".png", "wb") as fh:
+                fh.write(state_objects[camera_id])
+            return send_file(camera_id + ".png", mimetype='image/png')
+            #TODO: delete the file
         else:
             abort(404)
 

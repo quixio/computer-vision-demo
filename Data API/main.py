@@ -22,7 +22,6 @@ print("Opening input topic")
 buffered_stream_data = client.get_topic_consumer(
     os.environ["buffered_stream"], 
     "data-api-v4", 
-    commit_settings=qx.CommitMode.Manual,
     auto_offset_reset=qx.AutoOffsetReset.Earliest)
 
 
@@ -73,8 +72,6 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
 
             print(f"{str(datetime.datetime.utcnow())} Processed buffered data {stream_consumer.stream_id}")
 
-            buffered_stream_data.commit()
-            print(f"{str(datetime.datetime.utcnow())} Commited buffered data {stream_consumer.stream_id}")
 
 
     handler_stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
@@ -169,6 +166,18 @@ if __name__ == "__main__":
 
     # hook up the stream received handler
     buffered_stream_data.on_stream_received = on_buffered_stream_received_handler
+    
+    def on_committing(stream_consumer):
+        mutex.acquire()
+        print(f"{str(datetime.datetime.utcnow())} on_committing {stream_consumer.stream_id}")
+
+    def on_committed(stream_consumer):
+        mutex.acquire()
+        print(f"{str(datetime.datetime.utcnow())} on_committed {stream_consumer.stream_id}")
+
+
+    buffered_stream_data.on_committing = on_committing
+    buffered_stream_data.on_committed = on_committed
     # subscribe to data arriving into the topic
     buffered_stream_data.subscribe()
 

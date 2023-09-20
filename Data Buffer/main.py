@@ -7,9 +7,9 @@ buffer_duration = 1000
 
 client = qx.QuixStreamingClient()
 
-processed_image_consumer = client.get_topic_consumer(os.environ["processed_images"], consumer_group = "data-buffer")
-vehicle_count_consumer = client.get_topic_consumer(os.environ["vehicle_counts"], consumer_group = "data-buffer")
-max_vehicles_consumer = client.get_topic_consumer(os.environ["max_vehicles"], consumer_group = "data-buffer-v2")
+processed_image_consumer = client.get_topic_consumer(os.environ["processed_images"], consumer_group = "data-buffer", auto_offset_reset=qx.AutoOffsetReset.Earliest)
+vehicle_count_consumer = client.get_topic_consumer(os.environ["vehicle_counts"], consumer_group = "data-buffer", auto_offset_reset=qx.AutoOffsetReset.Earliest)
+max_vehicles_consumer = client.get_topic_consumer(os.environ["max_vehicles"], consumer_group = "data-buffer-v2", auto_offset_reset=qx.AutoOffsetReset.Earliest)
 
 buffered_data = client.get_topic_producer(os.environ["buffered_stream"])
 

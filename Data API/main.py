@@ -1,6 +1,6 @@
 import quixstreams as qx
 import pandas as pd
-from flask import Flask, request, abort
+from flask import Flask, request, abort, send_file
 from flask_cors import CORS
 import os
 import base64
@@ -10,7 +10,8 @@ import datetime
 
 mutex = Lock()
 
-
+if not os.path.exists("state/camera_images"):
+    os.makedirs("state/camera_images")
 
 # Quix injects credentials automatically to the client.
 # Alternatively, you can always pass an SDK token manually as an argument.
@@ -21,8 +22,7 @@ qx.Logging.update_factory(qx.LogLevel.Debug)
 print("Opening input topic")
 buffered_stream_data = client.get_topic_consumer(
     os.environ["buffered_stream"], 
-    "data-api-v4", 
-    commit_settings=qx.CommitMode.Manual,
+    "data-api-v7", 
     auto_offset_reset=qx.AutoOffsetReset.Earliest)
 
 
@@ -36,16 +36,18 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
 
                     encoding = 'utf-8'
 
-                    base64_bytes = base64.b64encode(df["image"][0])
-                    base64_string = base64_bytes.decode(encoding)
-
-                    df["image"] = base64_string
-
                     state = stream_consumer.get_dict_state("detected_objects", lambda: 0)
 
                     for i, row in df.iterrows():
-                        #print(f"{i} -- {row}")
+
                         camera = row["TAG__camera"]
+
+                        with open("state/camera_images/" + camera + ".png", "wb") as fh:
+                            fh.write(row["image"])
+
+                        del df["image"]
+
+                        #print(f"{i} -- {row}")
 
                         state[camera] = row.to_dict()
                         #print(state[camera])
@@ -73,8 +75,6 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
 
             print(f"{str(datetime.datetime.utcnow())} Processed buffered data {stream_consumer.stream_id}")
 
-            buffered_stream_data.commit()
-            print(f"{str(datetime.datetime.utcnow())} Commited buffered data {stream_consumer.stream_id}")
 
 
     handler_stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
@@ -135,19 +135,10 @@ def objects():
 @app.route("/detected_objects/<camera_id>")
 def objects_for_cam(camera_id):
     with mutex:
-        # get the state manager for the topic
-        state_manager = buffered_stream_data.get_state_manager()
-
-        # for each stream, get the items of interest
-        state_objects = state_manager.get_stream_state_manager("buffered_processed_images").get_dict_state("detected_objects")
-        #state_objects_copy = copy.deepcopy(state_objects.items())
-
-        # there should be only one (1) row per camera. But just in case, loop through and add any that are there.
-        for idx, row in state_objects:
-            if idx == camera_id:
-                return row
-
-        abort(404)
+        if os.path.isfile("state/camera_images/"+ camera_id): 
+            return send_file("state/camera_images/"+ camera_id, mimetype='image/png')
+        else:
+            abort(404)
 
 # create the vehicles route
 @app.route("/vehicles")
@@ -169,6 +160,18 @@ if __name__ == "__main__":
 
     # hook up the stream received handler
     buffered_stream_data.on_stream_received = on_buffered_stream_received_handler
+    
+    def on_committing(stream_consumer):
+        mutex.acquire()
+        print(f"{str(datetime.datetime.utcnow())} on_committing")
+
+    def on_committed(stream_consumer):
+        mutex.release()
+        print(f"{str(datetime.datetime.utcnow())} on_committed")
+
+
+    buffered_stream_data.on_committing = on_committing
+    buffered_stream_data.on_committed = on_committed
     # subscribe to data arriving into the topic
     buffered_stream_data.subscribe()
 

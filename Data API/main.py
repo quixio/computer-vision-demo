@@ -10,7 +10,8 @@ import datetime
 
 mutex = Lock()
 
-
+if not os.path.exists("state/camera_images"):
+    os.makedirs("state/camera_images")
 
 # Quix injects credentials automatically to the client.
 # Alternatively, you can always pass an SDK token manually as an argument.
@@ -44,7 +45,7 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
 
                         base64_bytes = base64.b64encode(row["image"])
 
-                        with open("state/" + camera + ".png", "wb") as fh:
+                        with open("state/camera_images/" + camera + ".png", "wb") as fh:
                             fh.write(base64_bytes)
 
                         del df["image"]

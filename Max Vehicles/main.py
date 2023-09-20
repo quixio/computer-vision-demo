@@ -8,8 +8,8 @@ storage = qx.LocalFileStorage()
 
 client = qx.QuixStreamingClient()
 
-topic_consumer = client.get_topic_consumer(os.environ["input"], consumer_group="max-vehicles2",
-                                           auto_offset_reset=qx.AutoOffsetReset.Latest)
+topic_consumer = client.get_topic_consumer(os.environ["input"], consumer_group="max-vehicles-v1",
+                                           auto_offset_reset=qx.AutoOffsetReset.Earliest)
 topic_producer = client.get_topic_producer(os.environ["output"])
 
 pd.set_option('display.max_columns', None)

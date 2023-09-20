@@ -50,7 +50,6 @@ export class AppComponent implements AfterViewInit {
   lastMarkers: Marker[] = Array(5);
   connection: HubConnection;
   parameterId: string = '';
-  isLoading: boolean;
   workspaceId: string;
   private _maxVehicles: { [key: string]: number } = {};
   private _topicName: string;
@@ -289,13 +288,5 @@ export class AppComponent implements AfterViewInit {
     const marker = this.markers.find((f) => f.title === title);
     this.selectedMarker = marker;
     if (!marker || marker?.image) return;
-
-    this.isLoading = true;
-    this.dataService.getDetectedObjects(title)
-      .pipe(catchError(() => of(undefined)))
-      .subscribe((data: any) => {
-        this.isLoading = false;
-        if (data) marker.image = data.image;
-      });
   }
 }

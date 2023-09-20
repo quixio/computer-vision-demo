@@ -9,7 +9,7 @@ client = qx.QuixStreamingClient()
 
 processed_image_consumer = client.get_topic_consumer(os.environ["processed_images"], consumer_group = "data-buffer")
 vehicle_count_consumer = client.get_topic_consumer(os.environ["vehicle_counts"], consumer_group = "data-buffer")
-max_vehicles_consumer = client.get_topic_consumer(os.environ["max_vehicles"], consumer_group = "data-buffer")
+max_vehicles_consumer = client.get_topic_consumer(os.environ["max_vehicles"], consumer_group = "data-buffer-v2")
 
 buffered_data = client.get_topic_producer(os.environ["buffered_stream"])
 

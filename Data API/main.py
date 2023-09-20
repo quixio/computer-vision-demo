@@ -1,6 +1,6 @@
 import quixstreams as qx
 import pandas as pd
-from flask import Flask, request, abort
+from flask import Flask, request, abort, send_file
 from flask_cors import CORS
 import os
 import base64
@@ -138,19 +138,10 @@ def objects():
 @app.route("/detected_objects/<camera_id>")
 def objects_for_cam(camera_id):
     with mutex:
-        # get the state manager for the topic
-        state_manager = buffered_stream_data.get_state_manager()
-
-        # for each stream, get the items of interest
-        state_objects = state_manager.get_stream_state_manager("buffered_processed_images").get_dict_state("detected_objects")
-        #state_objects_copy = copy.deepcopy(state_objects.items())
-
-        # there should be only one (1) row per camera. But just in case, loop through and add any that are there.
-        for idx, row in state_objects:
-            if idx == camera_id:
-                return row
-
-        abort(404)
+        if os.path.isfile("state/camera_images/"+ camera_id): 
+            return send_file("state/camera_images/"+ camera_id, mimetype='image/png')
+        else:
+            abort(404)
 
 # create the vehicles route
 @app.route("/vehicles")

@@ -230,7 +230,7 @@ deployments:
   - name: Max Vehicle Window
     application: Max Vehicles
     deploymentType: Service
-    version: 27b4408f4adac3af5aad60f8257d3715783aa068
+    version: 11ea0c4a4289ea09bea5096d2a2f46c3debf3aef
     resources:
       cpu: 1000
       memory: 2000
@@ -238,7 +238,7 @@ deployments:
     state:
       enabled: true
       size: 1
-    desiredStatus: Running
+    desiredStatus: Stopped
     variables:
       - name: input
         inputType: InputTopic

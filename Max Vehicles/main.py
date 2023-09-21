@@ -51,8 +51,8 @@ def process_max_window_data(stream_consumer, new_data_frame):
 
         # Calculate and print the maximum vehicles seen over the last 24 hours for the stream
         max_vehicles = calculate_max_vehicles(stream_data)
-
-        print(f"Stream {stream_id}: Maximum vehicles seen in the last 24 hours: {max_vehicles}")
+        
+        print(f"{datetime.datetime.utcnow()}:{stream_id}: Maximum vehicles in the last 24 hours: {max_vehicles}")
 
         data = {'timestamp': datetime.utcnow(),
                 'max_vehicles': [max_vehicles],

@@ -41,7 +41,6 @@ def calculate_max_vehicles(stream_data):
 def process_max_window_data(stream_consumer, new_data_frame):
     stream_id = stream_consumer.stream_id
     stream_data = stream_consumer.get_dict_state("data", lambda missing_key: [])
-    last_max = stream_consumer.get_scalar_state("last_max", lambda: 0)
 
     for i, dataframe in new_data_frame.iterrows():
         timestamp = datetime.utcfromtimestamp(dataframe["timestamp"] / 1e9)  # Convert timestamp to datetime
@@ -59,11 +58,8 @@ def process_max_window_data(stream_consumer, new_data_frame):
                 'TAG__cam': stream_id}
         df2 = pd.DataFrame(data)
 
-        # publish any changes to max_vehicles
-        if max_vehicles != last_max.value:
-            last_max.value = max_vehicles
-            stream_producer = topic_producer.get_or_create_stream(stream_id=stream_id)
-            stream_producer.timeseries.buffer.publish(df2)
+        stream_producer = topic_producer.get_or_create_stream(stream_id=stream_id)
+        stream_producer.timeseries.buffer.publish(df2)
 
 
 def on_stream_received_handler(outer_stream_consumer: qx.StreamConsumer):

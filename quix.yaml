@@ -367,3 +367,10 @@ topics:
       replicationFactor: 2
       retentionInMinutes: 5760
       retentionInBytes: 262144000
+  - name: aggregated-max
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: 5760
+      retentionInBytes: 52428800

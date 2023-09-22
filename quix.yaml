@@ -271,6 +271,31 @@ deployments:
         description: The output from the Image Processing stage
         required: false
         value: buffered-data
+  - name: TFL Camera Feed
+    application: TFL Camera Feed
+    deploymentType: Service
+    version: e5d3deac7b400da3c1ef37ef44901a620c28b61d
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    desiredStatus: Running
+    variables:
+      - name: output
+        inputType: OutputTopic
+        description: This is the output topic for TfL camera images
+        required: true
+        value: tfl-cameras
+      - name: sleep_interval
+        inputType: FreeText
+        description: ''
+        required: true
+        value: 60
+      - name: tfl_api_key
+        inputType: Secret
+        description: ''
+        required: true
+        value: tfl_api_key
 
 # This section describes the Topics of the data pipeline
 topics:

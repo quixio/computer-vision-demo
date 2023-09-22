@@ -12,7 +12,7 @@ from dateutil import parser
 run = True
 
 client = qx.QuixStreamingClient()
-api_key = os.environ["api_key"]
+api_key = os.environ["tfl_api_key"]
 
 # Change consumer group to a different constant if you want to run model locally.
 print("Opening input and output topics")

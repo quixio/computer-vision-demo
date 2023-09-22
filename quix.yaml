@@ -6,36 +6,6 @@ metadata:
 
 # This section describes the Deployments of the data pipeline
 deployments:
-  - name: TFL Camera Feed
-    application: TFL Camera Feed
-    deploymentType: Service
-    version: 6a61a63d503effa1ffc034b27a300c7b46a30608
-    resources:
-      cpu: 1000
-      memory: 1000
-      replicas: 1
-    desiredStatus: Stopped
-    variables:
-      - name: output
-        inputType: OutputTopic
-        description: This is the output topic for TfL camera images
-        required: true
-        value: tfl-cameras
-      - name: api_key
-        inputType: HiddenText
-        description: Your TfL API Key
-        required: true
-        value: ba4f0a6e85ce4e02b8ae2864f9147beb
-      - name: sleep_interval
-        inputType: FreeText
-        description: ''
-        required: true
-        value: 60
-      - name: fence_coordinates
-        inputType: FreeText
-        description: Geofence coordinates. e.g. [(LAT1,LON1),(LAT2,LON2),(LAT3,LON3)]
-        required: false
-        value: ''
   - name: Computer vision object detection
     application: Computer vision object detection
     deploymentType: Service

@@ -11,7 +11,7 @@ variables:
     description: ''
     defaultValue: 60
     required: true
-  - name: api_key
+  - name: tfl_api_key
     inputType: Secret
     description: ''
     defaultValue: tfl_api_key

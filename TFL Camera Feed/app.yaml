@@ -16,6 +16,11 @@ variables:
     description: ''
     defaultValue: tfl_api_key
     required: true
+  - name: new_var
+    inputType: Secret
+    description: ''
+    defaultValue: new_secret
+    required: false
 dockerfile: build/dockerfile
 runEntryPoint: main.py
 defaultFile: main.py

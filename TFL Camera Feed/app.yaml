@@ -21,11 +21,6 @@ variables:
     description: ''
     defaultValue: new_secret
     required: false
-  - name: onemore
-    inputType: Secret
-    description: ''
-    defaultValue: tfl_api_key
-    required: false
 dockerfile: build/dockerfile
 runEntryPoint: main.py
 defaultFile: main.py

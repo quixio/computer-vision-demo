@@ -34,8 +34,6 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
             if stream_consumer.stream_id == 'buffered_processed_images':
                     print("Processing images")
 
-                    encoding = 'utf-8'
-
                     state = stream_consumer.get_dict_state("detected_objects", lambda: 0)
                     image_state = stream_consumer.get_dict_state("detected_objects_images", lambda: 0)
 
@@ -53,7 +51,7 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
                         #print(f"{i} -- {row}")
 
                         state[camera] = row.to_dict()
-                        #print(state[camera])
+                        print(state[camera])
 
             elif stream_consumer.stream_id == 'buffered_vehicle_counts':
                 print("Processing vehicles")

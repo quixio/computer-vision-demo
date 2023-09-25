@@ -299,7 +299,7 @@ deployments:
   - name: Test-image-api
     application: Test-image-api
     deploymentType: Service
-    version: 31acfad1943f35687d5a8bbe831116e5a2148ffb
+    version: e43f6c5dbbdc81322c608f18fc21ee5d2d3d3dd4
     resources:
       cpu: 200
       memory: 500

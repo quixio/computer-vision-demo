@@ -65,7 +65,6 @@ def index():
 @app.route("/test/<camera_id>")
 def test(camera_id):
 
-    output = ""
 
     if camera_id in image_state:
         fileName = camera_id + ".png"
@@ -73,8 +72,12 @@ def test(camera_id):
             os.remove(fileName)
 
         with open(fileName, "wb") as fh:
-            fh.write(image_state[camera_id])
-            return send_file(camera_id + ".png", mimetype='image/png')
+            fh.write(image_state[camera_id]["image"])
+
+            output = datetime.fromtimestamp(image_state[camera_id]["ts"]) + "<br/><img src='" + fileName + "'>"
+            return output
+
+            #return send_file(camera_id + ".png", mimetype='image/png')
 
     return "Not found"
 

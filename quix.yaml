@@ -242,7 +242,7 @@ deployments:
   - name: Threshold alert
     application: Threshold alert
     deploymentType: Service
-    version: 3749a97cd359d99a21264d8b96d3f3a3c6a18e87
+    version: adecf1ed3e6c476a74b28bb65027dabec34f800d
     resources:
       cpu: 200
       memory: 200
@@ -259,11 +259,6 @@ deployments:
         description: This is the output topic for alerts
         required: true
         value: threshold-alert-output
-      - name: parameterName
-        inputType: FreeText
-        description: This is the stream's parameter to track
-        required: true
-        value: ParameterA
       - name: thresholdValue
         inputType: FreeText
         description: This is the threshold's numerical value
@@ -274,6 +269,11 @@ deployments:
         description: How long to wait before waiting for threshold checking (milliseconds)
         required: true
         value: 1
+      - name: parameterName
+        inputType: Secret
+        description: ''
+        required: false
+        value: bobb
 
 # This section describes the Topics of the data pipeline
 topics:

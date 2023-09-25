@@ -68,7 +68,7 @@ def test(camera_id):
             os.remove(fileName)
 
         with open(fileName, "wb") as fh:
-            fh.write(state_objects[camera_id])
+            fh.write(image_state[camera_id])
             return send_file(camera_id + ".png", mimetype='image/png')
 
 

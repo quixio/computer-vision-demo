@@ -56,6 +56,8 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
 
                         #print(f"{i} -- {row}")
 
+                        row["datetime"] = str(datetime.datetime.fromtimestamp(row["timestamp"]))
+
                         state[camera] = row.to_dict()
                         print(state[camera])
 

@@ -41,6 +41,8 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
 
                         camera = row["TAG__camera"]
 
+                        print(f"Data for {camera}")
+
                         image_state[camera] = row["image"]
 
                         with open("state/camera_images/" + camera + ".png", "wb") as fh:

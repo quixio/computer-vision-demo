@@ -21,10 +21,10 @@ variables:
     description: How long to wait before waiting for threshold checking (milliseconds)
     defaultValue: 1
     required: true
-  - name: Pbabab
+  - name: parameterName
     inputType: Secret
     description: ''
-    defaultValue: parameterName
+    defaultValue: bobb
     required: false
 dockerfile: build/dockerfile
 runEntryPoint: main.py

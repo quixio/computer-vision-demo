@@ -39,6 +39,7 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
 
             print(f"Data for {camera}")
         
+            image_state[camera] = {}
             image_state[camera]["image"] = row["image"]
             image_state[camera]["ts"] = row["timestamp"]
 

@@ -1,42 +1,97 @@
 import quixstreams as qx
-import os
 import pandas as pd
+from flask import Flask, request, abort, send_file
+from flask_cors import CORS
+import os
+import base64
+import copy
+from threading import Thread, Lock
+import datetime
 
 
+# Quix injects credentials automatically to the client.
+# Alternatively, you can always pass an SDK token manually as an argument.
 client = qx.QuixStreamingClient()
 
-topic_consumer = client.get_topic_consumer(os.environ["input"], consumer_group = "empty-transformation")
-topic_producer = client.get_topic_producer(os.environ["output"])
+qx.Logging.update_factory(qx.LogLevel.Debug)
+
+print("Opening input topic")
+buffered_stream_data = client.get_topic_consumer(
+    os.environ["raw-images"],
+    "temp-api-v1",
+    auto_offset_reset=qx.AutoOffsetReset.Earliest)
+
+image_state = {}
+
+def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsumer):
+    def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
+    
+        print(f"{str(datetime.datetime.utcnow())} Receiving data {stream_consumer.stream_id}")
+
+        # #if stream_consumer.stream_id == 'buffered_processed_images':
+        # print("Processing images")
+        #
+        # state = stream_consumer.get_dict_state("detected_objects", lambda: 0)
+        # #image_state = stream_consumer.get_dict_state("detected_objects_images", lambda: 0)
+        #
+        # for i, row in df.iterrows():
+        #
+        #     camera = stream_consumer.stream_id
+        #
+        #     print(f"Data for {camera}")
+        #
+        #     image_state[camera] = row["image"]
+        #
+        # print(f"{str(datetime.datetime.utcnow())} Processed buffered data {stream_consumer.stream_id}")
+
+    handler_stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
 
 
-def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
+# init the flask app
+app = Flask(__name__)
+CORS(app)
 
-    # Transform data frame here in this method. You can filter data or add new features.
-    # Pass modified data frame to output stream using stream producer.
-    # Set the output stream id to the same as the input stream or change it,
-    # if you grouped or merged data with different key.
-    stream_producer = topic_producer.get_or_create_stream(stream_id = stream_consumer.stream_id)
-    stream_producer.timeseries.buffer.publish(df)
+# create the default route
+@app.route("/")
+def index():
+    root = request.url_root
+    print(root)
+    return f"Endpoints are:" \
+           f"<br/><a href='{root}test'>{root}test</a>"
+
+# create the vehicles route
+@app.route("/test")
+def cam_vehicles():
+
+    result = {}
+
+    for cam in image_state:
+        print(cam)
+
+    return result
 
 
-# Handle event data from samples that emit event data
-def on_event_data_received_handler(stream_consumer: qx.StreamConsumer, data: qx.EventData):
-    print(data)
-    # handle your event data here
+if __name__ == "__main__":
+    print("main..")
+    from waitress import serve
+
+    # hook up the stream received handler
+    buffered_stream_data.on_stream_received = on_buffered_stream_received_handler
+    
+    def on_committing(stream_consumer):
+        print(f"{str(datetime.datetime.utcnow())} on_committing")
+
+    def on_committed(stream_consumer):
+        print(f"{str(datetime.datetime.utcnow())} on_committed")
 
 
-def on_stream_received_handler(stream_consumer: qx.StreamConsumer):
-    # subscribe to new DataFrames being received
-    # if you aren't familiar with DataFrames there are other callbacks available
-    # refer to the docs here: https://docs.quix.io/sdk/subscribe.html
-    stream_consumer.events.on_data_received = on_event_data_received_handler # register the event data callback
-    stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
+    buffered_stream_data.on_committing = on_committing
+    buffered_stream_data.on_committed = on_committed
+    # subscribe to data arriving into the topic
+    buffered_stream_data.subscribe()
 
+    # you can use app.run for dev, but it's not secure, stable or particularly efficient
+    # app.run(debug=True, host="0.0.0.0", port=80)
 
-# subscribe to new streams being received
-topic_consumer.on_stream_received = on_stream_received_handler
-
-print("Listening to streams. Press CTRL-C to exit.")
-
-# Handle termination signals and provide a graceful exit
-qx.App.run()
+    # use waitress instead for production
+    serve(app, host="0.0.0.0", port=80)

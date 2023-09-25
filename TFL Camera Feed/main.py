@@ -14,6 +14,8 @@ run = True
 client = qx.QuixStreamingClient()
 api_key = os.environ["tfl_api_key"]
 
+print(api_key)
+
 # Change consumer group to a different constant if you want to run model locally.
 print("Opening input and output topics")
 

@@ -74,7 +74,7 @@ def test(camera_id):
         with open(fileName, "wb") as fh:
             fh.write(image_state[camera_id]["image"])
 
-            output = datetime.fromtimestamp(image_state[camera_id]["ts"]) + "<br/><img src='" + fileName + "'>"
+            output = datetime.datetime.fromtimestamp(image_state[camera_id]["ts"]) + "<br/><img src='" + fileName + "'>"
             return output
 
             #return send_file(camera_id + ".png", mimetype='image/png')

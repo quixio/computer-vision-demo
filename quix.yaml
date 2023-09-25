@@ -239,6 +239,41 @@ deployments:
         description: Name of the output topic to write into
         required: true
         value: f1-data
+  - name: Threshold alert
+    application: Threshold alert
+    deploymentType: Service
+    version: 3749a97cd359d99a21264d8b96d3f3a3c6a18e87
+    resources:
+      cpu: 200
+      memory: 200
+      replicas: 1
+    desiredStatus: Running
+    variables:
+      - name: input
+        inputType: InputTopic
+        description: This is the input topic for raw data
+        required: true
+        value: f1-data
+      - name: output
+        inputType: OutputTopic
+        description: This is the output topic for alerts
+        required: true
+        value: threshold-alert-output
+      - name: parameterName
+        inputType: FreeText
+        description: This is the stream's parameter to track
+        required: true
+        value: ParameterA
+      - name: thresholdValue
+        inputType: FreeText
+        description: This is the threshold's numerical value
+        required: true
+        value: 100
+      - name: bufferMilliSeconds
+        inputType: FreeText
+        description: How long to wait before waiting for threshold checking (milliseconds)
+        required: true
+        value: 1
 
 # This section describes the Topics of the data pipeline
 topics:

@@ -71,6 +71,7 @@ def test(camera_id):
             fh.write(image_state[camera_id])
             return send_file(camera_id + ".png", mimetype='image/png')
 
+    return "Not found"
 
 
 if __name__ == "__main__":

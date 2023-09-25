@@ -12,7 +12,7 @@
           <a mat-raised-button color="primary" class="small me-2" fxLayout="row" fxLayoutAlign="center center"
             [href]="'https://portal.platform.quix.ai/pipeline?workspace=' + workspaceId" target="_blank">
             <img src="assets/quix.svg" alt="Quix" height="12" class="me-2" />
-            <span>Explore the pipeline</span>
+            <span>Look under the hood</span>
           </a>
           <a mat-raised-button color="accent" class="small" fxLayout="row" fxLayoutAlign="center center"
             href="https://github.com/quixio/computer-vision-demo" target="_blank">
@@ -26,14 +26,14 @@
       <!-- Live feed Section -->
       <div fxLayout="column" fxFlex.gt-xs="50" fxFlex.gt-sm="400px" class="overflow-auto p-5 mat-elevation-z4">
         <div class="mb-5">
-          <h1 class="mb-1">London traffic</h1>
-          <p class="mb-3 text-body">Real-time image processing demo</p>
-          <p class="mat-body">Explore London traffic in realtime, with a ML image processing pipeline built in Quix.</p>
+          <h1 class="mb-1">Image processing</h1>
+          <p class="mb-3 text-body text-uppercase">Project template</p>
+          <p class="mat-body">Uses object detection to visualize London’s traffic density in real time.</p>
           <div fxLayout="row">
             <a mat-raised-button color="primary" class="small me-2" fxLayout="row" fxLayoutAlign="center center"
               [href]="'https://portal.platform.quix.ai/pipeline?workspace=' + workspaceId" target="_blank">
               <img src="assets/quix.svg" alt="Quix" height="12" class="me-2" />
-              <span>Explore the pipeline</span>
+              <span>Look under the hood</span>
             </a>
             <a mat-raised-button color="accent" class="small" fxLayout="row" fxLayoutAlign="center center"
               href="https://github.com/quixio/computer-vision-demo" target="_blank">
@@ -44,13 +44,13 @@
         </div>
 
         <div class="mb-5">
-          <h4 class="mb-2">Real-time image processing demo</h4>
+          <h4 class="mb-2">Live data from London’s traffic cameras</h4>
           <p class="text-body mb-3">
-            We <a class="text-primary fw-bold">ingest data</a> from Transport for London (TfL) traffic cameras. A YOLO
-            v3
-            <a class="text-primary fw-bold">ML model</a> is used to detect
-            vehicles in realtime. round <b class="text-black">x images</b> (x GB), are analysed per min.
+            This project <a [href]="'https://portal.platform.quix.ai/pipeline/deployments/a4fec861-77e4-49eb-926b-8bb11398a3d1?workspace=' + workspaceId" target="_blank">ingests video frames</a> from Transport for London (TfL)
+            traffic cameras and detects the vehicles in each frame. Vehicle detection is powered by the 
+            <a [href]="'https://portal.platform.quix.ai/pipeline/deployments/142cc57c-ec57-4067-b8cc-7e1965408aba?workspace=' + workspaceId" target="_blank">YOLO v8 ML model</a>.
           </p>
+          <p class="text-body mb-3">To preserve resources only 1 every 100 frames is extracted for processing. These are the latest (try clicking on one):</p>
           <div fxLayout="row" fxLayoutGap="2">
             <ng-container *ngFor="let m of lastMarkers">
               <img *ngIf="m?.image" [src]="'data:image/png;base64,' + m.image" height="48" fxFlex role="button"
@@ -61,15 +61,19 @@
         </div>
 
         <div class="mb-5">
-          <h4 class="mb-2">Real-time image processing demo</h4>
+          <h4 class="mb-2">Traffic density analysis</h4>
           <p class="text-body mb-3">
-            Traffic density is <a class="text-primary fw-bold">calculated in real time</a> as a fraction of the road max
-            capacity and represented in the colour scale. You can also select a specific vehicle to see the total sum.
-            The <a class="text-primary fw-bold">code can be customised</a> to identify any other object (like...
-            bananas, yes, for real).
+            For each traffic camera, <a [href]="'https://portal.platform.quix.ai/pipeline/deployments/fd9bde35-0af4-41e3-b633-19c10212626a?workspace=' + workspaceId" target="_blank">a service</a> 
+            calculates the maximum number of vehicles seen in any given video frame in the last 24 hours. Then, it compares the current number of vehicles to the last observed maximum. 
+             This figure is expressed as a percentage and represented on a color scale.
+          </p>
+          <p class="text-body mb-3">
+            Use the following dropdown to count specific types of vehicles on the map. The 
+            <a [href]="'https://portal.platform.quix.ai/applications/ide/Computer%20vision%20object%20detection?workspace=' + workspaceId + '&branch=frontend'" target="_blank">code can be customised</a> 
+            to identify other types of objects as well. 
           </p>
           <mat-form-field appearance="outline" class="w-100">
-            <mat-label>Select object</mat-label>
+            <mat-label>Detecting</mat-label>
             <mat-select [value]="parameterId" (selectionChange)="selectedObjectChanged($event.value)">
               <mat-option class="text-uppercase" disabled><span class="mat-caption">Density</span></mat-option>
               <mat-option [value]="''">
@@ -103,9 +107,10 @@
         </div>
 
         <div class="mb-5">
-          <h4 class="mb-2">Are you intrigued?</h4>
+          <h4 class="mb-2">Want to know more?</h4>
           <p class="text-body mb-3">
-            Try Quix for free to build your own pipeline. Or visit other demos to explore what else is possible.
+            <a href="https://quix.io/docs/platform/tutorials/image-processing/index.html" target="_blank">Read the tutorial</a> and try Quix for free 
+            to reproduce this project or build something similar. To discover what else is possible, see our other project templates.
           </p>
           <div fxLayout="row">
             <a mat-raised-button color="primary" class="small me-2" fxLayout="row" fxLayoutAlign="center center"
@@ -113,7 +118,7 @@
               <span>Sign up for free</span>
             </a>
             <a mat-raised-button color="accent" class="small" fxLayout="row" fxLayoutAlign="center center">
-              <span>Explore other demos</span>
+              <span>More project template</span>
             </a>
           </div>
         </div>

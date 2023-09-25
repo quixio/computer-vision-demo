@@ -2,6 +2,12 @@
 html, body { height: 100%; }
 body { margin: 0; }
 
+a {
+  color: #0064FF;
+  text-decoration: none;
+  font-weight: 700;
+}
+
 // snazzy-info-window styling
 .si-close-button {
   opacity: 1;

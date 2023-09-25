@@ -307,7 +307,7 @@ deployments:
     publicAccess:
       enabled: true
       urlPrefix: test-image-api-9d2a00b
-    desiredStatus: Running
+    desiredStatus: Stopped
     variables:
       - name: input
         inputType: InputTopic

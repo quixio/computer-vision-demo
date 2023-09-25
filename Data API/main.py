@@ -48,6 +48,9 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
                         with open("state/camera_images/" + camera + ".png", "wb") as fh:
                             fh.write(row["image"])
 
+                        with open("state/camera_images/" + camera + "-"+ str(datetime.datetime.fromtimestamp(row["timestamp"]/1000000000)) +"-.png", "wb") as fh:
+                            fh.write(row["image"])
+
                         del row["image"]
 
                         #print(f"{i} -- {row}")

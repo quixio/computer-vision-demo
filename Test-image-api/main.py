@@ -39,8 +39,8 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
 
             print(f"Data for {camera}")
         
-            image_state[camera].image = row["image"]
-            image_state[camera].ts = row["timestamp"]
+            image_state[camera]["image"] = row["image"]
+            image_state[camera]["ts"] = row["timestamp"]
 
         
         print(f"{str(datetime.datetime.utcnow())} Processed buffered data {stream_consumer.stream_id}")

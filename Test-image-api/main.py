@@ -60,7 +60,7 @@ def index():
 
 # create the vehicles route
 @app.route("/test/<camera_id>")
-def test():
+def test(camera_id):
 
     if camera_id in image_state:
         fileName = camera_id + ".png"
@@ -68,7 +68,7 @@ def test():
             os.remove(fileName)
 
         with open(fileName, "wb") as fh:
-            fh.write(state_objects[camera_id])
+            fh.write(image_state[camera_id])
             return send_file(camera_id + ".png", mimetype='image/png')
 
 

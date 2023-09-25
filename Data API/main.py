@@ -126,11 +126,53 @@ def objects():
         # get the state manager for the topic
         state_manager = buffered_stream_data.get_state_manager()
 
+        result = {}
         # for each stream, get the items of interest
         state_objects = state_manager.get_stream_state_manager("buffered_processed_images").get_dict_state("detected_objects")
         state_objects_copy = copy.deepcopy(state_objects.items())
 
-        return state_objects
+        # remove any images, we don't want them here
+        for _, val in state_objects_copy:
+            val.pop('image', None)
+
+        for i, row in state_objects_copy:
+            result[i] = row
+
+        return result
+
+@app.route("/detected_objects2")
+def objects():
+    with mutex:
+        print("/detected_objects started")
+        # get the state manager for the topic
+        state_manager = buffered_stream_data.get_state_manager()
+
+        result = {}
+        # for each stream, get the items of interest
+        state_objects = state_manager.get_stream_state_manager("buffered_processed_images").get_dict_state("detected_objects")
+        state_objects_copy = copy.deepcopy(state_objects.items())
+
+        # remove any images, we don't want them here
+        for _, val in state_objects_copy:
+            val.pop('image', None)
+
+        for i, row in state_objects_copy:
+            result[i] = row
+
+        return result
+
+# create the detected objects route for specific camera
+@app.route("/detected_objects2/<camera_id>")
+def objects_for_cam(camera_id):
+    with mutex:
+        state_manager = buffered_stream_data.get_state_manager()
+
+        state_objects = state_manager.get_stream_state_manager("buffered_processed_images").get_dict_state("detected_objects")
+
+        if camera_id in state_objects:
+            return state_objects[camera_id]
+        else:
+            abort(404)
 
 # create the detected objects route for specific camera
 @app.route("/detected_objects/<camera_id>")

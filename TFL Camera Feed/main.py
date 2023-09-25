@@ -42,13 +42,15 @@ def get_data():
         try:
             cameras = requests.get(
                 "https://api.tfl.gov.uk/Place/Type/JamCam/?app_id=QuixFeed&app_key={}".format(api_key))
-
-            print(f"JamCam 'get' status: {cameras.status_code}")
+            
         except Exception as ex:
             print("An error occurred while trying to call the JamCam endpoint.")
             print("Please check your API key")
             print("Error:")
             print(ex)
+
+        finally:
+            print(f"JamCam 'get' status: {cameras.status_code}")
 
         cameras_list = cameras.json()
 

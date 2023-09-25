@@ -73,9 +73,6 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
     if "truck" in video_df:
         df["truck"] = np.median(video_df["truck"])
 
-    # just for testing
-    df["png"]= image_to_binary_string(df["image"])
-
     print(df.info())
     stream_producer = topic_producer_vehicles.get_or_create_stream(stream_id = stream_consumer.stream_id)
     stream_producer.timeseries.publish(df)

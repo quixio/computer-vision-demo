@@ -62,10 +62,13 @@ def index():
 @app.route("/test")
 def cam_vehicles():
 
-    result = {}
+    result = "<table>"
+
 
     for cam in image_state:
         print(cam)
+
+    result = result + "</table>"
 
     return result
 

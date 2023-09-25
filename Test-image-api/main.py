@@ -59,18 +59,18 @@ def index():
            f"<br/><a href='{root}test'>{root}test</a>"
 
 # create the vehicles route
-@app.route("/test")
-def cam_vehicles():
+@app.route("/test/<camera_id>")
+def test():
 
-    result = "<table>"
+    if camera_id in image_state:
+        fileName = camera_id + ".png"
+        if os.path.isfile(fileName):
+            os.remove(fileName)
 
+        with open(fileName, "wb") as fh:
+            fh.write(state_objects[camera_id])
+            return send_file(camera_id + ".png", mimetype='image/png')
 
-    for cam in image_state:
-        print(cam)
-
-    result = result + "</table>"
-
-    return result
 
 
 if __name__ == "__main__":

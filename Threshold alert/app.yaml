@@ -11,11 +11,6 @@ variables:
     description: This is the output topic for alerts
     defaultValue: threshold-alert-output
     required: true
-  - name: parameterName
-    inputType: FreeText
-    description: This is the stream's parameter to track
-    defaultValue: ParameterA
-    required: true
   - name: thresholdValue
     inputType: FreeText
     description: This is the threshold's numerical value
@@ -26,10 +21,10 @@ variables:
     description: How long to wait before waiting for threshold checking (milliseconds)
     defaultValue: 1
     required: true
-  - name: Pbabab
+  - name: parameterName
     inputType: Secret
     description: ''
-    defaultValue: parameterName
+    defaultValue: bobb
     required: false
 dockerfile: build/dockerfile
 runEntryPoint: main.py

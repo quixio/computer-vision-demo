@@ -9,7 +9,7 @@ deployments:
   - name: Computer vision object detection
     application: Computer vision object detection
     deploymentType: Service
-    version: b81c00dd94250a3525c273280243435bcf5cb1da
+    version: ac38c3defbfea01e9a5a08427b2ae8d06fda26b7
     resources:
       cpu: 4000
       memory: 2000
@@ -54,7 +54,7 @@ deployments:
   - name: TfL image processing UI
     application: TfL image processing UI
     deploymentType: Service
-    version: 2fae3ca02ff224285385a686a579c7fa2872c0f7
+    version: fa6db272ccb8681f33a6e4614c2c470e87fc4fc8
     resources:
       cpu: 900
       memory: 200
@@ -253,7 +253,7 @@ deployments:
   - name: Data API
     application: Data API
     deploymentType: Service
-    version: ffac005173e795c4993dc66edf9b6b15f3224082
+    version: 89680befcaf06a950a8702601dc4cfca17293683
     resources:
       cpu: 2000
       memory: 500
@@ -279,7 +279,7 @@ deployments:
       cpu: 200
       memory: 500
       replicas: 1
-    desiredStatus: Stopped
+    desiredStatus: Running
     variables:
       - name: output
         inputType: OutputTopic

@@ -28,21 +28,20 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
     
         print(f"{str(datetime.datetime.utcnow())} Receiving data {stream_consumer.stream_id}")
 
-        # #if stream_consumer.stream_id == 'buffered_processed_images':
-        # print("Processing images")
-        #
-        # state = stream_consumer.get_dict_state("detected_objects", lambda: 0)
-        # #image_state = stream_consumer.get_dict_state("detected_objects_images", lambda: 0)
-        #
-        # for i, row in df.iterrows():
-        #
-        #     camera = stream_consumer.stream_id
-        #
-        #     print(f"Data for {camera}")
-        #
-        #     image_state[camera] = row["image"]
-        #
-        # print(f"{str(datetime.datetime.utcnow())} Processed buffered data {stream_consumer.stream_id}")
+        #if stream_consumer.stream_id == 'buffered_processed_images':
+        print("Processing images")
+        #state = stream_consumer.get_dict_state("detected_objects", lambda: 0)
+        #image_state = stream_consumer.get_dict_state("detected_objects_images", lambda: 0)
+        
+        for i, row in df.iterrows():
+        
+            camera = stream_consumer.stream_id
+        
+            print(f"Data for {camera}")
+        
+            image_state[camera] = row["image"]
+        
+        print(f"{str(datetime.datetime.utcnow())} Processed buffered data {stream_consumer.stream_id}")
 
     handler_stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
 

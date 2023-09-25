@@ -143,10 +143,15 @@ def objects_for_cam(camera_id):
         state_objects = state_manager.get_stream_state_manager("buffered_processed_images").get_dict_state("detected_objects_images")
 
         if camera_id in state_objects:
-            with open(camera_id + ".png", "wb") as fh:
+
+            fileName = camera_id + ".png"
+
+            if os.path.isfile(fileName):
+                os.remove(fileName)
+
+            with open(fileName, "wb") as fh:
                 fh.write(state_objects[camera_id])
             return send_file(camera_id + ".png", mimetype='image/png')
-            #TODO: delete the file
         else:
             abort(404)
 

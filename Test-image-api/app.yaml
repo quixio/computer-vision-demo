@@ -4,6 +4,7 @@ variables:
   - name: input
     inputType: InputTopic
     description: Name of the input topic to listen to.
+    defaultValue: image-raw
     required: false
 dockerfile: build/dockerfile
 runEntryPoint: main.py

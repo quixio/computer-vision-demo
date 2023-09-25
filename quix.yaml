@@ -185,7 +185,7 @@ deployments:
       cpu: 4000
       memory: 2000
       replicas: 1
-    desiredStatus: Stopped
+    desiredStatus: Running
     variables:
       - name: input
         inputType: InputTopic

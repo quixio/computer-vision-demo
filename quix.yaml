@@ -296,6 +296,21 @@ deployments:
         description: ''
         required: true
         value: tfl_api_key
+  - name: Test-image-api
+    application: Test-image-api
+    deploymentType: Service
+    version: 11ce3546076cdc99b5e15133819a56bbda7ef1df
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    desiredStatus: Running
+    variables:
+      - name: input
+        inputType: InputTopic
+        description: Name of the input topic to listen to.
+        required: false
+        value: image-raw
 
 # This section describes the Topics of the data pipeline
 topics:

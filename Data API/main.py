@@ -141,7 +141,7 @@ def objects():
         return result
 
 @app.route("/detected_objects2")
-def objects():
+def objects2():
     with mutex:
         print("/detected_objects started")
         # get the state manager for the topic
@@ -163,7 +163,7 @@ def objects():
 
 # create the detected objects route for specific camera
 @app.route("/detected_objects2/<camera_id>")
-def objects_for_cam(camera_id):
+def objects_for_cam2(camera_id):
     with mutex:
         state_manager = buffered_stream_data.get_state_manager()
 

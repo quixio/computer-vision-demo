@@ -39,10 +39,16 @@ def get_data():
         for a in root.findall("{http://s3.amazonaws.com/doc/2006-03-01/}Contents"):
             files[a[0].text] = a[1].text
 
-        cameras = requests.get(
-            "https://api.tfl.gov.uk/Place/Type/JamCam/?app_id=QuixFeed&app_key={}".format(api_key))
+        try:
+            cameras = requests.get(
+                "https://api.tfl.gov.uk/Place/Type/JamCam/?app_id=QuixFeed&app_key={}".format(api_key))
 
-        print(f"JamCam 'get' status: {cameras.status_code}")
+            print(f"JamCam 'get' status: {cameras.status_code}")
+        except Exception as ex:
+            print("An error occurred while trying to call the JamCam endpoint.")
+            print("Please check your API key")
+            print("Error:")
+            print(ex)
 
         cameras_list = cameras.json()
 

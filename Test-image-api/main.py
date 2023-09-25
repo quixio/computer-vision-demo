@@ -60,7 +60,7 @@ def index():
 
 # create the vehicles route
 @app.route("/test/<camera_id>")
-def test():
+def test(camera_id):
 
     if camera_id in image_state:
         fileName = camera_id + ".png"

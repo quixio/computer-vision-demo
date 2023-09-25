@@ -36,10 +36,12 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
         for i, row in df.iterrows():
         
             camera = stream_consumer.stream_id
-        
+
             print(f"Data for {camera}")
         
-            image_state[camera] = row["image"]
+            image_state[camera].image = row["image"]
+            image_state[camera].ts = row["timestamp"]
+
         
         print(f"{str(datetime.datetime.utcnow())} Processed buffered data {stream_consumer.stream_id}")
 
@@ -61,6 +63,8 @@ def index():
 # create the vehicles route
 @app.route("/test/<camera_id>")
 def test(camera_id):
+
+    output = ""
 
     if camera_id in image_state:
         fileName = camera_id + ".png"

@@ -4,7 +4,6 @@ import json
 import time
 import os
 import cv2
-import base64
 from dateutil import parser
 # old
 
@@ -54,7 +53,6 @@ class QuixFunction:
             if (count - 1) % self.frame_rate == 0:
                 self.stream_producer.timeseries.buffer.add_timestamp(timestamp) \
                     .add_value("image", bytearray(frame_bytes)) \
-                    .add_value("imageBase64", base64.b64encode(bytearray(frame_bytes)).decode('utf-8')) \
                     .add_value("lon", lon) \
                     .add_value("lat", lat) \
                     .publish()

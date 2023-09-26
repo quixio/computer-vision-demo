@@ -6,6 +6,31 @@ metadata:
 
 # This section describes the Deployments of the data pipeline
 deployments:
+  - name: TFL Camera Feed
+    application: TFL Camera Feed
+    deploymentType: Service
+    version: Release-v1
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    desiredStatus: Running
+    variables:
+      - name: output
+        inputType: OutputTopic
+        description: This is the output topic for TfL camera images
+        required: true
+        value: tfl-cameras
+      - name: sleep_interval
+        inputType: FreeText
+        description: ''
+        required: true
+        value: 20
+      - name: tfl_api_key
+        inputType: Secret
+        description: ''
+        required: true
+        value: tfl_api_key
   - name: Computer vision object detection
     application: Computer vision object detection
     deploymentType: Service
@@ -34,7 +59,7 @@ deployments:
   - name: Stream merge
     application: Stream merge
     deploymentType: Service
-    version: 6b02f283591c60be15d1b318e943f54ef313f975
+    version: v1.2
     resources:
       cpu: 2000
       memory: 1000
@@ -54,7 +79,7 @@ deployments:
   - name: TfL image processing UI
     application: TfL image processing UI
     deploymentType: Service
-    version: b479a1b26375b0b461bda4fd064c2ca75eb6d08a
+    version: 951381542c05d218141e4f38a58d68c7e356545c
     resources:
       cpu: 900
       memory: 200
@@ -97,6 +122,47 @@ deployments:
         description: ''
         required: true
         value: 100
+  - name: Cam Vehicles
+    application: TotalVehicles
+    deploymentType: Service
+    version: e6bb005ff21552be9b0cf2482ea95ad6350abf68
+    resources:
+      cpu: 4000
+      memory: 2000
+      replicas: 1
+    desiredStatus: Running
+    variables:
+      - name: input
+        inputType: InputTopic
+        description: This is the input topic to read data from
+        required: true
+        value: image-processed
+      - name: output
+        inputType: OutputTopic
+        description: This is the output topic to write data to
+        required: true
+        value: image-vehicles
+  - name: Data API
+    application: Data API
+    deploymentType: Service
+    version: f4ab4d2d603f4f60d1f1cba4c41bdabd0e5e32cb
+    resources:
+      cpu: 2000
+      memory: 500
+      replicas: 1
+    publicAccess:
+      enabled: true
+      urlPrefix: data-api
+    state:
+      enabled: true
+      size: 11
+    desiredStatus: Running
+    variables:
+      - name: buffered_stream
+        inputType: InputTopic
+        description: The output from the Image Processing stage
+        required: false
+        value: buffered-data
   - name: S3 new
     application: S3
     deploymentType: Service
@@ -167,26 +233,6 @@ deployments:
         description: Timezone from the IANA Time Zone Database (e.g. Asia/Singapore) for orchestrating time-based batching and file naming.
         required: true
         value: GMT
-  - name: Cam Vehicles
-    application: TotalVehicles
-    deploymentType: Service
-    version: e6bb005ff21552be9b0cf2482ea95ad6350abf68
-    resources:
-      cpu: 4000
-      memory: 2000
-      replicas: 1
-    desiredStatus: Running
-    variables:
-      - name: input
-        inputType: InputTopic
-        description: This is the input topic to read data from
-        required: true
-        value: image-processed
-      - name: output
-        inputType: OutputTopic
-        description: This is the output topic to write data to
-        required: true
-        value: image-vehicles
   - name: Max Vehicle Window
     application: Max Vehicles
     deploymentType: Service
@@ -240,55 +286,16 @@ deployments:
         description: ''
         required: false
         value: buffered-data
-  - name: Data API
-    application: Data API
-    deploymentType: Service
-    version: f4ab4d2d603f4f60d1f1cba4c41bdabd0e5e32cb
-    resources:
-      cpu: 2000
-      memory: 500
-      replicas: 1
-    publicAccess:
-      enabled: true
-      urlPrefix: data-api
-    state:
-      enabled: true
-      size: 11
-    desiredStatus: Running
-    variables:
-      - name: buffered_stream
-        inputType: InputTopic
-        description: The output from the Image Processing stage
-        required: false
-        value: buffered-data
-  - name: TFL Camera Feed
-    application: TFL Camera Feed
-    deploymentType: Service
-    version: Release-v1
-    resources:
-      cpu: 200
-      memory: 500
-      replicas: 1
-    desiredStatus: Running
-    variables:
-      - name: output
-        inputType: OutputTopic
-        description: This is the output topic for TfL camera images
-        required: true
-        value: tfl-cameras
-      - name: sleep_interval
-        inputType: FreeText
-        description: ''
-        required: true
-        value: 60
-      - name: tfl_api_key
-        inputType: Secret
-        description: ''
-        required: true
-        value: tfl_api_key
 
 # This section describes the Topics of the data pipeline
 topics:
+  - name: image-processed-merged
+    persisted: false
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
   - name: image-processed
     persisted: true
     configuration:
@@ -296,8 +303,15 @@ topics:
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
-  - name: image-processed-merged
-    persisted: false
+  - name: image-raw
+    persisted: true
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: tfl-cameras
+    persisted: true
     configuration:
       partitions: 2
       replicationFactor: 2
@@ -323,20 +337,6 @@ topics:
       partitions: 2
       replicationFactor: 2
       retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: image-raw
-    persisted: true
-    configuration:
-      partitions: 16
-      replicationFactor: 2
-      retentionInMinutes: 4380
-      retentionInBytes: 262144000
-  - name: tfl-cameras
-    persisted: true
-    configuration:
-      partitions: 15
-      replicationFactor: 2
-      retentionInMinutes: 5760
       retentionInBytes: 262144000
   - name: buffered-data
     persisted: true

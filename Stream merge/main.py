@@ -2,6 +2,7 @@ import quixstreams as qx
 from quix_function import QuixFunction
 import os
 
+#qx.Logging.update_factory(qx.LogLevel.Debug)
 
 # Quix injects credentials automatically to the client.
 # Alternatively, you can always pass an SDK token manually as an argument.
@@ -9,15 +10,14 @@ client = qx.QuixStreamingClient()
 
 # Change consumer group to a different constant if you want to run model locally.
 print("Opening input and output topics")
-
-print("Opening input and output topics")
-topic_consumer = client.get_topic_consumer(os.environ["input"], "default-consumer-group",
+topic_consumer = client.get_topic_consumer(os.environ["input"], "stream-merge",
                                            auto_offset_reset = qx.AutoOffsetReset.Latest)
 topic_producer = client.get_topic_producer(os.environ["output"])
 
 
 # Callback called for each incoming stream
 def read_stream(consumer_stream: qx.StreamConsumer):
+    print(f"New stream read: {consumer_stream.stream_id}")
 
     quix_function = QuixFunction(consumer_stream, topic_producer)
         
@@ -33,4 +33,4 @@ topic_consumer.on_stream_received = read_stream
 print("Listening to streams. Press CTRL-C to exit.")
 
 # Handle graceful exit of the model.
-qx.App.run()
+qx.App.run(subscribe=True)

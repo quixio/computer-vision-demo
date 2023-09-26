@@ -339,7 +339,7 @@ topics:
       retentionInMinutes: 5760
       retentionInBytes: 262144000
   - name: buffered-data
-    persisted: false
+    persisted: true
     configuration:
       partitions: 2
       replicationFactor: 2

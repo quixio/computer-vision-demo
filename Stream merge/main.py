@@ -18,6 +18,7 @@ topic_producer = client.get_topic_producer(os.environ["output"])
 
 # Callback called for each incoming stream
 def read_stream(consumer_stream: qx.StreamConsumer):
+    print("New stream read: {consumer_stream.stream_id}")
 
     quix_function = QuixFunction(consumer_stream, topic_producer)
         

@@ -264,7 +264,7 @@ deployments:
   - name: TFL Camera Feed
     application: TFL Camera Feed
     deploymentType: Service
-    version: Release-v1
+    version: d057ad20f045bd54e4218832b6e9e739ebfaef1b
     resources:
       cpu: 200
       memory: 500
@@ -290,7 +290,7 @@ deployments:
 # This section describes the Topics of the data pipeline
 topics:
   - name: image-processed
-    persisted: true
+    persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2
@@ -304,7 +304,7 @@ topics:
       retentionInMinutes: -1
       retentionInBytes: 262144000
   - name: image-vehicles
-    persisted: true
+    persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2
@@ -318,28 +318,28 @@ topics:
       retentionInMinutes: -1
       retentionInBytes: 262144000
   - name: max-vehicles
-    persisted: true
+    persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
   - name: image-raw
-    persisted: true
+    persisted: false
     configuration:
       partitions: 16
       replicationFactor: 2
       retentionInMinutes: 4380
       retentionInBytes: 262144000
   - name: tfl-cameras
-    persisted: true
+    persisted: false
     configuration:
       partitions: 15
       replicationFactor: 2
       retentionInMinutes: 5760
       retentionInBytes: 262144000
   - name: buffered-data
-    persisted: true
+    persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2

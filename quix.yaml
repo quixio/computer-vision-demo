@@ -59,7 +59,7 @@ deployments:
   - name: Stream merge
     application: Stream merge
     deploymentType: Service
-    version: 6b02f283591c60be15d1b318e943f54ef313f975
+    version: v1.2
     resources:
       cpu: 2000
       memory: 1000

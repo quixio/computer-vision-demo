@@ -54,7 +54,7 @@ deployments:
   - name: TfL image processing UI
     application: TfL image processing UI
     deploymentType: Service
-    version: e9a6bb8575720b4315967b1d27caba4f768bc6c8
+    version: 1253c0e9dfe9db220a7dd5dc37d4a48f4622c921
     resources:
       cpu: 900
       memory: 200
@@ -290,7 +290,7 @@ deployments:
 # This section describes the Topics of the data pipeline
 topics:
   - name: image-processed
-    persisted: true
+    persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2
@@ -304,7 +304,7 @@ topics:
       retentionInMinutes: -1
       retentionInBytes: 262144000
   - name: image-vehicles
-    persisted: true
+    persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2
@@ -318,28 +318,28 @@ topics:
       retentionInMinutes: -1
       retentionInBytes: 262144000
   - name: max-vehicles
-    persisted: true
+    persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
   - name: image-raw
-    persisted: true
+    persisted: false
     configuration:
       partitions: 16
       replicationFactor: 2
       retentionInMinutes: 4380
       retentionInBytes: 262144000
   - name: tfl-cameras
-    persisted: true
+    persisted: false
     configuration:
       partitions: 15
       replicationFactor: 2
       retentionInMinutes: 5760
       retentionInBytes: 262144000
   - name: buffered-data
-    persisted: true
+    persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2

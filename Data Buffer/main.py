@@ -22,9 +22,7 @@ def on_image_stream_received_handler(stream_consumer: qx.StreamConsumer):
 
 
         df["CameraId"] = stream_consumer.stream_id
-        stream_producer.timeseries.buffer.buffer_timeout = buffer_duration
-        stream_producer.timeseries.buffer.time_span_in_milliseconds = buffer_duration
-        stream_producer.timeseries.buffer.publish(df)
+        stream_producer.timeseries.publish(df)
 
     stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
 

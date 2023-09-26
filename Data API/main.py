@@ -31,6 +31,7 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
                 print("Processing images")
 
                 state = stream_consumer.get_dict_state("detected_objects", lambda: 0)
+                
                 image_state = stream_consumer.get_dict_state("detected_objects_images", lambda: 0)
 
                 for i, row in df.iterrows():
@@ -48,7 +49,11 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
                     row["datetime"] = str(datetime.datetime.fromtimestamp(row["timestamp"]/1000000000))
 
                     state[camera] = row.to_dict()
+
                     print(state[camera])
+
+                    state.flush()
+                    image_state.flush()
 
         elif stream_consumer.stream_id == 'buffered_vehicle_counts':
             print("Processing vehicles")

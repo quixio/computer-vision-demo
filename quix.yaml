@@ -280,7 +280,7 @@ deployments:
         inputType: FreeText
         description: ''
         required: true
-        value: 60
+        value: 20
       - name: tfl_api_key
         inputType: Secret
         description: ''

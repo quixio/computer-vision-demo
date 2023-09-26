@@ -10,7 +10,7 @@
         </div>
         <div fxLayout="row" fxHide.xs>
           <a mat-raised-button color="primary" class="small me-2" fxLayout="row" fxLayoutAlign="center center"
-            [href]="'https://portal.platform.quix.ai/pipeline?workspace=' + workspaceId" target="_blank">
+            [href]="'https://portal.platform.quix.ai/pipeline?workspace=' + workspaceId + '&token=' + ungatedToken" target="_blank">
             <img src="assets/quix.svg" alt="Quix" height="12" class="me-2" />
             <span>Look under the hood</span>
           </a>
@@ -31,7 +31,7 @@
           <p class="mat-body">Uses object detection to visualize London’s traffic density in real time.</p>
           <div fxLayout="row">
             <a mat-raised-button color="primary" class="small me-2" fxLayout="row" fxLayoutAlign="center center"
-              [href]="'https://portal.platform.quix.ai/pipeline?workspace=' + workspaceId" target="_blank">
+              [href]="'https://portal.platform.quix.ai/pipeline?workspace=' + workspaceId + '&token=' + ungatedToken" target="_blank">
               <img src="assets/quix.svg" alt="Quix" height="12" class="me-2" />
               <span>Look under the hood</span>
             </a>
@@ -46,9 +46,9 @@
         <div class="mb-5">
           <h4 class="mb-2">Live data from London’s traffic cameras</h4>
           <p class="text-body mb-3">
-            This project <a [href]="'https://portal.platform.quix.ai/pipeline/deployments/a4fec861-77e4-49eb-926b-8bb11398a3d1?workspace=' + workspaceId" target="_blank">ingests video frames</a> from Transport for London (TfL)
+            This project <a [href]="'https://portal.platform.quix.ai/pipeline/deployments/ffbf3990-5076-4f42-b68f-d52e8f247bf6?workspace=' + workspaceId + '&token=' + ungatedToken" target="_blank">ingests video frames</a> from Transport for London (TfL)
             traffic cameras and detects the vehicles in each frame. Vehicle detection is powered by the 
-            <a [href]="'https://portal.platform.quix.ai/pipeline/deployments/142cc57c-ec57-4067-b8cc-7e1965408aba?workspace=' + workspaceId" target="_blank">YOLO v8 ML model</a>.
+            <a [href]="'https://portal.platform.quix.ai/pipeline/deployments/b82254ec-48ad-477e-a095-9de6348656b2?workspace=' + workspaceId + '&token=' + ungatedToken" target="_blank">YOLO v8 ML model</a>.
           </p>
           <p class="text-body mb-3">To preserve resources only 1 every 100 frames is extracted for processing. These are the latest (try clicking on one):</p>
           <div fxLayout="row" fxLayoutGap="2">
@@ -63,13 +63,16 @@
         <div class="mb-5">
           <h4 class="mb-2">Traffic density analysis</h4>
           <p class="text-body mb-3">
-            For each traffic camera, <a [href]="'https://portal.platform.quix.ai/pipeline/deployments/fd9bde35-0af4-41e3-b633-19c10212626a?workspace=' + workspaceId" target="_blank">a service</a> 
-            calculates the maximum number of vehicles seen in any given video frame in the last 24 hours. Then, it compares the current number of vehicles to the last observed maximum. 
+            For each traffic camera, a service
+            <a [href]="'https://portal.platform.quix.ai/pipeline/deployments/c8ef68fd-f3da-468a-814e-62edeafd810a?workspace=' + workspaceId + '&token=' + ungatedToken" target="_blank">
+              calculates the maximum number
+            </a> 
+            of vehicles seen in any given video frame in the last 24 hours. Then, it compares the current number of vehicles to the last observed maximum. 
              This figure is expressed as a percentage and represented on a color scale.
           </p>
           <p class="text-body mb-3">
             Use the following dropdown to count specific types of vehicles on the map. The 
-            <a [href]="'https://portal.platform.quix.ai/applications/ide/Computer%20vision%20object%20detection?workspace=' + workspaceId + '&branch=frontend'" target="_blank">code can be customised</a> 
+            <a [href]="'https://portal.platform.quix.ai/applications/ide/Computer%20vision%20object%20detection?workspace=' + workspaceId + '&token=' + ungatedToken + '&branch=main'" target="_blank">code can be customised</a> 
             to identify other types of objects as well. 
           </p>
           <mat-form-field appearance="outline" class="w-100">

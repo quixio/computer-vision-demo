@@ -8,11 +8,13 @@ import {HubConnection, HubConnectionBuilder} from "@microsoft/signalr";
   providedIn: 'root'
 })
 export class QuixService {
+  public ungatedToken: string = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1qVTBRVE01TmtJNVJqSTNOVEpFUlVSRFF6WXdRVFF4TjBSRk56SkNNekpFUWpBNFFqazBSUSJ9.eyJodHRwczovL3F1aXguYWkvb3JnX2lkIjoiZGVtbyIsImh0dHBzOi8vcXVpeC5haS9vd25lcl9pZCI6ImF1dGgwfDI4YWQ4NWE4LWY1YjctNGFjNC1hZTVkLTVjYjY3OGIxYjA1MiIsImh0dHBzOi8vcXVpeC5haS90b2tlbl9pZCI6ImMzNzljNmVlLWNkMmYtNDExZC1iOGYyLTMyMDU0ZDc5MTY2YSIsImh0dHBzOi8vcXVpeC5haS9leHAiOiIxNzM3ODI5NDc5LjIyMyIsImlzcyI6Imh0dHBzOi8vYXV0aC5xdWl4LmFpLyIsInN1YiI6ImtyMXU4MGRqRllvUUZlb01nMGhqcXZia29lRkxFRDVBQGNsaWVudHMiLCJhdWQiOiJxdWl4IiwiaWF0IjoxNjk1NzE2MDI4LCJleHAiOjE2OTgzMDgwMjgsImF6cCI6ImtyMXU4MGRqRllvUUZlb01nMGhqcXZia29lRkxFRDVBIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIiwicGVybWlzc2lvbnMiOltdfQ.Ndm0K2iNHPxDq1ohF-yb-6LzIqx_UY8Ptcq0kAwSNye12S3deX_eDkC4XqZqW2NoSLd3GsmWV9PZGetGGp2IlqshQFZtUMp6WP6hq917ZC1i8JFx93PAbY7NT_88nFDovVlaRcoTpWvI-03KbryLkAoB28c6qb3EFwjCWFBuy_yA4yjQ8uF0-AZ0R9Qi4IBaekXWqcgO0a91gVRg0oA_hnzJFoR-EnZ2G1ZSxtuVgnyyPuQTMUvzJuUT_IJTLzEB_kejX0pcXRZBIwHP8MWLB4mE5DtIdz4jm8WIA4eZJZ7ZCG4dk-adQwZ2BdkNknV5eEwRgRJL4ybaplkaDlR-dg';
+
   /*~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
   /*WORKING LOCALLY? UPDATE THESE!*/
   public workingLocally = true; // set to true if working locally
   private token: string = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1qVTBRVE01TmtJNVJqSTNOVEpFUlVSRFF6WXdRVFF4TjBSRk56SkNNekpFUWpBNFFqazBSUSJ9.eyJodHRwczovL3F1aXguYWkvb3JnX2lkIjoiZGVtbyIsImh0dHBzOi8vcXVpeC5haS9vd25lcl9pZCI6ImF1dGgwfGM1NzNiNzdiLTczYTUtNGU3OS05MjJlLTRiMDM5YTk3NGQ0NCIsImh0dHBzOi8vcXVpeC5haS90b2tlbl9pZCI6ImU2YTI3ZDA4LTgzZmQtNGZhOC1iOTNlLTE3OGZiNGE0OWFlMSIsImh0dHBzOi8vcXVpeC5haS9leHAiOiIxNzA5MTYxMjAwIiwiaXNzIjoiaHR0cHM6Ly9hdXRoLnF1aXguYWkvIiwic3ViIjoiY1hvVXBDS1JmaFBhUUpTN0QzazlLdjFSazRqamgzSGVAY2xpZW50cyIsImF1ZCI6InF1aXgiLCJpYXQiOjE2OTE0OTA2NDcsImV4cCI6MTY5NDA4MjY0NywiYXpwIjoiY1hvVXBDS1JmaFBhUUpTN0QzazlLdjFSazRqamgzSGUiLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJwZXJtaXNzaW9ucyI6W119.ctibPkY_9h5s1-08tlY9PyBwA_HrwST4e8MsIHGU-JLQd6wEPoSOxOUWBrrBTy4qVh2J_WEoIA7VZa4YFxl0N8viYwh-ZKBfOx_tg8vGmZINFy5KhmGJC4wBPrya9L4NnpZpKKTbPc2_mM4yXRS-sScaYsYxULh_KM7fZV2QIHM1_AlsC2kPESqMzJEQEs6doN-KHkrqLoXpV4uKf85kLkHJSVkBKZFZThUK9V5MKaBbOrg5TO1C9NSp3D0KiJB7nbKg9I3GcA-Y41b0geDDGFc0L_DujOiD_WbixKXz07S1rX-Ap85MyAX-E8T8uw15tb6LIaK4mgnk2snsgVcFSA"; // Create a token in the Tokens menu and paste it here
-  public workspaceId: string = "demo-computervisiondemo-frontend"; // Look in the URL for the Quix Portal your workspace ID is after 'workspace='
+  public workspaceId: string = "demo-computervisiondemo-prod"; // Look in the URL for the Quix Portal your workspace ID is after 'workspace='
   public topicName: string = "image-processed-merged"; // get topic name from the Topics page in Quix portal
   /*~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
 

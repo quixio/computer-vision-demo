@@ -51,6 +51,7 @@ export class AppComponent implements AfterViewInit {
   connection: HubConnection;
   parameterId: string = '';
   workspaceId: string;
+  ungatedToken: string;
   private _maxVehicles: { [key: string]: number } = {};
   private _topicName: string;
   private _streamId: string = 'image-feed';
@@ -58,6 +59,7 @@ export class AppComponent implements AfterViewInit {
 
   constructor(private quixService: QuixService, private dataService: DataService) {
     this.workspaceId = this.quixService.workspaceId;
+    this.ungatedToken = this.quixService.ungatedToken;
   }
 
   ngAfterViewInit(): void {

@@ -54,9 +54,9 @@ deployments:
   - name: TfL image processing UI
     application: TfL image processing UI
     deploymentType: Service
-    version: 0e6f887449b3fb97a0a07b43bd0fd283fae1a3e6
+    version: b479a1b26375b0b461bda4fd064c2ca75eb6d08a
     resources:
-      cpu: 100
+      cpu: 900
       memory: 200
       replicas: 1
     publicAccess:
@@ -264,7 +264,7 @@ deployments:
   - name: TFL Camera Feed
     application: TFL Camera Feed
     deploymentType: Service
-    version: b34731befed90475b9fc27ad631765e158e66a56
+    version: Release-v1
     resources:
       cpu: 200
       memory: 500
@@ -304,7 +304,7 @@ topics:
       retentionInMinutes: -1
       retentionInBytes: 262144000
   - name: image-vehicles
-    persisted: false
+    persisted: true
     configuration:
       partitions: 2
       replicationFactor: 2
@@ -318,7 +318,7 @@ topics:
       retentionInMinutes: -1
       retentionInBytes: 262144000
   - name: max-vehicles
-    persisted: false
+    persisted: true
     configuration:
       partitions: 2
       replicationFactor: 2
@@ -332,14 +332,14 @@ topics:
       retentionInMinutes: 4380
       retentionInBytes: 262144000
   - name: tfl-cameras
-    persisted: false
+    persisted: true
     configuration:
       partitions: 15
       replicationFactor: 2
       retentionInMinutes: 5760
       retentionInBytes: 262144000
   - name: buffered-data
-    persisted: false
+    persisted: true
     configuration:
       partitions: 2
       replicationFactor: 2

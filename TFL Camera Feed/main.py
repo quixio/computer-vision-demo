@@ -60,7 +60,7 @@ def get_data():
             camera_id = str(camera["id"])
             
             try:
-                timestamp_str = files[camera_id.replace("JamCams_", "") + ".jpg"]
+                timestamp_str = files[camera_id.replace("JamCams_", "") + ".mp4"]
             except KeyError:
                 print("No data for " + camera_id)
                 continue

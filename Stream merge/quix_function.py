@@ -26,4 +26,4 @@ class QuixFunction:
         print(f"Last time received: {last_row['timestamp']}")
 
         self.producer_topic.get_or_create_stream("image-feed") \
-            .timeseries.buffer.publish(df)
+            .timeseries.publish(df)

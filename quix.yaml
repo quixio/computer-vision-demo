@@ -213,7 +213,7 @@ deployments:
   - name: Data Buffer
     application: Data Buffer
     deploymentType: Service
-    version: 4579a22e12d42fcb1a9d26e5bd61478185cc59e5
+    version: f72a3abd7522ed52671fdc47b3bc63e4ad824f87
     resources:
       cpu: 1000
       memory: 1100

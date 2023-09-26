@@ -2,10 +2,11 @@ import quixstreams as qx
 from quix_function import QuixFunction
 import os
 
-
 # Quix injects credentials automatically to the client.
 # Alternatively, you can always pass an SDK token manually as an argument.
 client = qx.QuixStreamingClient()
+
+qx.App.set_state_storage(qx.InMemoryStorage())
 
 # Change consumer group to a different constant if you want to run model locally.
 print("Opening input and output topics")

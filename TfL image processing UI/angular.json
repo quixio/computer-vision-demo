@@ -50,6 +50,9 @@
               "src/assets"
             ],
             "styles": [
+              "src/styles/bootstrap/bootstrap.scss",
+              "src/styles/material/material.scss",
+              "src/styles/snazzy-info-window/snazzy-info-window.scss",
               "src/styles.scss"
             ],
             "scripts": []

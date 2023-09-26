@@ -11,6 +11,11 @@ variables:
     description: Your TfL API Key
     defaultValue: ba4f0a6e85ce4e02b8ae2864f9147beb
     required: true
+  - name: sleep_interval
+    inputType: FreeText
+    description: ''
+    defaultValue: 60
+    required: true
   - name: fence_coordinates
     inputType: FreeText
     description: 'Geofence coordinates. e.g. [(LAT1,LON1),(LAT2,LON2),(LAT3,LON3)]'

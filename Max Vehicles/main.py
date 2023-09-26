@@ -8,8 +8,8 @@ storage = qx.LocalFileStorage()
 
 client = qx.QuixStreamingClient()
 
-topic_consumer = client.get_topic_consumer(os.environ["input"], consumer_group="max-vehicles2",
-                                           auto_offset_reset=qx.AutoOffsetReset.Latest)
+topic_consumer = client.get_topic_consumer(os.environ["input"], consumer_group="max-vehicles-v1",
+                                           auto_offset_reset=qx.AutoOffsetReset.Earliest)
 topic_producer = client.get_topic_producer(os.environ["output"])
 
 pd.set_option('display.max_columns', None)
@@ -41,7 +41,6 @@ def calculate_max_vehicles(stream_data):
 def process_max_window_data(stream_consumer, new_data_frame):
     stream_id = stream_consumer.stream_id
     stream_data = stream_consumer.get_dict_state("data", lambda missing_key: [])
-    last_max = stream_consumer.get_scalar_state("last_max", lambda: 0)
 
     for i, dataframe in new_data_frame.iterrows():
         timestamp = datetime.utcfromtimestamp(dataframe["timestamp"] / 1e9)  # Convert timestamp to datetime
@@ -51,19 +50,16 @@ def process_max_window_data(stream_consumer, new_data_frame):
 
         # Calculate and print the maximum vehicles seen over the last 24 hours for the stream
         max_vehicles = calculate_max_vehicles(stream_data)
-
-        print(f"Stream {stream_id}: Maximum vehicles seen in the last 24 hours: {max_vehicles}")
+        
+        print(f"{str(timestamp)}:{stream_id}: Maximum vehicles in the last 24 hours: {max_vehicles}")
 
         data = {'timestamp': datetime.utcnow(),
                 'max_vehicles': [max_vehicles],
                 'TAG__cam': stream_id}
         df2 = pd.DataFrame(data)
 
-        # publish any changes to max_vehicles
-        if max_vehicles != last_max.value:
-            last_max.value = max_vehicles
-            stream_producer = topic_producer.get_or_create_stream(stream_id=stream_id)
-            stream_producer.timeseries.buffer.publish(df2)
+        stream_producer = topic_producer.get_or_create_stream(stream_id=stream_id)
+        stream_producer.timeseries.buffer.publish(df2)
 
 
 def on_stream_received_handler(outer_stream_consumer: qx.StreamConsumer):

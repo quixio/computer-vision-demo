@@ -6,35 +6,10 @@ metadata:
 
 # This section describes the Deployments of the data pipeline
 deployments:
-  - name: TFL Camera Feed
-    application: TFL Camera Feed
-    deploymentType: Service
-    version: v1.2-geofence
-    resources:
-      cpu: 1000
-      memory: 1000
-      replicas: 1
-    desiredStatus: Running
-    variables:
-      - name: output
-        inputType: OutputTopic
-        description: This is the output topic for TfL camera images
-        required: true
-        value: tfl-cameras
-      - name: api_key
-        inputType: HiddenText
-        description: Your TfL API Key
-        required: true
-        value: ba4f0a6e85ce4e02b8ae2864f9147beb
-      - name: fence_coordinates
-        inputType: FreeText
-        description: Geofence coordinates. e.g. [(LAT1,LON1),(LAT2,LON2),(LAT3,LON3)]
-        required: false
-        value: ''
   - name: Computer vision object detection
     application: Computer vision object detection
     deploymentType: Service
-    version: 1fd04bb26cabab9b08d5ff171ab04d0f57f0865d
+    version: baf9f6d196cbade0c9635ce18b185adcbd0f4c0b
     resources:
       cpu: 4000
       memory: 2000
@@ -79,15 +54,15 @@ deployments:
   - name: TfL image processing UI
     application: TfL image processing UI
     deploymentType: Service
-    version: v1
+    version: e9a6bb8575720b4315967b1d27caba4f768bc6c8
     resources:
-      cpu: 200
+      cpu: 900
       memory: 200
       replicas: 1
     publicAccess:
       enabled: true
-      urlPrefix: tfl-image-processing-ui
-    desiredStatus: Stopped
+      urlPrefix: app
+    desiredStatus: Running
     variables:
       - name: processed
         inputType: InputTopic
@@ -97,7 +72,7 @@ deployments:
   - name: TfL traffic camera frame grabber
     application: TfL traffic camera frame grabber
     deploymentType: Service
-    version: v1
+    version: e87e6d7b4d4a54c49f9ef0f4f7a747b3045ce2bd
     resources:
       cpu: 2000
       memory: 500
@@ -109,20 +84,20 @@ deployments:
     variables:
       - name: input
         inputType: InputTopic
-        description: This is the input topic for webcam images
+        description: ''
         required: true
         value: tfl-cameras
       - name: output
         inputType: OutputTopic
-        description: This is the output topic for the captured frames
+        description: ''
         required: true
         value: image-raw
       - name: frame_rate
         inputType: FreeText
-        description: The numer of images per second
+        description: ''
         required: true
         value: 100
-  - name: S3
+  - name: S3 new
     application: S3
     deploymentType: Service
     version: 75b6abfe2842349b1fc13453e07bc30e4d7a2747
@@ -212,32 +187,17 @@ deployments:
         description: This is the output topic to write data to
         required: true
         value: image-vehicles
-  - name: TfL image processing UI 2
-    application: TfL image processing UI 2
-    deploymentType: Service
-    version: 5ccd0916084b81743b3e78a80a5aca9d4d47d8fd
-    resources:
-      cpu: 200
-      memory: 500
-      replicas: 1
-    publicAccess:
-      enabled: true
-      urlPrefix: tflimageprocessingui2-93e95f7
-    desiredStatus: Running
-    variables:
-      - name: processed
-        inputType: InputTopic
-        description: The topic to read from
-        required: true
-        value: image-processed-merged
   - name: Max Vehicle Window
     application: Max Vehicles
     deploymentType: Service
-    version: 9555868946b31969470d73fa4699c780d20d4c8e
+    version: 595b8500e9b572abf15a35f80180cb60e71521c4
     resources:
-      cpu: 200
-      memory: 500
-      replicas: 1
+      cpu: 1000
+      memory: 2000
+      replicas: 2
+    state:
+      enabled: true
+      size: 1
     desiredStatus: Running
     variables:
       - name: input
@@ -283,17 +243,17 @@ deployments:
   - name: Data API
     application: Data API
     deploymentType: Service
-    version: d0b1fdd40c79d45d8319bec18a5cbbce800dc7d3
+    version: f4ab4d2d603f4f60d1f1cba4c41bdabd0e5e32cb
     resources:
-      cpu: 1500
-      memory: 4100
+      cpu: 2000
+      memory: 500
       replicas: 1
     publicAccess:
       enabled: true
-      urlPrefix: dataapi-667ada1
+      urlPrefix: data-api
     state:
       enabled: true
-      size: 1
+      size: 11
     desiredStatus: Running
     variables:
       - name: buffered_stream
@@ -301,32 +261,36 @@ deployments:
         description: The output from the Image Processing stage
         required: false
         value: buffered-data
+  - name: TFL Camera Feed
+    application: TFL Camera Feed
+    deploymentType: Service
+    version: Release-v1
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    desiredStatus: Running
+    variables:
+      - name: output
+        inputType: OutputTopic
+        description: This is the output topic for TfL camera images
+        required: true
+        value: tfl-cameras
+      - name: sleep_interval
+        inputType: FreeText
+        description: ''
+        required: true
+        value: 60
+      - name: tfl_api_key
+        inputType: Secret
+        description: ''
+        required: true
+        value: tfl_api_key
 
 # This section describes the Topics of the data pipeline
 topics:
-  - name: image-vehicles
-    persisted: false
-    configuration:
-      partitions: 4
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: output-topic
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: max-vehicles
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: transform
-    persisted: false
+  - name: image-processed
+    persisted: true
     configuration:
       partitions: 2
       replicationFactor: 2
@@ -339,31 +303,45 @@ topics:
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
-  - name: image-processed
-    persisted: false
+  - name: image-vehicles
+    persisted: true
     configuration:
-      partitions: 4
+      partitions: 2
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
-  - name: image-raw
-    persisted: false
-    configuration:
-      partitions: 8
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: tfl-cameras
-    persisted: false
-    configuration:
-      partitions: 8
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: buffered-data
+  - name: output-topic
     persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2
       retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: max-vehicles
+    persisted: true
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: -1
+      retentionInBytes: 262144000
+  - name: image-raw
+    persisted: true
+    configuration:
+      partitions: 16
+      replicationFactor: 2
+      retentionInMinutes: 4380
+      retentionInBytes: 262144000
+  - name: tfl-cameras
+    persisted: true
+    configuration:
+      partitions: 15
+      replicationFactor: 2
+      retentionInMinutes: 5760
+      retentionInBytes: 262144000
+  - name: buffered-data
+    persisted: true
+    configuration:
+      partitions: 2
+      replicationFactor: 2
+      retentionInMinutes: 5760
       retentionInBytes: 262144000

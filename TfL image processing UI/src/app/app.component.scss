@@ -1,0 +1,26 @@
+mat-drawer-container {
+  height: 100%;
+}
+
+mat-drawer-content {
+  display: flex;
+  flex-direction: column;
+}
+
+mat-toolbar {
+  background-color: #0a0b24;
+  color: white;
+  height: 64px;
+}
+
+main {
+  height: calc(100% - 64px);
+}
+
+.lastMarker {
+  cursor: pointer;
+  opacity: 1;
+  &:hover {
+    opacity: .75;
+  }
+}

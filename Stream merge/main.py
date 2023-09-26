@@ -10,7 +10,7 @@ client = qx.QuixStreamingClient()
 
 # Change consumer group to a different constant if you want to run model locally.
 print("Opening input and output topics")
-topic_consumer = client.get_topic_consumer(os.environ["input"], "stream-merger",
+topic_consumer = client.get_topic_consumer(os.environ["input"], None,
                                            auto_offset_reset = qx.AutoOffsetReset.Latest)
 topic_producer = client.get_topic_producer(os.environ["output"])
 

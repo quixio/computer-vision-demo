@@ -11,7 +11,7 @@ client = qx.QuixStreamingClient()
 print("Opening input and output topics")
 
 print("Opening input and output topics")
-topic_consumer = client.get_topic_consumer(os.environ["input"], "default-consumer-group",
+topic_consumer = client.get_topic_consumer(os.environ["input"], "stream-merger",
                                            auto_offset_reset = qx.AutoOffsetReset.Latest)
 topic_producer = client.get_topic_producer(os.environ["output"])
 

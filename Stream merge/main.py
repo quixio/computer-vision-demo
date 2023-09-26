@@ -33,4 +33,4 @@ topic_consumer.on_stream_received = read_stream
 print("Listening to streams. Press CTRL-C to exit.")
 
 # Handle graceful exit of the model.
-qx.App.run()
+qx.App.run(subscribe=True)

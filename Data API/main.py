@@ -20,9 +20,11 @@ mutex = Lock()
 if not os.path.exists("state/camera_images"):
     os.makedirs("state/camera_images")
 
+client = qx.QuixStreamingClient()
+
 # Quix injects credentials automatically to the client.
 # Alternatively, you can always pass an SDK token manually as an argument.
-client = qx.QuixStreamingClient()
+qx.App.set_state_storage(qx.InMemoryStorage())
 
 qx.Logging.update_factory(qx.LogLevel.Debug)
 
@@ -65,6 +67,9 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
 
                         print(state[camera])
 
+                    state.flush()
+                    image_state.flush()
+
             elif stream_consumer.stream_id == 'buffered_vehicle_counts':
                 print("Processing vehicles")
 
@@ -84,6 +89,8 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
                     camera = row["TAG__camera"]
                     state[camera] = row["max_vehicles"]
                     max_vehicles[camera] = row["max_vehicles"]
+
+                state.flush()
 
             else:
                 print("Ignoring unknown Stream Id.")

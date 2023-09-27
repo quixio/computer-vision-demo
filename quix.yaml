@@ -54,7 +54,7 @@ deployments:
   - name: TfL image processing UI
     application: TfL image processing UI
     deploymentType: Service
-    version: 0e6f887449b3fb97a0a07b43bd0fd283fae1a3e6
+    version: 239e7be80b40301f01a587fc7e1fd7e745946d90
     resources:
       cpu: 100
       memory: 200
@@ -72,7 +72,7 @@ deployments:
   - name: TfL traffic camera frame grabber
     application: TfL traffic camera frame grabber
     deploymentType: Service
-    version: e87e6d7b4d4a54c49f9ef0f4f7a747b3045ce2bd
+    version: b5b9dabef56f0b2a30801e327f704cfb495ebc37
     resources:
       cpu: 2000
       memory: 500
@@ -213,7 +213,7 @@ deployments:
   - name: Data Buffer
     application: Data Buffer
     deploymentType: Service
-    version: b1af2785d32185c47f920cff8dd08eb2f4443a81
+    version: 581a1419614fc464c7764295af68ae1b06a584b1
     resources:
       cpu: 1000
       memory: 1100
@@ -243,7 +243,7 @@ deployments:
   - name: Data API
     application: Data API
     deploymentType: Service
-    version: f4ab4d2d603f4f60d1f1cba4c41bdabd0e5e32cb
+    version: d2c2b065a0bdf821af59fa7668cee1251f9e5038
     resources:
       cpu: 2000
       memory: 500
@@ -339,7 +339,7 @@ topics:
       retentionInMinutes: 5760
       retentionInBytes: 262144000
   - name: buffered-data
-    persisted: false
+    persisted: true
     configuration:
       partitions: 2
       replicationFactor: 2

@@ -19,8 +19,11 @@ class QuixFunction:
     # Callback triggered for each new parameter data.
     def on_dataframe_handler(self, stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
 
+        last_row = df.iloc[-1:]
+        print(f"Last time received: {last_row['timestamp'][0]}")
+
         df["TAG__parent_streamId"] = self.consumer_stream.stream_id
         df['image'] = df["image"].apply(lambda x: str(base64.b64encode(x).decode('utf-8')))
 
         self.producer_topic.get_or_create_stream("image-feed") \
-            .timeseries.buffer.publish(df)
+            .timeseries.publish(df)

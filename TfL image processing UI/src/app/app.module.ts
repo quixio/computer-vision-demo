@@ -22,7 +22,7 @@ import { AgmSnazzyInfoWindowModule } from '@agm/snazzy-info-window';
     MaterialModule,
     FlexLayoutModule,
     AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyCoCM6dwmioMnkUgi-Y_13yeeXC06eGShc'
+      apiKey: 'AIzaSyBR3UT38XbBV3RKeMXxveFQnMf23ueQJNE'
     }),
     AgmMarkerClustererModule,
     AgmSnazzyInfoWindowModule

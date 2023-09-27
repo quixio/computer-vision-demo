@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { FormsModule } from "@angular/forms";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -22,7 +22,7 @@ import { AgmSnazzyInfoWindowModule } from '@agm/snazzy-info-window';
     MaterialModule,
     FlexLayoutModule,
     AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyBR3UT38XbBV3RKeMXxveFQnMf23ueQJNE'
+      apiKey: ''
     }),
     AgmMarkerClustererModule,
     AgmSnazzyInfoWindowModule

@@ -7,7 +7,7 @@ import { QuixService } from './services/quix.service';
 import { Subject, bufferTime, catchError, delay, filter, map, of, switchMap } from 'rxjs';
 import { DataService } from './services/data.service';
 import { AgmMap } from '@agm/core';
-import { AgmMarkerCluster, ClusterManager } from '@agm/markerclusterer';
+import { AgmMarkerCluster } from '@agm/markerclusterer';
 
 const CONSTANTS: any = {};
 

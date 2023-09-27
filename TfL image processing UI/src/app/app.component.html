@@ -10,7 +10,8 @@
         </div>
         <div fxLayout="row" fxHide.xs>
           <a mat-raised-button color="primary" class="small me-2" fxLayout="row" fxLayoutAlign="center center"
-            [href]="'https://portal.platform.quix.ai/pipeline?workspace=' + workspaceId + '&token=' + ungatedToken" target="_blank">
+            [href]="'https://portal.platform.quix.ai/pipeline?workspace=' + workspaceId + '&token=' + ungatedToken"
+            target="_blank">
             <img src="assets/quix.svg" alt="Quix" height="12" class="me-2" />
             <span>Look under the hood</span>
           </a>
@@ -31,7 +32,8 @@
           <p class="mat-body">Uses object detection to visualize London’s traffic density in real time.</p>
           <div fxLayout="row">
             <a mat-raised-button color="primary" class="small me-2" fxLayout="row" fxLayoutAlign="center center"
-              [href]="'https://portal.platform.quix.ai/pipeline?workspace=' + workspaceId + '&token=' + ungatedToken" target="_blank">
+              [href]="'https://portal.platform.quix.ai/pipeline?workspace=' + workspaceId + '&token=' + ungatedToken"
+              target="_blank">
               <img src="assets/quix.svg" alt="Quix" height="12" class="me-2" />
               <span>Look under the hood</span>
             </a>
@@ -46,16 +48,25 @@
         <div class="mb-5">
           <h4 class="mb-2">Live data from London’s traffic cameras</h4>
           <p class="text-body mb-3">
-            This project <a [href]="'https://portal.platform.quix.ai/pipeline/deployments/ffbf3990-5076-4f42-b68f-d52e8f247bf6?workspace=' + workspaceId + '&token=' + ungatedToken" target="_blank">ingests video frames</a> from Transport for London (TfL)
-            traffic cameras and detects the vehicles in each frame. Vehicle detection is powered by the 
-            <a [href]="'https://portal.platform.quix.ai/pipeline/deployments/b82254ec-48ad-477e-a095-9de6348656b2?workspace=' + workspaceId + '&token=' + ungatedToken" target="_blank">YOLO v8 ML model</a>.
+            This project <a
+              [href]="'https://portal.platform.quix.ai/pipeline/deployments/ffbf3990-5076-4f42-b68f-d52e8f247bf6?workspace=' + workspaceId + '&token=' + ungatedToken"
+              target="_blank">ingests video frames</a> from Transport for London (TfL)
+            traffic cameras and detects the vehicles in each frame. Vehicle detection is powered by the
+            <a [href]="'https://portal.platform.quix.ai/pipeline/deployments/b82254ec-48ad-477e-a095-9de6348656b2?workspace=' + workspaceId + '&token=' + ungatedToken"
+              target="_blank">YOLO v8 ML model</a>.
           </p>
-          <p class="text-body mb-3">To preserve resources only 1 every 100 frames is extracted for processing. These are the latest (try clicking on one):</p>
+          <p class="text-body mb-3">To preserve resources only 1 every 100 frames is extracted for processing. These are
+            the latest (try clicking on one):</p>
           <div fxLayout="row" fxLayoutGap="2">
             <ng-container *ngFor="let m of lastMarkers">
-              <img *ngIf="m?.image" [src]="'data:image/png;base64,' + m.image" height="48" fxFlex role="button"
-                (click)="selectMarker(m.title!)" class="lastMarker">
-              <div *ngIf="!m?.image" fxFlex class="bg-secondary" [style.height.px]="48"></div>
+              <ng-container *ngIf="m">
+                <img *ngIf="m.image" [src]="'data:image/png;base64,' + m.image" height="48" fxFlex role="button"
+                  (click)="selectMarker(m.title!)" class="lastMarker">
+                <img *ngIf="!m.image"
+                  [src]="'https://data-api-' + workspaceId + '.deployments.quix.ai/detected_objects/' + m.title"
+                  height="48" fxFlex role="button" (click)="selectMarker(m.title!)" class="lastMarker">
+              </ng-container>
+              <div *ngIf="!m" fxFlex class="bg-secondary" [style.height.px]="48"></div>
             </ng-container>
           </div>
         </div>
@@ -64,16 +75,19 @@
           <h4 class="mb-2">Traffic density analysis</h4>
           <p class="text-body mb-3">
             For each traffic camera, a service
-            <a [href]="'https://portal.platform.quix.ai/pipeline/deployments/c8ef68fd-f3da-468a-814e-62edeafd810a?workspace=' + workspaceId + '&token=' + ungatedToken" target="_blank">
+            <a [href]="'https://portal.platform.quix.ai/pipeline/deployments/c8ef68fd-f3da-468a-814e-62edeafd810a?workspace=' + workspaceId + '&token=' + ungatedToken"
+              target="_blank">
               calculates the maximum number
-            </a> 
-            of vehicles seen in any given video frame in the last 24 hours. Then, it compares the current number of vehicles to the last observed maximum. 
-             This figure is expressed as a percentage and represented on a color scale.
+            </a>
+            of vehicles seen in any given video frame in the last 24 hours. Then, it compares the current number of
+            vehicles to the last observed maximum.
+            This figure is expressed as a percentage and represented on a color scale.
           </p>
           <p class="text-body mb-3">
-            Use the following dropdown to count specific types of vehicles on the map. The 
-            <a [href]="'https://portal.platform.quix.ai/applications/ide/Computer%20vision%20object%20detection?workspace=' + workspaceId + '&token=' + ungatedToken + '&branch=main'" target="_blank">code can be customised</a> 
-            to identify other types of objects as well. 
+            Use the following dropdown to count specific types of vehicles on the map. The
+            <a [href]="'https://portal.platform.quix.ai/applications/ide/Computer%20vision%20object%20detection?workspace=' + workspaceId + '&token=' + ungatedToken + '&branch=main'"
+              target="_blank">code can be customised</a>
+            to identify other types of objects as well.
           </p>
           <mat-form-field appearance="outline" class="w-100">
             <mat-label>Detecting</mat-label>
@@ -112,15 +126,18 @@
         <div class="mb-5">
           <h4 class="mb-2">Want to know more?</h4>
           <p class="text-body mb-3">
-            <a href="https://quix.io/docs/platform/tutorials/image-processing/index.html" target="_blank">Read the tutorial</a> and try Quix for free 
-            to reproduce this project or build something similar. To discover what else is possible, see our other project templates.
+            <a href="https://quix.io/docs/platform/tutorials/image-processing/index.html" target="_blank">Read the
+              tutorial</a> and try Quix for free
+            to reproduce this project or build something similar. To discover what else is possible, see our other
+            project templates.
           </p>
           <div fxLayout="row">
             <a mat-raised-button color="primary" class="small me-2" fxLayout="row" fxLayoutAlign="center center"
               href="https://portal.platform.quix.ai/self-sign-up" target="_blank">
               <span>Sign up for free</span>
             </a>
-            <a href="https://quix.io/templates" target="_blank" mat-raised-button color="accent" class="small" fxLayout="row" fxLayoutAlign="center center">
+            <a href="https://quix.io/templates" target="_blank" mat-raised-button color="accent" class="small"
+              fxLayout="row" fxLayoutAlign="center center">
               <span>More project templates</span>
             </a>
           </div>
@@ -135,7 +152,7 @@
             [gridSize]="50" #cluster>
             <ng-container *ngFor="let m of markers;">
               <agm-marker *ngIf="m.latitude && m.longitude" [latitude]="m.latitude" [longitude]="m.longitude"
-                [label]="m.label!" [iconUrl]="m.icon!" [title]="m.title!" (markerClick)="selectMarker($event.title)">
+                [label]="m.label!" [iconUrl]="m.icon!" [title]="m.title!" (markerClick)="selectMarker($event.title); isLoadingImage = true">
               </agm-marker>
             </ng-container>
           </agm-marker-cluster>
@@ -146,8 +163,13 @@
             <ng-template>
               <div [style.width.px]="240" [style.height.px]="196" fxLayout="row" fxLayoutAlign="center center"
                 class="position-relative border">
-                <img [src]="'https://data-api-' + workspaceId + '.deployments.quix.ai/detected_objects/' + m.title" width="100%" height="100%" >
+                <img *ngIf="m.image" [src]="'data:image/png;base64,' + m.image" width="100%" height="100%">
+                <img *ngIf="!m.image" [hidden]="isLoadingImage" (load)="isLoadingImage = false"
+                  [src]="'https://data-api-' + workspaceId + '.deployments.quix.ai/detected_objects/' + m.title"
+                  width="100%" height="100%">
+                <mat-spinner diameter="20" *ngIf="isLoadingImage"></mat-spinner>
               </div>
+
               <div fxLayout="row" fxLayoutAlign="space-between start" class="mt-1">
                 <span class="fw-bold">{{ m.title }}</span>
                 <span class="mat-caption text-body">{{ m.date | date: 'HH:mm:ss' }}</span>

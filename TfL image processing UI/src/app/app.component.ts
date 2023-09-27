@@ -41,13 +41,14 @@ export class AppComponent implements AfterViewInit {
   bounds: google.maps.LatLngBounds
   zoom: number = 13;
   selectedMarker: Marker | undefined;
+  isLoadingImage: boolean;
   private _markerFrequency = 500;
 
   markers: Marker[] = [];
   markerIcon: string = 'assets/camera/camera';
   clusterStyle: ClusterIconStyle[] = CLUSTER_STYLE
   showImages: boolean = true;
-  lastMarkers: Marker[] = Array(5);
+  lastMarkers: Marker[];
   connection: HubConnection;
   parameterId: string = '';
   workspaceId: string;
@@ -165,6 +166,7 @@ export class AppComponent implements AfterViewInit {
         if (index > -1) Object.assign(this.markers[index], marker);
         else this.markers.push(this.createMarker(markerData));
       });
+      this.lastMarkers = this.markers.slice().sort((a, b) => b.date?.getTime()! - a.date?.getTime()!).slice(0, 5);
       CONSTANTS.markers = this.markers;
       CONSTANTS.parameterId = this.parameterId;
     })

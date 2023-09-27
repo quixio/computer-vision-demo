@@ -79,7 +79,7 @@ deployments:
   - name: TfL image processing UI
     application: TfL image processing UI
     deploymentType: Service
-    version: 120517b4585f7173cecc7b805ebe1d3ff28c3360
+    version: 90c12d8ab262a9d7b96968b0621b471ac63ed046
     resources:
       cpu: 900
       memory: 200
@@ -94,6 +94,16 @@ deployments:
         description: The topic to read from
         required: true
         value: image-processed-merged
+      - name: GoogleMapsApiKey
+        inputType: Secret
+        description: ''
+        required: true
+        value: GoogleMapsApiKey
+      - name: bearerToken
+        inputType: Secret
+        description: ''
+        required: true
+        value: bearerToken
   - name: TfL traffic camera frame grabber
     application: TfL traffic camera frame grabber
     deploymentType: Service

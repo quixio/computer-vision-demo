@@ -228,7 +228,7 @@ def cam_vehiclesv2():
 @app.route("/max_vehicles")
 def maximum_vehiclesv2():
     with mutex:
-        return maximum_vehicles
+        return max_vehicles
     
 if __name__ == "__main__":
     print("main..")

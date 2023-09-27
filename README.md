@@ -127,7 +127,7 @@ There are also some additional services in the pipeline:
 
 4. *S3* - stores objects in Amazon Web Services (AWS) S3. This service enables you to persist any data or results you might like to keep more permanently.
 
-More details are provided on all these services later in the tutorial.
+More details are provided on all these services in the [tutorial](https://quix.io/docs/platform/tutorials/image-processing/index.html).
 
 ## Tutorial
 

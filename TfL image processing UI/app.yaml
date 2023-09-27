@@ -6,5 +6,15 @@ variables:
     description: The topic to read from
     defaultValue: image-processed-merged
     required: true
+  - name: GoogleMapsApiKey
+    inputType: Secret
+    description: ''
+    defaultValue: GoogleMapsApiKey
+    required: true
+  - name: bearerToken
+    inputType: Secret
+    description: ''
+    defaultValue: bearerToken
+    required: true
 dockerfile: src/build/dockerfile
 defaultFile: src/app/services/quix.service.ts

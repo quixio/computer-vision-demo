@@ -8,6 +8,13 @@ import copy
 from threading import Thread, Lock
 import datetime
 
+# probably not thread safe, but anyway we already have a mutext everywhere
+# also we will loose data on restart
+detected_objects = {}
+detected_objects_img = {}
+vehicles = {}
+max_vehicles = {}
+
 mutex = Lock()
 
 if not os.path.exists("state/camera_images"):
@@ -44,6 +51,8 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
                         print(f"Data for {camera}")
 
                         image_state[camera] = row["image"]
+                        
+                        detected_objects_img[camera] = row["image"]
 
                         del row["image"]
 
@@ -52,6 +61,8 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
                         row["datetime"] = str(datetime.datetime.fromtimestamp(row["timestamp"]/1000000000))
 
                         state[camera] = row.to_dict()
+                        detected_objects[camera] = row.to_dict()
+
                         print(state[camera])
 
             elif stream_consumer.stream_id == 'buffered_vehicle_counts':
@@ -62,6 +73,7 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
                 for i, row in df.iterrows():
                     camera = row["TAG__camera"]
                     state[camera] = row["vehicles"]
+                    vehicles[camera] = row["vehicles"]
 
             elif stream_consumer.stream_id == 'buffered_max_vehicles':
                 print("Processing max_vehicles")
@@ -71,6 +83,7 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
                 for i, row in df.iterrows():
                     camera = row["TAG__camera"]
                     state[camera] = row["max_vehicles"]
+                    max_vehicles[camera] = row["max_vehicles"]
 
             else:
                 print("Ignoring unknown Stream Id.")
@@ -95,10 +108,14 @@ def index():
            f"<br/><a href='{root}detected_objects'>{root}detected_objects (without images)</a>" \
            f"<br/><a href='{root}detected_objects/[camera_id]'>{root}detected_objects/[camera_id] (with images)</a>" \
            f"<br/><a href='{root}max_vehicles'>{root}max_vehicles</a>" \
-           f"<br/><a href='{root}vehicles'>{root}vehicles</a>"
+           f"<br/><a href='{root}vehicles'>{root}vehicles</a>" \
+           f"<br/><a href='{root}v1/detected_objects'>{root}v1/detected_objects (without images)</a>" \
+           f"<br/><a href='{root}v1/detected_objects/[camera_id]'>{root}v1/detected_objects/[camera_id] (with images)</a>" \
+           f"<br/><a href='{root}v1/max_vehicles'>{root}v1/max_vehicles</a>" \
+           f"<br/><a href='{root}v1/vehicles'>{root}v1/vehicles</a>"
 
 # create the max_vehicles route
-@app.route("/max_vehicles")
+@app.route("/v1/max_vehicles")
 def maximum_vehicles():
     with mutex:
         # get the state manager for the topic
@@ -112,7 +129,7 @@ def maximum_vehicles():
         return result
 
 # create the detected objects route
-@app.route("/detected_objects")
+@app.route("/v1/detected_objects")
 def objects():
     with mutex:
         print("/detected_objects started")
@@ -133,42 +150,8 @@ def objects():
 
         return result
 
-@app.route("/detected_objects2")
-def objects2():
-    with mutex:
-        print("/detected_objects started")
-        # get the state manager for the topic
-        state_manager = buffered_stream_data.get_state_manager()
-
-        result = {}
-        # for each stream, get the items of interest
-        state_objects = state_manager.get_stream_state_manager("buffered_processed_images").get_dict_state("detected_objects")
-        state_objects_copy = copy.deepcopy(state_objects.items())
-
-        # remove any images, we don't want them here
-        for _, val in state_objects_copy:
-            val.pop('image', None)
-
-        for i, row in state_objects_copy:
-            result[i] = row
-
-        return result
-
 # create the detected objects route for specific camera
-@app.route("/detected_objects2/<camera_id>")
-def objects_for_cam2(camera_id):
-    with mutex:
-        state_manager = buffered_stream_data.get_state_manager()
-
-        state_objects = state_manager.get_stream_state_manager("buffered_processed_images").get_dict_state("detected_objects")
-
-        if camera_id in state_objects:
-            return state_objects[camera_id]
-        else:
-            abort(404)
-
-# create the detected objects route for specific camera
-@app.route("/detected_objects/<camera_id>")
+@app.route("/v1/detected_objects/<camera_id>")
 def objects_for_cam(camera_id):
     with mutex:
         state_manager = buffered_stream_data.get_state_manager()
@@ -189,7 +172,7 @@ def objects_for_cam(camera_id):
             abort(404)
 
 # create the vehicles route
-@app.route("/vehicles")
+@app.route("/v1/vehicles")
 def cam_vehicles():
     with mutex:
         state_manager = buffered_stream_data.get_state_manager()
@@ -200,8 +183,46 @@ def cam_vehicles():
             result[cam[0]] = cam[1]
 
         return result
+   
+  
+# create the detected objects route
+@app.route("/detected_objects")
+def objectsv2():
+    with mutex:
+        print("/detected_objects started")
+        
+        return detected_objects
 
+# create the detected objects route for specific camera
+@app.route("/detected_objects/<camera_id>")
+def objects_for_camv2(camera_id):
+    with mutex:
 
+        if camera_id in detected_objects_img:
+
+            fileName = camera_id + ".png"
+
+            if os.path.isfile(fileName):
+                os.remove(fileName)
+
+            with open(fileName, "wb") as fh:
+                fh.write(detected_objects_img[camera_id])
+            return send_file(camera_id + ".png", mimetype='image/png')
+        else:
+            abort(404)
+   
+# create the vehicles route
+@app.route("/vehicles")
+def cam_vehiclesv2():
+    with mutex:
+        return vehicles
+    
+# create the max_vehicles route
+@app.route("/max_vehicles")
+def maximum_vehiclesv2():
+    with mutex:
+        return maximum_vehicles
+    
 if __name__ == "__main__":
     print("main..")
     from waitress import serve

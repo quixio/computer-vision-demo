@@ -62,7 +62,7 @@ deployments:
     publicAccess:
       enabled: true
       urlPrefix: tfl-ima
-    desiredStatus: Stopped
+    desiredStatus: Running
     variables:
       - name: processed
         inputType: InputTopic

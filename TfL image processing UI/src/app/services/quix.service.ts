@@ -97,6 +97,13 @@ export class QuixService {
       mapsConfig.apiKey = this.googleMapsApiKey;
 
       console.log(vals)
+      console.log(this.token)
+      console.log(this.workspaceId)
+      console.log(this.topicName)
+      console.log(this.googleMapsApiKey)
+      console.log(this.uiProjectDeploymentId)
+      console.log(this.computerVisionProjectDeploymentId)
+      console.log(this.maxVehicleWindowProjectDeploymentId)
 
       // work out what domain the portal api is on:
       let portalApi = vals.portalApi.replace("\n", "");

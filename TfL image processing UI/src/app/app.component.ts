@@ -67,6 +67,8 @@ export class AppComponent implements AfterViewInit {
     this.getInitialData();
 
     this.quixService.initCompleted$.subscribe((topicName) => {
+      console.log("this.quixService.initCompleted...")
+
       // set these once we know the quixService is initialized
       this._topicName = topicName;
       this.workspaceId = this.quixService.workspaceId;
@@ -75,6 +77,11 @@ export class AppComponent implements AfterViewInit {
       this.computerVisionProjectDeploymentId = this.quixService.computerVisionProjectDeploymentId;
       this.maxVehicleWindowProjectDeploymentId = this.quixService.maxVehicleWindowProjectDeploymentId;
 
+      console.log(this.workspaceId)
+      console.log(this._topicName)
+      console.log(this.uiProjectDeploymentId)
+      console.log(this.computerVisionProjectDeploymentId)
+      console.log(this.maxVehicleWindowProjectDeploymentId)
 
       this.quixService.ConnectToQuix().then(connection => {
         this.connection = connection;

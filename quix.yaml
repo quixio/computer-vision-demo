@@ -294,54 +294,54 @@ topics:
     configuration:
       partitions: 2
       replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 43200
+      retentionInMinutes: 10
+      retentionInBytes: 500
   - name: image-processed
     persisted: true
     configuration:
       partitions: 2
       replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 43200
+      retentionInMinutes: 10
+      retentionInBytes: 500
   - name: image-raw
     persisted: true
     configuration:
       partitions: 2
       replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 43200
+      retentionInMinutes: 10
+      retentionInBytes: 500
   - name: tfl-cameras
     persisted: true
     configuration:
       partitions: 2
       replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 43200
+      retentionInMinutes: 10
+      retentionInBytes: 500
   - name: image-vehicles
     persisted: true
     configuration:
       partitions: 2
       replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 43200
+      retentionInMinutes: 10
+      retentionInBytes: 500
   - name: output-topic
     persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 43200
+      retentionInMinutes: 10
+      retentionInBytes: 500
   - name: max-vehicles
     persisted: true
     configuration:
       partitions: 2
       replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 43200
+      retentionInMinutes: 10
+      retentionInBytes: 500
   - name: buffered-data
     persisted: true
     configuration:
       partitions: 2
       replicationFactor: 2
-      retentionInMinutes: 5760
-      retentionInBytes: 43200
+      retentionInMinutes: 10
+      retentionInBytes: 500

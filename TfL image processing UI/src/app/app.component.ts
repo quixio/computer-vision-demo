@@ -53,21 +53,28 @@ export class AppComponent implements AfterViewInit {
   parameterId: string = '';
   workspaceId: string;
   ungatedToken: string;
+  uiProjectDeploymentId: string;
+  computerVisionProjectDeploymentId: string;
+  maxVehicleWindowProjectDeploymentId: string;
   private _maxVehicles: { [key: string]: number } = {};
   private _topicName: string;
   private _streamId: string = 'image-feed';
   private _parameterDataReceived$ = new Subject<ParameterData>();
 
-  constructor(private quixService: QuixService, private dataService: DataService) {
-    this.workspaceId = this.quixService.workspaceId;
-    this.ungatedToken = this.quixService.ungatedToken;
-  }
+  constructor(private quixService: QuixService, private dataService: DataService) {}
 
   ngAfterViewInit(): void {
     this.getInitialData();
 
     this.quixService.initCompleted$.subscribe((topicName) => {
+      // set these once we know the quixService is initialized
       this._topicName = topicName;
+      this.workspaceId = this.quixService.workspaceId;
+      this.ungatedToken = this.quixService.ungatedToken;
+      this.uiProjectDeploymentId = this.quixService.uiProjectDeploymentId;
+      this.computerVisionProjectDeploymentId = this.quixService.computerVisionProjectDeploymentId;
+      this.maxVehicleWindowProjectDeploymentId = this.quixService.maxVehicleWindowProjectDeploymentId;
+
 
       this.quixService.ConnectToQuix().then(connection => {
         this.connection = connection;

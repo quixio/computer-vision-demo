@@ -49,10 +49,10 @@
           <h4 class="mb-2">Live data from London’s traffic cameras</h4>
           <p class="text-body mb-3">
             This project <a
-              [href]="'https://portal.platform.quix.ai/pipeline/deployments/ffbf3990-5076-4f42-b68f-d52e8f247bf6?workspace=' + workspaceId + '&token=' + ungatedToken"
+              [href]="'https://portal.platform.quix.ai/pipeline/deployments/' + uiProjectDeploymentId + '?workspace=' + workspaceId + '&token=' + ungatedToken"
               target="_blank">ingests video frames</a> from Transport for London (TfL)
             traffic cameras and detects the vehicles in each frame. Vehicle detection is powered by the
-            <a [href]="'https://portal.platform.quix.ai/pipeline/deployments/b82254ec-48ad-477e-a095-9de6348656b2?workspace=' + workspaceId + '&token=' + ungatedToken"
+            <a [href]="'https://portal.platform.quix.ai/pipeline/deployments/' + computerVisionProjectDeploymentId + '?workspace=' + workspaceId + '&token=' + ungatedToken"
               target="_blank">YOLO v8 ML model</a>.
           </p>
           <p class="text-body mb-3">To preserve resources only 1 every 100 frames is extracted for processing. These are
@@ -75,7 +75,7 @@
           <h4 class="mb-2">Traffic density analysis</h4>
           <p class="text-body mb-3">
             For each traffic camera, a service
-            <a [href]="'https://portal.platform.quix.ai/pipeline/deployments/c8ef68fd-f3da-468a-814e-62edeafd810a?workspace=' + workspaceId + '&token=' + ungatedToken"
+            <a [href]="'https://portal.platform.quix.ai/pipeline/deployments/' + maxVehicleWindowProjectDeploymentId + '?workspace=' + workspaceId + '&token=' + ungatedToken"
               target="_blank">
               calculates the maximum number
             </a>

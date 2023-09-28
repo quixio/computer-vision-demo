@@ -23,6 +23,9 @@ export class QuixService {
   public topicName: string = ""; // get topic name from the Topics page in the Quix portal
   /* optional */
   private googleMapsApiKey: string = "" // your google maps api key. You can leave blank if but you will see the "for development" watermark on the map
+  public uiProjectDeploymentId: string = ""; // links from the info text in the left hand panel use this to link you to the project in the platform. Easier to leave it blank.
+  public computerVisionProjectDeploymentId: string = ""; // links from the info text in the left hand panel use this to link you to the project in the platform. Easier to leave it blank.
+  public maxVehicleWindowProjectDeploymentId: string = ""; // links from the info text in the left hand panel use this to link you to the project in the platform. Easier to leave it blank.
   /*~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
 
   private domain = "platform";
@@ -58,14 +61,23 @@ export class QuixService {
     let portalApi$ = this.httpClient.get(this.server + "portal_api", {headers, responseType: 'text'})
     let mapsApiKey$ = this.httpClient.get(this.server + "GoogleMapsApiKey", {headers, responseType: 'text'})
 
+    // if the solution is deployed in the platform. as part of the ungated / demo experience, set these so the links work correctly.
+    // if running locally or cloned to another repo then these aren't important and the solution will still run
+    let uiProjectDeploymentId$ = this.httpClient.get(this.server + "uiProjectDeploymentId", {headers, responseType: 'text'})
+    let computerVisionProjectDeploymentId$ = this.httpClient.get(this.server + "computerVisionProjectDeploymentId", {headers, responseType: 'text'})
+    let maxVehicleWindowProjectDeploymentId$ = this.httpClient.get(this.server + "maxVehicleWindowProjectDeploymentId", {headers, responseType: 'text'})
+
     let value$ = combineLatest(
         bearerToken$,
         topic$,
         workspaceId$,
         portalApi$,
-        mapsApiKey$
-    ).pipe(map(([bearerToken, topic, workspaceId, portalApi, mapsApiKey])=>{
-      return {bearerToken, topic, workspaceId, portalApi, mapsApiKey};
+        mapsApiKey$,
+        uiProjectDeploymentId$,
+        computerVisionProjectDeploymentId$,
+        maxVehicleWindowProjectDeploymentId$
+    ).pipe(map(([bearerToken, topic, workspaceId, portalApi, mapsApiKey, uiProjectDeploymentId, computerVisionProjectDeploymentId, maxVehicleWindowProjectDeploymentId])=>{
+      return {bearerToken, topic, workspaceId, portalApi, mapsApiKey, uiProjectDeploymentId, computerVisionProjectDeploymentId, maxVehicleWindowProjectDeploymentId};
     }));
 
     value$.subscribe(vals => {
@@ -74,9 +86,17 @@ export class QuixService {
       this.topicName = (this.workspaceId + "-" + vals.topic).replace("\n", "");
       this.googleMapsApiKey = vals.mapsApiKey.replace("\n", "");
 
+      // if the solution is deployed in the platform. as part of the ungated / demo experience, set these so the links work correctly.
+      // if running locally or cloned to another repo then these aren't important and the solution will still run
+      this.uiProjectDeploymentId = vals.uiProjectDeploymentId.replace("\n", "");
+      this.computerVisionProjectDeploymentId = vals.computerVisionProjectDeploymentId.replace("\n", "");
+      this.maxVehicleWindowProjectDeploymentId = vals.maxVehicleWindowProjectDeploymentId.replace("\n", "");
+
       // set the google maps api key using the key loaded from environment variables
       // google maps api key can be blank. But you will see the "for development" watermark on the map
       mapsConfig.apiKey = this.googleMapsApiKey;
+
+      console.log(vals)
 
       // work out what domain the portal api is on:
       let portalApi = vals.portalApi.replace("\n", "");

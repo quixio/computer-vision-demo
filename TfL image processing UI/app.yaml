@@ -21,5 +21,10 @@ variables:
     description: ''
     defaultValue: maxVehicleWindowProjectDeploymentId
     required: false
+  - name: uiProjectDeploymentId
+    inputType: Secret
+    description: ''
+    defaultValue: uiProjectDeploymentId
+    required: false
 dockerfile: src/build/dockerfile
 defaultFile: src/app/services/quix.service.ts

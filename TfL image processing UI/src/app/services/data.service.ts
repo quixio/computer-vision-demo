@@ -10,7 +10,9 @@ export class DataService {
   url: string;
 
   constructor(private httpClient: HttpClient, private quixService: QuixService) {
-    this.url = `https://data-api-${this.quixService.workspaceId}.deployments.quix.ai`
+    this.quixService.initCompleted$.subscribe((topicName) => {
+      this.url = `https://data-api-${this.quixService.workspaceId}.deployments.quix.ai`
+    })
   }
 
   getMaxVehicles(): Observable<{ [key: string]: number }> {

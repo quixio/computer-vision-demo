@@ -64,10 +64,11 @@ export class AppComponent implements AfterViewInit {
   constructor(private quixService: QuixService, private dataService: DataService) {}
 
   ngAfterViewInit(): void {
-    this.getInitialData();
 
     this.quixService.initCompleted$.subscribe((topicName) => {
       console.log("this.quixService.initCompleted...")
+
+      this.getInitialData();
 
       // set these once we know the quixService is initialized
       this._topicName = topicName;

@@ -16,5 +16,20 @@ variables:
     description: ''
     defaultValue: bearerToken
     required: true
+  - name: maxVehicleWindowProjectDeploymentId
+    inputType: Secret
+    description: ''
+    defaultValue: maxVehicleWindowProjectDeploymentId
+    required: false
+  - name: uiProjectDeploymentId
+    inputType: Secret
+    description: ''
+    defaultValue: uiProjectDeploymentId
+    required: false
+  - name: computerVisionProjectDeploymentId
+    inputType: Secret
+    description: ''
+    defaultValue: computerVisionProjectDeploymentId
+    required: false
 dockerfile: src/build/dockerfile
 defaultFile: src/app/services/quix.service.ts

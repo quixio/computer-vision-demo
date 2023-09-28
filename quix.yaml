@@ -79,7 +79,7 @@ deployments:
   - name: TfL image processing UI
     application: TfL image processing UI
     deploymentType: Service
-    version: 90c12d8ab262a9d7b96968b0621b471ac63ed046
+    version: 1aa90b7e5ac2222ae83079defbeffc5726210b42
     resources:
       cpu: 900
       memory: 200
@@ -104,6 +104,21 @@ deployments:
         description: ''
         required: true
         value: bearerToken
+      - name: maxVehicleWindowProjectDeploymentId
+        inputType: Secret
+        description: ''
+        required: false
+        value: maxVehicleWindowProjectDeploymentId
+      - name: uiProjectDeploymentId
+        inputType: Secret
+        description: ''
+        required: false
+        value: uiProjectDeploymentId
+      - name: computerVisionProjectDeploymentId
+        inputType: Secret
+        description: ''
+        required: false
+        value: computerVisionProjectDeploymentId
   - name: TfL traffic camera frame grabber
     application: TfL traffic camera frame grabber
     deploymentType: Service

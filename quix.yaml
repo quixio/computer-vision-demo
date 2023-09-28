@@ -6,31 +6,6 @@ metadata:
 
 # This section describes the Deployments of the data pipeline
 deployments:
-  - name: TFL Camera Feed
-    application: TFL Camera Feed
-    deploymentType: Service
-    version: Release-v1
-    resources:
-      cpu: 200
-      memory: 500
-      replicas: 1
-    desiredStatus: Running
-    variables:
-      - name: output
-        inputType: OutputTopic
-        description: This is the output topic for TfL camera images
-        required: true
-        value: tfl-cameras
-      - name: sleep_interval
-        inputType: FreeText
-        description: ''
-        required: true
-        value: 20
-      - name: tfl_api_key
-        inputType: Secret
-        description: ''
-        required: true
-        value: tfl_api_key
   - name: Computer vision object detection
     application: Computer vision object detection
     deploymentType: Service
@@ -122,6 +97,31 @@ deployments:
         description: ''
         required: true
         value: 100
+  - name: TFL Camera Feed
+    application: TFL Camera Feed
+    deploymentType: Service
+    version: Release-v1
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    desiredStatus: Stopped
+    variables:
+      - name: output
+        inputType: OutputTopic
+        description: This is the output topic for TfL camera images
+        required: true
+        value: tfl-cameras
+      - name: sleep_interval
+        inputType: FreeText
+        description: ''
+        required: true
+        value: 20
+      - name: tfl_api_key
+        inputType: Secret
+        description: ''
+        required: true
+        value: tfl_api_key
   - name: Cam Vehicles
     application: TotalVehicles
     deploymentType: Service
@@ -292,31 +292,31 @@ topics:
   - name: image-processed-merged
     persisted: false
     configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: 10
-      retentionInBytes: 500
+      partitions: 1
+      replicationFactor: 1
+      retentionInMinutes: 3200
+      retentionInBytes: 3200
   - name: image-processed
     persisted: true
     configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: 10
-      retentionInBytes: 500
+      partitions: 1
+      replicationFactor: 1
+      retentionInMinutes: 3200
+      retentionInBytes: 3200
   - name: image-raw
     persisted: true
     configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: 10
-      retentionInBytes: 500
+      partitions: 1
+      replicationFactor: 1
+      retentionInMinutes: 3200
+      retentionInBytes: 262144000
   - name: tfl-cameras
     persisted: true
     configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: 10
-      retentionInBytes: 500
+      partitions: 1
+      replicationFactor: 1
+      retentionInMinutes: 3200
+      retentionInBytes: 262144000
   - name: image-vehicles
     persisted: true
     configuration:

@@ -13,6 +13,13 @@ mutex = Lock()
 if not os.path.exists("state/camera_images"):
     os.makedirs("state/camera_images")
 
+# probably not thread safe, but anyway we already have a mutext everywhere
+# also we will loose data on restart
+detected_objects = {}
+detected_objects_img = {}
+vehicles = {}
+max_vehicles = {}
+
 # Quix injects credentials automatically to the client.
 # Alternatively, you can always pass an SDK token manually as an argument.
 client = qx.QuixStreamingClient()

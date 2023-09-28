@@ -3,9 +3,8 @@ import pandas as pd
 from flask import Flask, request, abort, send_file
 from flask_cors import CORS
 import os
-import base64
 import copy
-from threading import Thread, Lock
+from threading import Lock
 import datetime
 
 mutex = Lock()
@@ -14,7 +13,7 @@ if not os.path.exists("state/camera_images"):
     os.makedirs("state/camera_images")
 
 # probably not thread safe, but anyway we already have a mutext everywhere
-# also we will loose data on restart
+# also we will lose data on restart
 detected_objects = {}
 detected_objects_img = {}
 vehicles = {}
@@ -122,7 +121,7 @@ def maximum_vehicles():
         #    result[cam[0]] = cam[1]
 
         for cam in max_vehicles:
-            result[cam[0]] = cam[1]
+            result[cam] = max_vehicles[cam]
 
         return result
 
@@ -141,11 +140,15 @@ def objects():
         state_objects_copy = copy.deepcopy(detected_objects)
 
         # remove any images, we don't want them here
-        for _, val in state_objects_copy:
-            val.pop('image', None)
+        #for _, val in state_objects_copy:
+        #    val.pop('image', None)
 
-        for i, row in state_objects_copy:
-            result[i] = row
+        for a in state_objects_copy:
+            print(a)
+            result[a] = state_objects_copy[a]
+
+        #for i, row in state_objects_copy:
+        #    result[i] = row
 
         return result
 
@@ -185,8 +188,7 @@ def cam_vehicles():
         #    result[cam[0]] = cam[1]
 
         for cam in vehicles:
-            result[cam[0]] = cam[1]
-
+            result[cam] = vehicles[cam]
 
         return result
 

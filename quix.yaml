@@ -9,7 +9,7 @@ deployments:
   - name: TFL Camera Feed
     application: TFL Camera Feed
     deploymentType: Service
-    version: Release-v1
+    version: b34731befed90475b9fc27ad631765e158e66a56
     resources:
       cpu: 200
       memory: 500
@@ -25,7 +25,7 @@ deployments:
         inputType: FreeText
         description: ''
         required: true
-        value: 20
+        value: 60
       - name: tfl_api_key
         inputType: Secret
         description: ''
@@ -79,7 +79,7 @@ deployments:
   - name: TfL image processing UI
     application: TfL image processing UI
     deploymentType: Service
-    version: cb5dd7a88251a94dbb2ef98d2f3a3f79b5c034ea
+    version: 2fce8494236c0fefad9c70f1989f92539efaeec2
     resources:
       cpu: 900
       memory: 200
@@ -145,7 +145,7 @@ deployments:
   - name: Data API
     application: Data API
     deploymentType: Service
-    version: 018bbd1baa8ad2ea0c71e561efc6a757c3b9effc
+    version: b516666de3636bc01d82761472f24b1d20d50821
     resources:
       cpu: 2000
       memory: 500
@@ -156,7 +156,7 @@ deployments:
     state:
       enabled: true
       size: 11
-    desiredStatus: Stopped
+    desiredStatus: Running
     variables:
       - name: buffered_stream
         inputType: InputTopic

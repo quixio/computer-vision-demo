@@ -1,10 +1,8 @@
-import { Injectable, APP_INITIALIZER, NgModule } from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {BehaviorSubject, combineLatest, Observable, of, Subject} from "rxjs";
-import {map} from "rxjs/operators";
-import {HubConnection, HubConnectionBuilder} from "@microsoft/signalr";
-import { LAZY_MAPS_API_CONFIG, LazyMapsAPILoaderConfigLiteral } from '@agm/core';
-import { Inject } from '@angular/core';
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Injectable } from '@angular/core';
+import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
+import { Observable, Subject, combineLatest } from "rxjs";
+import { map } from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -40,45 +38,42 @@ export class QuixService {
     return this.initCompleted.asObservable();
   }
 
-  constructor(private httpClient: HttpClient, @Inject(LAZY_MAPS_API_CONFIG) mapsConfig: any) {
+  constructor(private httpClient: HttpClient) {
 
     // if working locally is set
     if (this.workingLocally) {
       // use the config hard coded above
       this.domain = "platform"; // default to prod
       this.baseReaderUrl = "https://reader-" + this.workspaceId + "." + this.domain + ".quix.ai/hub";
-      mapsConfig.apiKey = this.googleMapsApiKey;
-
-      this.initCompleted.next();
-
+      setTimeout(() => this.initCompleted.next());
       return;
     }
 
     const headers = new HttpHeaders().set('Content-Type', 'text/plain; charset=utf-8');
 
-    let bearerToken$ = this.httpClient.get(this.server + "bearer_token", {headers, responseType: 'text'});
-    let topic$ = this.httpClient.get(this.server + "processed_topic", {headers, responseType: 'text'});
-    let workspaceId$ =  this.httpClient.get(this.server + "workspace_id", {headers, responseType: 'text'});
-    let portalApi$ = this.httpClient.get(this.server + "portal_api", {headers, responseType: 'text'})
-    let mapsApiKey$ = this.httpClient.get(this.server + "GoogleMapsApiKey", {headers, responseType: 'text'})
+    let bearerToken$ = this.httpClient.get(this.server + "bearer_token", { headers, responseType: 'text' });
+    let topic$ = this.httpClient.get(this.server + "processed_topic", { headers, responseType: 'text' });
+    let workspaceId$ = this.httpClient.get(this.server + "workspace_id", { headers, responseType: 'text' });
+    let portalApi$ = this.httpClient.get(this.server + "portal_api", { headers, responseType: 'text' })
+    let mapsApiKey$ = this.httpClient.get(this.server + "GoogleMapsApiKey", { headers, responseType: 'text' })
 
     // if the solution is deployed in the platform. as part of the ungated / demo experience, set these so the links work correctly.
     // if running locally or cloned to another repo then these aren't important and the solution will still run
-    let uiProjectDeploymentId$ = this.httpClient.get(this.server + "uiProjectDeploymentId", {headers, responseType: 'text'})
-    let computerVisionProjectDeploymentId$ = this.httpClient.get(this.server + "computerVisionProjectDeploymentId", {headers, responseType: 'text'})
-    let maxVehicleWindowProjectDeploymentId$ = this.httpClient.get(this.server + "maxVehicleWindowProjectDeploymentId", {headers, responseType: 'text'})
+    let uiProjectDeploymentId$ = this.httpClient.get(this.server + "uiProjectDeploymentId", { headers, responseType: 'text' })
+    let computerVisionProjectDeploymentId$ = this.httpClient.get(this.server + "computerVisionProjectDeploymentId", { headers, responseType: 'text' })
+    let maxVehicleWindowProjectDeploymentId$ = this.httpClient.get(this.server + "maxVehicleWindowProjectDeploymentId", { headers, responseType: 'text' })
 
     let value$ = combineLatest(
-        bearerToken$,
-        topic$,
-        workspaceId$,
-        portalApi$,
-        mapsApiKey$,
-        uiProjectDeploymentId$,
-        computerVisionProjectDeploymentId$,
-        maxVehicleWindowProjectDeploymentId$
-    ).pipe(map(([bearerToken, topic, workspaceId, portalApi, mapsApiKey, uiProjectDeploymentId, computerVisionProjectDeploymentId, maxVehicleWindowProjectDeploymentId])=>{
-      return {bearerToken, topic, workspaceId, portalApi, mapsApiKey, uiProjectDeploymentId, computerVisionProjectDeploymentId, maxVehicleWindowProjectDeploymentId};
+      bearerToken$,
+      topic$,
+      workspaceId$,
+      portalApi$,
+      mapsApiKey$,
+      uiProjectDeploymentId$,
+      computerVisionProjectDeploymentId$,
+      maxVehicleWindowProjectDeploymentId$
+    ).pipe(map(([bearerToken, topic, workspaceId, portalApi, mapsApiKey, uiProjectDeploymentId, computerVisionProjectDeploymentId, maxVehicleWindowProjectDeploymentId]) => {
+      return { bearerToken, topic, workspaceId, portalApi, mapsApiKey, uiProjectDeploymentId, computerVisionProjectDeploymentId, maxVehicleWindowProjectDeploymentId };
     }));
 
     value$.subscribe(vals => {
@@ -93,10 +88,6 @@ export class QuixService {
       this.computerVisionProjectDeploymentId = vals.computerVisionProjectDeploymentId.replace("\n", "");
       this.maxVehicleWindowProjectDeploymentId = vals.maxVehicleWindowProjectDeploymentId.replace("\n", "");
 
-      // set the google maps api key using the key loaded from environment variables
-      // google maps api key can be blank. But you will see the "for development" watermark on the map
-      mapsConfig.apiKey = this.googleMapsApiKey;
-
       console.log(vals)
       console.log(this.token)
       console.log(this.workspaceId)
@@ -109,7 +100,7 @@ export class QuixService {
       // work out what domain the portal api is on:
       let portalApi = vals.portalApi.replace("\n", "");
       let matches = portalApi.match(this.domainRegex);
-      if(matches) {
+      if (matches) {
         this.domain = matches[1];
       }
       else {
@@ -141,9 +132,9 @@ export class QuixService {
     };
 
     this.connection = new HubConnectionBuilder()
-        .withAutomaticReconnect()
-        .withUrl(this.baseReaderUrl, options)
-        .build();
+      .withAutomaticReconnect()
+      .withUrl(this.baseReaderUrl, options)
+      .build();
 
     this.connection.onreconnecting(e => {
       console.log('Connection reconnecting: ', e)

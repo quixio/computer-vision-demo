@@ -9,11 +9,11 @@ import datetime
 
 mutex = Lock()
 
+if not os.path.exists("static"):
+    os.makedirs("static")
+
 if not os.path.exists("state/camera_images"):
     os.makedirs("state/camera_images")
-
-# if not os.path.exists("images"):
-#     os.makedirs("images")
 
 # probably not thread safe, but anyway we already have a mutext everywhere
 # also we will lose data on restart

@@ -109,7 +109,8 @@ def index():
            f"<br/><a href='{root}detected_objects'>{root}detected_objects (without images)</a>" \
            f"<br/><a href='{root}detected_objects/[camera_id]'>{root}detected_objects/[camera_id] (with images)</a>" \
            f"<br/><a href='{root}max_vehicles'>{root}max_vehicles</a>" \
-           f"<br/><a href='{root}vehicles'>{root}vehicles</a>"
+           f"<br/><a href='{root}vehicles'>{root}vehicles</a>"\
+           f"<br/><a href='{root}all'>{root}all</a>"
 
 # create the max_vehicles route
 @app.route("/max_vehicles")

@@ -79,7 +79,7 @@ deployments:
   - name: TfL image processing UI
     application: TfL image processing UI
     deploymentType: Service
-    version: 2fce8494236c0fefad9c70f1989f92539efaeec2
+    version: e510e8f9c159b9dd968b0156fd4c4e9f81822622
     resources:
       cpu: 900
       memory: 200

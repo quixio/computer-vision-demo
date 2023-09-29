@@ -17,13 +17,13 @@ export class QuixService {
 
   /*~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
   /*WORKING LOCALLY? UPDATE THESE!*/
-  public workingLocally = true; // set to true if working locally and populate the values below
+  public workingLocally = false; // set to true if working locally and populate the values below
   private token: string = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1qVTBRVE01TmtJNVJqSTNOVEpFUlVSRFF6WXdRVFF4TjBSRk56SkNNekpFUWpBNFFqazBSUSJ9.eyJodHRwczovL3F1aXguYWkvb3JnX2lkIjoiZGVtbyIsImh0dHBzOi8vcXVpeC5haS9vd25lcl9pZCI6ImF1dGgwfGM1NzNiNzdiLTczYTUtNGU3OS05MjJlLTRiMDM5YTk3NGQ0NCIsImh0dHBzOi8vcXVpeC5haS90b2tlbl9pZCI6ImU2YTI3ZDA4LTgzZmQtNGZhOC1iOTNlLTE3OGZiNGE0OWFlMSIsImh0dHBzOi8vcXVpeC5haS9leHAiOiIxNzA5MTYxMjAwIiwiaXNzIjoiaHR0cHM6Ly9hdXRoLnF1aXguYWkvIiwic3ViIjoiY1hvVXBDS1JmaFBhUUpTN0QzazlLdjFSazRqamgzSGVAY2xpZW50cyIsImF1ZCI6InF1aXgiLCJpYXQiOjE2OTE0OTA2NDcsImV4cCI6MTY5NDA4MjY0NywiYXpwIjoiY1hvVXBDS1JmaFBhUUpTN0QzazlLdjFSazRqamgzSGUiLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJwZXJtaXNzaW9ucyI6W119.ctibPkY_9h5s1-08tlY9PyBwA_HrwST4e8MsIHGU-JLQd6wEPoSOxOUWBrrBTy4qVh2J_WEoIA7VZa4YFxl0N8viYwh-ZKBfOx_tg8vGmZINFy5KhmGJC4wBPrya9L4NnpZpKKTbPc2_mM4yXRS-sScaYsYxULh_KM7fZV2QIHM1_AlsC2kPESqMzJEQEs6doN-KHkrqLoXpV4uKf85kLkHJSVkBKZFZThUK9V5MKaBbOrg5TO1C9NSp3D0KiJB7nbKg9I3GcA-Y41b0geDDGFc0L_DujOiD_WbixKXz07S1rX-Ap85MyAX-E8T8uw15tb6LIaK4mgnk2snsgVcFSA"; // Create a token in the Tokens menu and paste it here
   public workspaceId: string = "demo-computervisiondemo-tabicon"; // Look in the URL for the Quix Portal. Your workspace ID is after 'workspace='
   public topicName: string = "demo-computervisiondemo-tabicon-image-processed-merged"; // get topic name from the Topics page in the Quix portal
   /* optional */
 
-  private googleMapsApiKey: string = "" // your google maps api key. You can leave blank if but you will see the "for development" watermark on the map
+  private googleMapsApiKey: string = "AIzaSyCFFAJ00qdqb1f50hOBvdIPa66WdavfplA" // your google maps api key. You can leave blank if but you will see the "for development" watermark on the map
   public uiProjectDeploymentId: string = ""; // links from the info text in the left hand panel use this to link you to the project in the platform. Easier to leave it blank.
   public computerVisionProjectDeploymentId: string = ""; // links from the info text in the left hand panel use this to link you to the project in the platform. Easier to leave it blank.
   public maxVehicleWindowProjectDeploymentId: string = ""; // links from the info text in the left hand panel use this to link you to the project in the platform. Easier to leave it blank.
@@ -35,8 +35,8 @@ export class QuixService {
   private domainRegex = new RegExp("^https:\\/\\/portal-api\\.([a-zA-Z]+)\\.quix\\.ai")
   private baseReaderUrl: string;
   private connection: HubConnection;
-  private initCompleted: BehaviorSubject<string> = new BehaviorSubject<string>('');
-  get initCompleted$(): Observable<string> {
+  private initCompleted: Subject<void> = new Subject<void>();
+  get initCompleted$(): Observable<void> {
     return this.initCompleted.asObservable();
   }
 
@@ -49,7 +49,7 @@ export class QuixService {
       this.baseReaderUrl = "https://reader-" + this.workspaceId + "." + this.domain + ".quix.ai/hub";
       mapsConfig.apiKey = this.googleMapsApiKey;
 
-      this.initCompleted.next(this.topicName);
+      this.initCompleted.next();
 
       return;
     }
@@ -119,7 +119,7 @@ export class QuixService {
       // don't change this
       this.baseReaderUrl = "https://reader-" + this.workspaceId + "." + this.domain + ".quix.ai/hub";
 
-      this.initCompleted.next(this.topicName);
+      this.initCompleted.next();
     });
 
   }

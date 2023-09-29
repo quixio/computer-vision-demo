@@ -71,7 +71,7 @@ export class AppComponent implements AfterViewInit {
       this.getInitialData();
 
       // set these once we know the quixService is initialized
-      this._topicName = topicName;
+      this._topicName = this.quixService.topicName;
       this.workspaceId = this.quixService.workspaceId;
       this.ungatedToken = this.quixService.ungatedToken;
       this.uiProjectDeploymentId = this.quixService.uiProjectDeploymentId;

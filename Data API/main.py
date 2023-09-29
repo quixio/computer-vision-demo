@@ -12,6 +12,9 @@ mutex = Lock()
 if not os.path.exists("state/camera_images"):
     os.makedirs("state/camera_images")
 
+# if not os.path.exists("images"):
+#     os.makedirs("images")
+
 # probably not thread safe, but anyway we already have a mutext everywhere
 # also we will lose data on restart
 detected_objects = {}
@@ -28,7 +31,7 @@ qx.Logging.update_factory(qx.LogLevel.Debug)
 print("Opening input topic")
 buffered_stream_data = client.get_topic_consumer(
     os.environ["buffered_stream"], 
-    "data-api-v7", 
+    "data-api-tabicon",
     auto_offset_reset=qx.AutoOffsetReset.Earliest)
 
 
@@ -94,7 +97,7 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
 
 
 # init the flask app
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 CORS(app)
 
 # create the default route
@@ -124,6 +127,35 @@ def maximum_vehicles():
             result[cam] = max_vehicles[cam]
 
         return result
+
+@app.route("/all")
+def all():
+    result = ""
+    state_objects_copy = copy.deepcopy(detected_objects)
+    for camera_id in state_objects_copy:
+        file_name = "static/" + camera_id + ".png"
+        if os.path.isfile(file_name):
+            os.remove(file_name)
+        with open(file_name, "wb") as fh:
+            fh.write(detected_objects_img[camera_id])
+
+        result = result + f"{camera_id}<br/>Our DateTime={state_objects_copy[camera_id]['datetime']}<br/><img src='{file_name}'><br/><br/>"
+
+        #result[camera_id] = state_objects_copy[camera_id]
+
+    return result
+
+# @app.route("/test/<camera_id>")
+# def test():
+#
+#     if camera_id in image_state:
+#         fileName = camera_id + ".png"
+#         if os.path.isfile(fileName):
+#             os.remove(fileName)
+#
+#         with open(fileName, "wb") as fh:
+#             fh.write(state_objects[camera_id])
+#             return send_file(camera_id + ".png", mimetype='image/png')
 
 # create the detected objects route
 @app.route("/detected_objects")

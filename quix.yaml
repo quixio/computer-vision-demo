@@ -178,7 +178,7 @@ deployments:
     publicAccess:
       enabled: true
       urlPrefix: data-api
-    desiredStatus: Stopped
+    desiredStatus: Running
     variables:
       - name: buffered_stream
         inputType: InputTopic

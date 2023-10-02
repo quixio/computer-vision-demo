@@ -1,4 +1,3 @@
-import { QuixService } from './quix.service';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';

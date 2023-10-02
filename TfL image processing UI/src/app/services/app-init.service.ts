@@ -10,7 +10,7 @@ export class AppInitService {
     /*~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
     /*WORKING LOCALLY? UPDATE THESE!*/
     const workingLocally = false; // set to true if working locally and populate the values below
-    const googleMapsApiKey = 'AIzaSyCFFAJ00qdqb1f50hOBvdIPa66WdavfplA';
+    const googleMapsApiKey = '';
     /*~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
     const server = ""; // leave blank
 

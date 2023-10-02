@@ -40,7 +40,7 @@ export class QuixService {
   constructor(private httpClient: HttpClient) {
 
     // if working locally is set
-    if (this.workingLocally) {
+    if (this.workingLocally || location.hostname === "localhost" || location.hostname === "127.0.0.1") {
       // use the config hard coded above
       this.domain = "platform"; // default to prod
       this.baseReaderUrl = "https://reader-" + this.workspaceId + "." + this.domain + ".quix.ai/hub";

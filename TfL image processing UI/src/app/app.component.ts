@@ -7,7 +7,7 @@ import { QuixService } from './services/quix.service';
 import { Subject, bufferTime, catchError, delay, filter, map, of, switchMap } from 'rxjs';
 import { DataService } from './services/data.service';
 import { AgmMap } from '@agm/core';
-import { AgmMarkerCluster, ClusterManager } from '@agm/markerclusterer';
+import { AgmMarkerCluster } from '@agm/markerclusterer';
 
 const CONSTANTS: any = {};
 
@@ -53,21 +53,26 @@ export class AppComponent implements AfterViewInit {
   parameterId: string = '';
   workspaceId: string;
   ungatedToken: string;
+  uiProjectDeploymentId: string;
+  computerVisionProjectDeploymentId: string;
+  maxVehicleWindowProjectDeploymentId: string;
   private _maxVehicles: { [key: string]: number } = {};
   private _topicName: string;
   private _streamId: string = 'image-feed';
   private _parameterDataReceived$ = new Subject<ParameterData>();
 
-  constructor(private quixService: QuixService, private dataService: DataService) {
-    this.workspaceId = this.quixService.workspaceId;
-    this.ungatedToken = this.quixService.ungatedToken;
-  }
+  constructor(private quixService: QuixService, private dataService: DataService) {}
 
   ngAfterViewInit(): void {
-    this.getInitialData();
 
     this.quixService.initCompleted$.subscribe((topicName) => {
-      this._topicName = topicName;
+      // set these once we know the quixService is initialized
+      this._topicName = this.quixService.topicName;
+      this.workspaceId = this.quixService.workspaceId;
+      this.ungatedToken = this.quixService.ungatedToken;
+      this.uiProjectDeploymentId = this.quixService.uiProjectDeploymentId;
+      this.computerVisionProjectDeploymentId = this.quixService.computerVisionProjectDeploymentId;
+      this.maxVehicleWindowProjectDeploymentId = this.quixService.maxVehicleWindowProjectDeploymentId;
 
       this.quixService.ConnectToQuix().then(connection => {
         this.connection = connection;
@@ -80,6 +85,8 @@ export class AppComponent implements AfterViewInit {
           if (connectionId) this.subscribeToData();
         });
       });
+
+      this.getInitialData();
     });
 
     this._parameterDataReceived$.pipe(bufferTime(this._markerFrequency))
@@ -131,9 +138,9 @@ export class AppComponent implements AfterViewInit {
   }
 
   getInitialData(): void {
-    this.dataService.getDetectedObjects().pipe(switchMap((detectedObjects) => {
-      return this.dataService.getMaxVehicles().pipe(switchMap((maxVehicles) => {
-        return this.dataService.getVehicles().pipe(map((vehicles) => {
+    this.dataService.getDetectedObjects(this.workspaceId).pipe(switchMap((detectedObjects) => {
+      return this.dataService.getMaxVehicles(this.workspaceId).pipe(switchMap((maxVehicles) => {
+        return this.dataService.getVehicles(this.workspaceId).pipe(map((vehicles) => {
           this._maxVehicles = maxVehicles;
           const markersData: MarkerData[] = [];
           Object.keys(detectedObjects).forEach((key) => {

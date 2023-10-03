@@ -102,6 +102,7 @@ def get_data():
                 try:
                     timestamp_str = files[camera_id.replace("JamCams_", "") + ".mp4"]
                 except KeyError:
+                    # the camera is online but we can't get the mp4
                     print("No data for " + camera_id)
                     continue
 

@@ -3,10 +3,25 @@ import pandas as pd
 from flask import Flask, request, abort, send_file
 from flask_cors import CORS
 import os
-import base64
-import copy
-from threading import Thread, Lock
+from threading import Lock
 import datetime
+import json
+import base64
+
+
+# stores for various data needed for this API
+detected_objects = {}
+detected_objects_img = {}
+vehicles = {}
+max_vehicles = {}
+
+# track which state objects have been loaded to prevent reloading
+state_loaded = {
+    'detected_objects': False,
+    'detected_objects_img': False,
+    'vehicles': False,
+    'max_vehicles': False
+}
 
 mutex = Lock()
 
@@ -22,62 +37,118 @@ qx.Logging.update_factory(qx.LogLevel.Debug)
 print("Opening input topic")
 buffered_stream_data = client.get_topic_consumer(
     os.environ["buffered_stream"], 
-    "data-api-v7", 
+    "data-api-v8",
     auto_offset_reset=qx.AutoOffsetReset.Earliest)
 
 
+def load_state(state_object, in_memory_object_name):
+
+    loaded_state = {}
+
+    if state_object.value == {}:
+        # it's ok if there is nothing to load
+        print(f"No state loaded for {in_memory_object_name}")
+    else:
+        loaded_state = json.loads(state_object.value)
+        print(f"State loaded for {in_memory_object_name}")
+
+    state_loaded[in_memory_object_name] = True
+    return loaded_state
+
 def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsumer):
     def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
+        global state_loaded
+        global detected_objects_img
+        global detected_objects
+        global vehicles
+        global max_vehicles
+
         with mutex:
             print(f"{str(datetime.datetime.utcnow())} Receiving buffered data {stream_consumer.stream_id}")
 
             if stream_consumer.stream_id == 'buffered_processed_images':
-                    print("Processing images")
+                print("Processing images")
 
-                    state = stream_consumer.get_dict_state("detected_objects", lambda: 0)
-                    image_state = stream_consumer.get_dict_state("detected_objects_images", lambda: 0)
+                # get the appropriate values from state, return {} if not found
+                detected_objects_state = stream_consumer.get_scalar_state("detected_objects", lambda: {})
+                image_state = stream_consumer.get_scalar_state("detected_objects_images", lambda: {})
 
-                    for i, row in df.iterrows():
+                for i, row in df.iterrows():
 
-                        camera = row["TAG__camera"]
+                    camera = row["TAG__camera"]
 
-                        print(f"Data for {camera}")
+                    print(f"Data for {camera}")
 
-                        image_state[camera] = row["image"]
+                    # if state hasn't been loaded into local variables yet:
+                    if not state_loaded["detected_objects"]:
+                        # do it now!
+                        detected_objects = load_state(detected_objects_state, "detected_objects")
 
-                        del row["image"]
+                    if not state_loaded["detected_objects_img"]:
+                        detected_objects_img = load_state(image_state, "detected_objects_img")
 
-                        #print(f"{i} -- {row}")
+                    # update the local variable
+                    # convert the image to base64 and string in readiness for json encoding
+                    detected_objects_img[camera] = str(base64.b64encode(row["image"]), encoding = "utf_8")
 
-                        row["datetime"] = str(datetime.datetime.fromtimestamp(row["timestamp"]/1000000000))
+                    # delete the image from the row
+                    del row["image"]
 
-                        state[camera] = row.to_dict()
-                        print(state[camera])
+                    # update the datetime with a readable datetime
+                    row["datetime"] = str(datetime.datetime.fromtimestamp(row["timestamp"]/1000000000))
+
+                    # store the updated row (aka with no image) the variable
+                    # we don't want the image in these for performance reasons
+                    detected_objects[camera] = row.to_dict()
+
+                    # update state with the latest values
+                    # update state with the latest values
+                    detected_objects_state.value = json.dumps(detected_objects)
+                    image_state.value = json.dumps(detected_objects_img)
+
+                detected_objects_state.flush()
+                image_state.flush()
 
             elif stream_consumer.stream_id == 'buffered_vehicle_counts':
                 print("Processing vehicles")
 
-                state = stream_consumer.get_dict_state("vehicles", lambda: 0)
+                # get the appropriate value from state, return {} if not found
+                vehicles_state = stream_consumer.get_scalar_state("vehicles", lambda: {})
+
+                # if state hasn't been loaded into local variables yet:
+                if not state_loaded["vehicles"]:
+                    vehicles = load_state(vehicles_state, "vehicles")
 
                 for i, row in df.iterrows():
                     camera = row["TAG__camera"]
-                    state[camera] = row["vehicles"]
+                    # add this vehicle count to the dictionary
+                    vehicles[camera] = row["vehicles"]
+
+                # update the state for vehicles with the latest values
+                vehicles_state.value = json.dumps(vehicles)
+                vehicles_state.flush()
 
             elif stream_consumer.stream_id == 'buffered_max_vehicles':
                 print("Processing max_vehicles")
 
-                state = stream_consumer.get_dict_state("max_vehicles", lambda: 0)
+                # get the appropriate value from state, return {} if not found
+                max_vehicles_state = stream_consumer.get_scalar_state("max_vehicles", lambda: {})
+
+                # if state hasn't been loaded into local variables yet:
+                if not state_loaded["max_vehicles"]:
+                    max_vehicles = load_state(max_vehicles_state, "max_vehicles")
 
                 for i, row in df.iterrows():
                     camera = row["TAG__camera"]
-                    state[camera] = row["max_vehicles"]
+                    max_vehicles[camera] = row["max_vehicles"]
+
+                max_vehicles_state.value = json.dumps(max_vehicles)
+                max_vehicles_state.flush()
 
             else:
                 print("Ignoring unknown Stream Id.")
 
             print(f"{str(datetime.datetime.utcnow())} Processed buffered data {stream_consumer.stream_id}")
-
-
 
     handler_stream_consumer.timeseries.on_dataframe_received = on_dataframe_received_handler
 
@@ -97,113 +168,55 @@ def index():
            f"<br/><a href='{root}max_vehicles'>{root}max_vehicles</a>" \
            f"<br/><a href='{root}vehicles'>{root}vehicles</a>"
 
-# create the max_vehicles route
-@app.route("/max_vehicles")
-def maximum_vehicles():
-    with mutex:
-        # get the state manager for the topic
-        state_manager = buffered_stream_data.get_state_manager()
-
-        result = {}
-
-        for cam in state_manager.get_stream_state_manager("buffered_max_vehicles").get_dict_state("max_vehicles").items():
-            result[cam[0]] = cam[1]
-
-        return result
-
 # create the detected objects route
 @app.route("/detected_objects")
 def objects():
     with mutex:
         print("/detected_objects started")
-        # get the state manager for the topic
-        state_manager = buffered_stream_data.get_state_manager()
-
-        result = {}
-        # for each stream, get the items of interest
-        state_objects = state_manager.get_stream_state_manager("buffered_processed_images").get_dict_state("detected_objects")
-        state_objects_copy = copy.deepcopy(state_objects.items())
-
-        # remove any images, we don't want them here
-        for _, val in state_objects_copy:
-            val.pop('image', None)
-
-        for i, row in state_objects_copy:
-            result[i] = row
-
-        return result
-
-@app.route("/detected_objects2")
-def objects2():
-    with mutex:
-        print("/detected_objects started")
-        # get the state manager for the topic
-        state_manager = buffered_stream_data.get_state_manager()
-
-        result = {}
-        # for each stream, get the items of interest
-        state_objects = state_manager.get_stream_state_manager("buffered_processed_images").get_dict_state("detected_objects")
-        state_objects_copy = copy.deepcopy(state_objects.items())
-
-        # remove any images, we don't want them here
-        for _, val in state_objects_copy:
-            val.pop('image', None)
-
-        for i, row in state_objects_copy:
-            result[i] = row
-
-        return result
-
-# create the detected objects route for specific camera
-@app.route("/detected_objects2/<camera_id>")
-def objects_for_cam2(camera_id):
-    with mutex:
-        state_manager = buffered_stream_data.get_state_manager()
-
-        state_objects = state_manager.get_stream_state_manager("buffered_processed_images").get_dict_state("detected_objects")
-
-        if camera_id in state_objects:
-            return state_objects[camera_id]
-        else:
-            abort(404)
+        
+        return detected_objects
 
 # create the detected objects route for specific camera
 @app.route("/detected_objects/<camera_id>")
 def objects_for_cam(camera_id):
     with mutex:
-        state_manager = buffered_stream_data.get_state_manager()
 
-        state_objects = state_manager.get_stream_state_manager("buffered_processed_images").get_dict_state("detected_objects_images")
+        if camera_id in detected_objects_img:
 
-        if camera_id in state_objects:
+            file_name = camera_id + ".png"
 
-            fileName = camera_id + ".png"
+            if os.path.isfile(file_name):
+                os.remove(file_name)
 
-            if os.path.isfile(fileName):
-                os.remove(fileName)
+            with open(file_name, "wb") as fh:
+                # images are loaded as strings because of being stored as json in state
+                # we locate the utf-8 encoded byte string
+                # convert to bytes, then base64 decode
+                data = bytes(detected_objects_img[camera_id], encoding="utf-8")
+                data = base64.b64decode(data)
+                # finally, write the data to a file on disk
+                fh.write(data)
 
-            with open(fileName, "wb") as fh:
-                fh.write(state_objects[camera_id])
+            # and serve it to the caller
             return send_file(camera_id + ".png", mimetype='image/png')
         else:
+            # if the camera is not in the detected objects image list, return not found (404)
             abort(404)
-
+   
 # create the vehicles route
 @app.route("/vehicles")
 def cam_vehicles():
     with mutex:
-        state_manager = buffered_stream_data.get_state_manager()
-
-        result = {}
-
-        for cam in state_manager.get_stream_state_manager("buffered_vehicle_counts").get_dict_state("vehicles").items():
-            result[cam[0]] = cam[1]
-
-        return result
+        return vehicles
+    
+# create the max_vehicles route
+@app.route("/max_vehicles")
+def maximum_vehicles():
+    with mutex:
+        return max_vehicles
 
 
 if __name__ == "__main__":
-    print("main..")
     from waitress import serve
 
     # hook up the stream received handler

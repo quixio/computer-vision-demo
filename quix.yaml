@@ -289,7 +289,7 @@ deployments:
   - name: TFL Camera Feed
     application: TFL Camera Feed
     deploymentType: Service
-    version: 5eff46442e473a896d29758eef5c12527ca15640
+    version: 760e4c4402fba5b7fcf41501c4439b59673022ff
     resources:
       cpu: 200
       memory: 500
@@ -301,11 +301,11 @@ deployments:
         description: This is the output topic for TfL camera images
         required: true
         value: tfl-cameras
-      - name: api_key
-        inputType: HiddenText
-        description: Your TfL API Key
-        required: true
-        value: ba4f0a6e85ce4e02b8ae2864f9147beb
+      - name: tfl_api_key
+        inputType: Secret
+        description: Your TfL API key
+        required: false
+        value: tfl_api_key
       - name: sleep_interval
         inputType: FreeText
         description: ''

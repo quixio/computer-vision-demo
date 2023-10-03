@@ -48,7 +48,6 @@ def camera_is_in_fence(camera):
 def camera_is_online(camera):
     # is the camera online?
     enabled = next((account for account in camera['additionalProperties'] if account['key'] == "available" and account['value'] == "true"), None)
-    print(f"Camera {camera['id']} enabled? == {enabled is not None}")
     return enabled is not None
 
 

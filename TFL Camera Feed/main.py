@@ -74,6 +74,15 @@ def get_data():
         try:
             cameras = requests.get(
                 "https://api.tfl.gov.uk/Place/Type/JamCam/?app_id=QuixFeed&app_key={}".format(api_key))
+            
+            print(f"Got {cameras.status_code} status code.")
+
+            # if TfL returns a 429 (too many requests) then we need to back off a bit
+            if cameras.status_code == 429:
+                print(cameras) # print everything. just wanna see if they give us any more details
+                time.sleep(10000) # wait 10 seconds
+                continue # start back at the begninning again
+                
 
         except Exception as ex:
             print("An error occurred while trying to call the JamCam endpoint.")

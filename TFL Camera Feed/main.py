@@ -94,9 +94,10 @@ def get_data():
         cameras_list = cameras.json()
 
         for camera in cameras_list:
-            if camera_is_online(camera):
-                camera_id = camera["id"]
-
+            camera_id = camera["id"]
+            if not camera_is_online(camera):
+                print(f"Camera {camera_id} is offline")
+            else:
                 try:
                     timestamp_str = files[camera_id.replace("JamCams_", "") + ".mp4"]
                 except KeyError:

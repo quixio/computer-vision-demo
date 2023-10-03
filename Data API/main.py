@@ -32,7 +32,7 @@ client = qx.QuixStreamingClient()
 print("Opening input topic")
 buffered_stream_data = client.get_topic_consumer(
     os.environ["buffered_stream"], 
-    "data-api-v8",
+    "data-api-v9",
     auto_offset_reset=qx.AutoOffsetReset.Earliest)
 
 

@@ -82,7 +82,6 @@ def get_data():
                 print(cameras) # print everything. just wanna see if they give us any more details
                 time.sleep(10000) # wait 10 seconds
                 continue # start back at the begninning again
-                
 
         except Exception as ex:
             print("An error occurred while trying to call the JamCam endpoint.")

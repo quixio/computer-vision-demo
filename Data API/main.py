@@ -96,11 +96,13 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
                     # we don't want the image in these for performance reasons
                     detected_objects[camera] = row.to_dict()
 
+                    print(str(row.to_dict()))
+
+
                     # update state with the latest values
                     # update state with the latest values
                     detected_objects_state.value = json.dumps(detected_objects)
                     image_state.value = json.dumps(detected_objects_img)
-                    print(str(json.dumps(detected_objects_img)))
 
                 detected_objects_state.flush()
                 image_state.flush()

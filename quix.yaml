@@ -289,7 +289,7 @@ deployments:
   - name: TFL Camera Feed
     application: TFL Camera Feed
     deploymentType: Service
-    version: 0dd80fd1b50e4baa8d743ad49b5dbd18c4b8ab6a
+    version: 52c63ed4db2fba9edcff30eb1dcbfba56a4c6332
     resources:
       cpu: 200
       memory: 500

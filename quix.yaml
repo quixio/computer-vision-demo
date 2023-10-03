@@ -268,7 +268,7 @@ deployments:
   - name: Data API
     application: Data API
     deploymentType: Service
-    version: f4ab4d2d603f4f60d1f1cba4c41bdabd0e5e32cb
+    version: 6a47377edcc601d20b82f4fd3cda8c15a7cb000f
     resources:
       cpu: 2000
       memory: 500
@@ -281,11 +281,26 @@ deployments:
       size: 11
     desiredStatus: Running
     variables:
-      - name: buffered_stream
-        inputType: InputTopic
-        description: The output from the Image Processing stage
+      - name: output
+        inputType: OutputTopic
+        description: This is the output topic for TfL camera images
+        required: true
+        value: tfl-cameras
+      - name: tfl_api_key
+        inputType: Secret
+        description: Your TfL API key
         required: false
-        value: buffered-data
+        value: tfl_api_key
+      - name: sleep_interval
+        inputType: FreeText
+        description: ''
+        required: true
+        value: 60
+      - name: fence_coordinates
+        inputType: FreeText
+        description: Geofence coordinates. e.g. [(LAT1,LON1),(LAT2,LON2),(LAT3,LON3)]
+        required: false
+        value: ''
   - name: TFL Camera Feed
     application: TFL Camera Feed
     deploymentType: Service

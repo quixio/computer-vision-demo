@@ -11,6 +11,11 @@ variables:
     description: ''
     defaultValue: camera_api_key
     required: false
+  - name: topics
+    inputType: InputTopic
+    description: ''
+    defaultValue: ''
+    required: false
 dockerfile: build/dockerfile
 runEntryPoint: main.py
 defaultFile: main.py

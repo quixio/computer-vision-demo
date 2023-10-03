@@ -82,7 +82,6 @@ def get_data():
                 print(cameras) # print everything. just wanna see if they give us any more details
                 time.sleep(10000) # wait 10 seconds
                 continue # start back at the begninning again
-                
 
         except Exception as ex:
             print("An error occurred while trying to call the JamCam endpoint.")
@@ -102,6 +101,7 @@ def get_data():
                 try:
                     timestamp_str = files[camera_id.replace("JamCams_", "") + ".mp4"]
                 except KeyError:
+                    # the camera is online but we can't get the mp4
                     print("No data for " + camera_id)
                     continue
 

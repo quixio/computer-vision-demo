@@ -7,7 +7,7 @@ from datetime import datetime
 import os
 import threading
 
-# True = keep original timings
+# True = keep original tljhkjhkjimings
 # False = No delay, speed through it as fast as possible
 keep_timing = True
 

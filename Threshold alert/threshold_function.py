@@ -4,7 +4,7 @@ import os
 
 
 class ThresholdAlert:
-    # Initiate
+    # Initiatejklhkjhk
     def __init__(self, producer_stream: qx.StreamProducer):
         self.producer_stream = producer_stream
         self.threshold_value = float(os.environ["thresholdValue"])

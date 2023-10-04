@@ -94,7 +94,7 @@ deployments:
         description: ''
         required: false
         value: computerVisionProjectDeploymentId
-  - name: TfL traffic camera frame grabber
+  - name: Frame Grabber
     application: TfL traffic camera frame grabber
     deploymentType: Service
     version: e87e6d7b4d4a54c49f9ef0f4f7a747b3045ce2bd

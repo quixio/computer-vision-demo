@@ -51,7 +51,7 @@ deployments:
         description: Name of the destination topic
         required: true
         value: image-processed-merged
-  - name: TfL image processing UI
+  - name: Project Front End
     application: TfL image processing UI
     deploymentType: Service
     version: 73f54962fc128f7fcaac0414a71ccd641dfd2761

@@ -54,7 +54,7 @@ deployments:
   - name: Project Front End
     application: TfL image processing UI
     deploymentType: Service
-    version: 73f54962fc128f7fcaac0414a71ccd641dfd2761
+    version: 9460e7dc9f8c0319a697ca09aa03bb702518eb75
     resources:
       cpu: 900
       memory: 200
@@ -357,14 +357,14 @@ topics:
   - name: image-raw
     persisted: true
     configuration:
-      partitions: 2
+      partitions: 16
       replicationFactor: 2
       retentionInMinutes: 4380
       retentionInBytes: 262144000
   - name: tfl-cameras
     persisted: true
     configuration:
-      partitions: 2
+      partitions: 15
       replicationFactor: 2
       retentionInMinutes: 5760
       retentionInBytes: 262144000

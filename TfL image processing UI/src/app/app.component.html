@@ -67,7 +67,7 @@
                   [src]="'https://data-api-' + workspaceId + '.deployments.quix.ai/detected_objects/' + m.title"
                   height="48" fxFlex role="button" (click)="selectMarker(m.title!)" class="lastMarker">
               </ng-container>
-              <div *ngIf="!m" fxFlex class="bg-secondary" [style.height.px]="48"></div>
+              <div *ngIf="!m" fxFlex class="lastMarker pe-none" [style.height.px]="48"></div>
             </ng-container>
           </div>
         </div>

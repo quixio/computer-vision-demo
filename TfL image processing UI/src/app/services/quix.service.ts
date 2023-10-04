@@ -16,7 +16,7 @@ export class QuixService {
   /*~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
   /*WORKING LOCALLY? UPDATE THESE!*/
   public workingLocally = false; // set to true if working locally and populate the values below
-  public token: string = ""; // Create a token in the Tokens menu and paste it here
+  private token: string = ""; // Create a token in the Tokens menu and paste it here
   public workspaceId: string = ""; // Look in the URL for the Quix Portal. Your workspace ID is after 'workspace='
   public topicName: string = ""; // get topic name from the Topics page in the Quix portal
   
@@ -61,7 +61,7 @@ export class QuixService {
     let computerVisionProjectDeploymentId$ = this.httpClient.get(this.server + "computerVisionProjectDeploymentId", { headers, responseType: 'text' })
     let maxVehicleWindowProjectDeploymentId$ = this.httpClient.get(this.server + "maxVehicleWindowProjectDeploymentId", { headers, responseType: 'text' })
 
-    let value$ = combineLatest([
+    combineLatest([
       bearerToken$,
       topic$,
       workspaceId$,
@@ -72,7 +72,7 @@ export class QuixService {
     ]).subscribe(([bearerToken, topic, workspaceId, portalApi, uiProjectDeploymentId, computerVisionProjectDeploymentId, maxVehicleWindowProjectDeploymentId]) => {
       this.token = (bearerToken).replace("\n", "");
       this.workspaceId = (workspaceId).replace("\n", "");
-      this.topicName = (this.workspaceId + "-" + topic).replace("\n", "");
+      this.topicName = (topic).replace("\n", "");
 
       // if the solution is deployed in the platform. as part of the ungated / demo experience, set these so the links work correctly.
       // if running locally or cloned to another repo then these aren't important and the solution will still run

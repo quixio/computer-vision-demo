@@ -48,7 +48,7 @@ export class AppComponent implements AfterViewInit {
   markerIcon: string = 'assets/camera/camera';
   clusterStyle: ClusterIconStyle[] = CLUSTER_STYLE
   showImages: boolean = true;
-  lastMarkers: Marker[];
+  lastMarkers: Marker[] = Array(5);
   connection: HubConnection;
   parameterId: string = '';
   workspaceId: string;
@@ -58,6 +58,7 @@ export class AppComponent implements AfterViewInit {
   maxVehicleWindowProjectDeploymentId: string;
   private _maxVehicles: { [key: string]: number } = {};
   private _topicName: string;
+  private _topicId: string;
   private _streamId: string = 'image-feed';
   private _parameterDataReceived$ = new Subject<ParameterData>();
 
@@ -65,9 +66,10 @@ export class AppComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
 
-    this.quixService.initCompleted$.subscribe((topicName) => {
+    this.quixService.initCompleted$.subscribe((_) => {
       // set these once we know the quixService is initialized
       this._topicName = this.quixService.topicName;
+      this._topicId = this.quixService.workspaceId + '-' + this.quixService.topicName;
       this.workspaceId = this.quixService.workspaceId;
       this.ungatedToken = this.quixService.ungatedToken;
       this.uiProjectDeploymentId = this.quixService.uiProjectDeploymentId;
@@ -110,7 +112,6 @@ export class AppComponent implements AfterViewInit {
             if (data.numericValues['max_vehicles']) this._maxVehicles[key] = data.numericValues['max_vehicles'][0];
             markerData.max = this._maxVehicles[key];
           }
-
 
           if (data.topicName === "image-vehicles") {
             key = data.streamId;
@@ -216,9 +217,9 @@ export class AppComponent implements AfterViewInit {
    */
   subscribeToData() {
 
-    this.connection.invoke('SubscribeToParameter', this._topicName, this._streamId, 'image');
-    this.connection.invoke('SubscribeToParameter', this._topicName, this._streamId, 'lat');
-    this.connection.invoke('SubscribeToParameter', this._topicName, this._streamId, 'lon');
+    this.connection.invoke('SubscribeToParameter', this._topicId, this._streamId, 'image');
+    this.connection.invoke('SubscribeToParameter', this._topicId, this._streamId, 'lat');
+    this.connection.invoke('SubscribeToParameter', this._topicId, this._streamId, 'lon');
     this.connection.invoke('SubscribeToParameter', 'max-vehicles', '*', 'max_vehicles');
     this.connection.invoke('SubscribeToParameter', 'image-vehicles', '*', '*');
   }
@@ -237,8 +238,8 @@ export class AppComponent implements AfterViewInit {
     this.selectedMarker = undefined;
 
     // Unsubscribe from previous parameter and subscribe to new one
-    if (this.parameterId) this.connection?.invoke('UnsubscribeFromParameter', this._topicName, this._streamId, this.parameterId);
-    if (parameterId) this.connection?.invoke('SubscribeToParameter', this._topicName, this._streamId, parameterId);
+    if (this.parameterId) this.connection?.invoke('UnsubscribeFromParameter', this._topicId, this._streamId, this.parameterId);
+    if (parameterId) this.connection?.invoke('SubscribeToParameter', this._topicId, this._streamId, parameterId);
 
     this.parameterId = parameterId;
     this.getInitialData();
@@ -253,7 +254,7 @@ export class AppComponent implements AfterViewInit {
   toggleFeed() {
     this.showImages = !this.showImages;
     const methodName: string = this.showImages ? 'SubscribeToParameter' : 'UnsubscribeFromParameter';
-    this.connection.invoke(methodName, this._topicName, this._streamId, 'image');
+    this.connection.invoke(methodName, this._topicId, this._streamId, 'image');
   }
 
   //Calculate Function - to show image em formatted text

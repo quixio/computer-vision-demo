@@ -11,7 +11,7 @@ deployments:
     deploymentType: Service
     version: baf9f6d196cbade0c9635ce18b185adcbd0f4c0b
     resources:
-      cpu: 4000
+      cpu: -4000
       memory: 2000
       replicas: 4
     desiredStatus: Stopped

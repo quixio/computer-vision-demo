@@ -11,8 +11,8 @@ deployments:
     deploymentType: Service
     version: baf9f6d196cbade0c9635ce18b185adcbd0f4c0b
     resources:
-      cpu: 4000
-      memory: 2000
+      cpu: 2000
+      memory: 1000
       replicas: 4
     desiredStatus: Running
     variables:
@@ -36,8 +36,8 @@ deployments:
     deploymentType: Service
     version: v1.2
     resources:
-      cpu: 2000
-      memory: 1000
+      cpu: 1000
+      memory: 500
       replicas: 2
     desiredStatus: Running
     variables:
@@ -56,7 +56,7 @@ deployments:
     deploymentType: Service
     version: fa82962e006a44cbcb6d04a9b2ecf52163b6e73d
     resources:
-      cpu: 900
+      cpu: 500
       memory: 200
       replicas: 1
     publicAccess:
@@ -99,7 +99,7 @@ deployments:
     deploymentType: Service
     version: e87e6d7b4d4a54c49f9ef0f4f7a747b3045ce2bd
     resources:
-      cpu: 2000
+      cpu: 500
       memory: 500
       replicas: 4
     state:
@@ -197,8 +197,8 @@ deployments:
     deploymentType: Service
     version: e6bb005ff21552be9b0cf2482ea95ad6350abf68
     resources:
-      cpu: 4000
-      memory: 2000
+      cpu: 500
+      memory: 200
       replicas: 1
     desiredStatus: Running
     variables:
@@ -217,8 +217,8 @@ deployments:
     deploymentType: Service
     version: 595b8500e9b572abf15a35f80180cb60e71521c4
     resources:
-      cpu: 1000
-      memory: 2000
+      cpu: 500
+      memory: 200
       replicas: 2
     state:
       enabled: true
@@ -240,8 +240,8 @@ deployments:
     deploymentType: Service
     version: f65c0aba9bb38288051bb7a7cdc46d253b819847
     resources:
-      cpu: 1000
-      memory: 1100
+      cpu: 500
+      memory: 200
       replicas: 2
     desiredStatus: Running
     variables:
@@ -270,15 +270,15 @@ deployments:
     deploymentType: Service
     version: 6e4ba5b9db470bd90991083ee5db84c0e85c1252
     resources:
-      cpu: 2000
-      memory: 4000
+      cpu: 200
+      memory: 1000
       replicas: 1
     publicAccess:
       enabled: true
       urlPrefix: data-api
     state:
       enabled: true
-      size: 11
+      size: 2
     desiredStatus: Running
     variables:
       - name: buffered_stream

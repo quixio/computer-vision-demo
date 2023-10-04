@@ -1,4 +1,3 @@
-import { QuixService } from './quix.service';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
@@ -7,29 +6,25 @@ import { Observable, map } from 'rxjs';
   providedIn: 'root'
 })
 export class DataService {
-  url: string;
+  constructor(private httpClient: HttpClient) {}
 
-  constructor(private httpClient: HttpClient, private quixService: QuixService) {
-    this.url = `https://data-api-${this.quixService.workspaceId}.deployments.quix.ai`
-  }
-
-  getMaxVehicles(): Observable<{ [key: string]: number }> {
-    const url = `${this.url}/max_vehicles`
+  getMaxVehicles(workspaceId: string): Observable<{ [key: string]: number }> {
+    const url = `https://data-api-${workspaceId}.deployments.quix.ai/max_vehicles`
     return this.httpClient.get(url, { responseType: 'text' }).pipe(
       map((response) => this.sanitizeData(response))
     )
   }
 
-  getDetectedObjects(id?: string): Observable<{ [key: string]: any }> {
-    let url = `${this.url}/detected_objects`
+  getDetectedObjects(workspaceId: string, id?: string): Observable<{ [key: string]: any }> {
+    let url = `https://data-api-${workspaceId}.deployments.quix.ai/detected_objects`
     if (id) url += `/${id}` 
     return this.httpClient.get(url, { responseType: 'text' }).pipe(
       map((response) => this.sanitizeData(response))
     )
   }
 
-  getVehicles(): Observable<{ [key: string]: any }> {
-    const url = `${this.url}/vehicles`
+  getVehicles(workspaceId: string): Observable<{ [key: string]: any }> {
+    const url = `https://data-api-${workspaceId}.deployments.quix.ai/vehicles`
     return this.httpClient.get(url, { responseType: 'text' }).pipe(
       map((response) => this.sanitizeData(response))
     )

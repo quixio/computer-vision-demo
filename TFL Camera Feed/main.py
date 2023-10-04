@@ -25,7 +25,7 @@ else:
 
 # create the QuixStreamingClient
 client = qx.QuixStreamingClient()
-api_key = os.environ["api_key"]
+api_key = os.environ["tfl_api_key"]
 
 # Change consumer group to a different constant if you want to run model locally.
 print("Opening input and output topics")
@@ -48,7 +48,6 @@ def camera_is_in_fence(camera):
 def camera_is_online(camera):
     # is the camera online?
     enabled = next((account for account in camera['additionalProperties'] if account['key'] == "available" and account['value'] == "true"), None)
-    # print(f"Enabled?=={enabled is not None}")
     return enabled is not None
 
 
@@ -64,7 +63,6 @@ def get_data():
 
         tree = ET.parse('jamcams.xml')
 
-  
         # get root element
         root = tree.getroot()
     
@@ -72,37 +70,65 @@ def get_data():
         for a in root.findall("{http://s3.amazonaws.com/doc/2006-03-01/}Contents"):
             files[a[0].text] = a[1].text
 
-        cameras = requests.get(
-            "https://api.tfl.gov.uk/Place/Type/JamCam/?app_id=QuixFeed&app_key={}".format(api_key))
+        try:
+            cameras = requests.get(
+                "https://api.tfl.gov.uk/Place/Type/JamCam/?app_id=QuixFeed&app_key={}".format(api_key))
+            
+            print(f"Got {cameras.status_code} status code.")
+
+            # if TfL returns a 429 (too many requests) then we need to back off a bit
+            if cameras.status_code == 429:
+                print(cameras) # print everything. just wanna see if they give us any more details
+                time.sleep(10000) # wait 10 seconds
+                continue # start back at the begninning again
+
+        except Exception as ex:
+            print("An error occurred while trying to call the JamCam endpoint.")
+            print("Please check your API key")
+            print("Error:")
+            print(ex)
+
+        finally:
+            print(f"JamCam 'get' status: {cameras.status_code}")
 
         cameras_list = cameras.json()
 
         for camera in cameras_list:
-            if camera_is_online(camera):
-                use_camera = True  # it is online. Let's assume it will be used.
-                camera_id = camera["id"]
-          
-            
+            camera_id = camera["id"]
+            if not camera_is_online(camera):
+                print(f"Camera {camera_id} is offline")
+            else:
                 try:
                     timestamp_str = files[camera_id.replace("JamCams_", "") + ".mp4"]
                 except KeyError:
+                    # the camera is online but we can't get the mp4
                     print("No data for " + camera_id)
                     continue
 
                 timestamp = parser.parse(timestamp_str)
 
-                producer_topic.get_or_create_stream(camera_id).events.add_timestamp(timestamp) \
-                    .add_value("camera", json.dumps(camera)) \
-                    .publish()    
-         
-
-                # If we are using geofencing, and the camera is outside the fence:
+                # If we are using geofencing
                 if use_geo_fence and not camera_is_in_fence(camera):
+                    # and the camera is outside the fence,
                     # don't publish it to the producer topic.
                     use_camera = False
                 else:
+                    # if it is inside the area of interest, publish it.
                     message = "inside the geofence" if use_geo_fence else "online"
                     print(f"Camera {camera_id} is {message}")
+
+                    # At this point we know:
+                    #  - The camera is online
+                    #  - The camera is either in the geographic area of interest or geofence is not being used
+                    use_camera = True  # So lets use the camera
+
+
+                # If we're happy with the camera
+                if use_camera:
+                    # publish the data
+                    producer_topic.get_or_create_stream(camera_id).events.add_timestamp(timestamp) \
+                        .add_value("camera", json.dumps(camera)) \
+                        .publish()
 
         sleep_time = int(os.environ["sleep_interval"]) - (time.time() - start)
 

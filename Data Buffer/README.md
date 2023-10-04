@@ -1,27 +1,17 @@
-# Starter transformation
+# Data buffer
 
-[This project](https://github.com/quixio/quix-samples/tree/main/python/transformations/empty-template) is an example of how to transform data on the fly between source and destination.
+The data buffer was conceived to reduce the load on the Data API by buffering the data from three topics for one second.
 
-The default implementation subscribes to data from the source and publishes to the destination as-well-as printing content to console output. 
-
-Modify the Python code to transform your data on the fly.
-
-## How to run
-
-Create a [Quix](https://portal.platform.quix.ai/self-sign-up?xlink=github) account or log-in and visit the Samples to use this project.
-
-Clicking `Edit code` on the Sample, forks the project to your own Git repo so you can customize it before deploying.
+Without this buffer, the Data API could become unresponsive due to the amount of data being received.
 
 ## Environment variables
 
 The code sample uses the following environment variables:
 
-- **input**: Name of the input topic to listen to.
-- **output**: Name of the output topic to write to.
-
-## Contribute
-
-Submit forked projects to the Quix [GitHub](https://github.com/quixio/quix-samples) repo. Any new project that we accept will be attributed to you and you'll receive $200 in Quix credit.
+- **max_vehicles**: The topic with maxiumum vehicle counts.
+- **processed_images**: The topic with output from the computer vision object detection service.
+- **vehicle_counts**: The topic with calculated vehicle counts.
+- **buffered_stream**: The the single, buffered output topic. Contains one stream for each of the input topics.
 
 ## Open source
 

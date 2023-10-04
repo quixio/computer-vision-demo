@@ -78,7 +78,6 @@ def get_data():
 
             # if TfL returns a 429 (too many requests) then we need to back off a bit
             if cameras.status_code == 429:
-                print(cameras) # print everything. just wanna see if they give us any more details
                 time.sleep(10) # wait 10 seconds
                 continue # start back at the begninning again
 

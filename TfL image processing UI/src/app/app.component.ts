@@ -7,7 +7,7 @@ import { QuixService } from './services/quix.service';
 import { Subject, bufferTime, catchError, delay, filter, map, of, switchMap } from 'rxjs';
 import { DataService } from './services/data.service';
 import { AgmMap } from '@agm/core';
-import { AgmMarkerCluster, ClusterManager } from '@agm/markerclusterer';
+import { AgmMarkerCluster } from '@agm/markerclusterer';
 
 const CONSTANTS: any = {};
 
@@ -41,6 +41,7 @@ export class AppComponent implements AfterViewInit {
   bounds: google.maps.LatLngBounds
   zoom: number = 13;
   selectedMarker: Marker | undefined;
+  isLoadingImage: boolean;
   private _markerFrequency = 500;
 
   markers: Marker[] = [];
@@ -52,21 +53,28 @@ export class AppComponent implements AfterViewInit {
   parameterId: string = '';
   workspaceId: string;
   ungatedToken: string;
+  uiProjectDeploymentId: string;
+  computerVisionProjectDeploymentId: string;
+  maxVehicleWindowProjectDeploymentId: string;
   private _maxVehicles: { [key: string]: number } = {};
   private _topicName: string;
+  private _topicId: string;
   private _streamId: string = 'image-feed';
   private _parameterDataReceived$ = new Subject<ParameterData>();
 
-  constructor(private quixService: QuixService, private dataService: DataService) {
-    this.workspaceId = this.quixService.workspaceId;
-    this.ungatedToken = this.quixService.ungatedToken;
-  }
+  constructor(private quixService: QuixService, private dataService: DataService) {}
 
   ngAfterViewInit(): void {
-    this.getInitialData();
 
-    this.quixService.initCompleted$.subscribe((topicName) => {
-      this._topicName = topicName;
+    this.quixService.initCompleted$.subscribe((_) => {
+      // set these once we know the quixService is initialized
+      this._topicName = this.quixService.topicName;
+      this._topicId = this.quixService.workspaceId + '-' + this.quixService.topicName;
+      this.workspaceId = this.quixService.workspaceId;
+      this.ungatedToken = this.quixService.ungatedToken;
+      this.uiProjectDeploymentId = this.quixService.uiProjectDeploymentId;
+      this.computerVisionProjectDeploymentId = this.quixService.computerVisionProjectDeploymentId;
+      this.maxVehicleWindowProjectDeploymentId = this.quixService.maxVehicleWindowProjectDeploymentId;
 
       this.quixService.ConnectToQuix().then(connection => {
         this.connection = connection;
@@ -79,6 +87,8 @@ export class AppComponent implements AfterViewInit {
           if (connectionId) this.subscribeToData();
         });
       });
+
+      this.getInitialData();
     });
 
     this._parameterDataReceived$.pipe(bufferTime(this._markerFrequency))
@@ -102,7 +112,6 @@ export class AppComponent implements AfterViewInit {
             if (data.numericValues['max_vehicles']) this._maxVehicles[key] = data.numericValues['max_vehicles'][0];
             markerData.max = this._maxVehicles[key];
           }
-
 
           if (data.topicName === "image-vehicles") {
             key = data.streamId;
@@ -130,9 +139,9 @@ export class AppComponent implements AfterViewInit {
   }
 
   getInitialData(): void {
-    this.dataService.getDetectedObjects().pipe(switchMap((detectedObjects) => {
-      return this.dataService.getMaxVehicles().pipe(switchMap((maxVehicles) => {
-        return this.dataService.getVehicles().pipe(map((vehicles) => {
+    this.dataService.getDetectedObjects(this.workspaceId).pipe(switchMap((detectedObjects) => {
+      return this.dataService.getMaxVehicles(this.workspaceId).pipe(switchMap((maxVehicles) => {
+        return this.dataService.getVehicles(this.workspaceId).pipe(map((vehicles) => {
           this._maxVehicles = maxVehicles;
           const markersData: MarkerData[] = [];
           Object.keys(detectedObjects).forEach((key) => {
@@ -165,6 +174,7 @@ export class AppComponent implements AfterViewInit {
         if (index > -1) Object.assign(this.markers[index], marker);
         else this.markers.push(this.createMarker(markerData));
       });
+      this.lastMarkers = this.markers.slice().sort((a, b) => b.date?.getTime()! - a.date?.getTime()!).slice(0, 5);
       CONSTANTS.markers = this.markers;
       CONSTANTS.parameterId = this.parameterId;
     })
@@ -207,9 +217,9 @@ export class AppComponent implements AfterViewInit {
    */
   subscribeToData() {
 
-    this.connection.invoke('SubscribeToParameter', this._topicName, this._streamId, 'image');
-    this.connection.invoke('SubscribeToParameter', this._topicName, this._streamId, 'lat');
-    this.connection.invoke('SubscribeToParameter', this._topicName, this._streamId, 'lon');
+    this.connection.invoke('SubscribeToParameter', this._topicId, this._streamId, 'image');
+    this.connection.invoke('SubscribeToParameter', this._topicId, this._streamId, 'lat');
+    this.connection.invoke('SubscribeToParameter', this._topicId, this._streamId, 'lon');
     this.connection.invoke('SubscribeToParameter', 'max-vehicles', '*', 'max_vehicles');
     this.connection.invoke('SubscribeToParameter', 'image-vehicles', '*', '*');
   }
@@ -228,8 +238,8 @@ export class AppComponent implements AfterViewInit {
     this.selectedMarker = undefined;
 
     // Unsubscribe from previous parameter and subscribe to new one
-    if (this.parameterId) this.connection?.invoke('UnsubscribeFromParameter', this._topicName, this._streamId, this.parameterId);
-    if (parameterId) this.connection?.invoke('SubscribeToParameter', this._topicName, this._streamId, parameterId);
+    if (this.parameterId) this.connection?.invoke('UnsubscribeFromParameter', this._topicId, this._streamId, this.parameterId);
+    if (parameterId) this.connection?.invoke('SubscribeToParameter', this._topicId, this._streamId, parameterId);
 
     this.parameterId = parameterId;
     this.getInitialData();
@@ -244,7 +254,7 @@ export class AppComponent implements AfterViewInit {
   toggleFeed() {
     this.showImages = !this.showImages;
     const methodName: string = this.showImages ? 'SubscribeToParameter' : 'UnsubscribeFromParameter';
-    this.connection.invoke(methodName, this._topicName, this._streamId, 'image');
+    this.connection.invoke(methodName, this._topicId, this._streamId, 'image');
   }
 
   //Calculate Function - to show image em formatted text

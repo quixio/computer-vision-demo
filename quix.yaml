@@ -11,9 +11,9 @@ deployments:
     deploymentType: Service
     version: baf9f6d196cbade0c9635ce18b185adcbd0f4c0b
     resources:
-      cpu: 2000
+      cpu: 500
       memory: 1000
-      replicas: 4
+      replicas: 1
     desiredStatus: Running
     variables:
       - name: input
@@ -36,9 +36,9 @@ deployments:
     deploymentType: Service
     version: v1.2
     resources:
-      cpu: 1000
+      cpu: 500
       memory: 500
-      replicas: 2
+      replicas: 1
     desiredStatus: Running
     variables:
       - name: input
@@ -101,7 +101,7 @@ deployments:
     resources:
       cpu: 500
       memory: 500
-      replicas: 4
+      replicas: 1
     state:
       enabled: true
       size: 1
@@ -219,7 +219,7 @@ deployments:
     resources:
       cpu: 500
       memory: 200
-      replicas: 2
+      replicas: 1
     state:
       enabled: true
       size: 1
@@ -242,7 +242,7 @@ deployments:
     resources:
       cpu: 500
       memory: 200
-      replicas: 2
+      replicas: 1
     desiredStatus: Running
     variables:
       - name: max_vehicles
@@ -322,56 +322,56 @@ topics:
   - name: image-processed
     persisted: true
     configuration:
-      partitions: 2
+      partitions: 1
       replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
+      retentionInMinutes: 60
+      retentionInBytes: 1024
   - name: image-processed-merged
     persisted: false
     configuration:
-      partitions: 2
+      partitions: 1
       replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
+      retentionInMinutes: 60
+      retentionInBytes: 1024
   - name: image-vehicles
-    persisted: true
+    persisted: false
     configuration:
-      partitions: 2
+      partitions: 1
       replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
+      retentionInMinutes: 60
+      retentionInBytes: 1024
   - name: output-topic
     persisted: false
     configuration:
-      partitions: 2
+      partitions: 1
       replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
+      retentionInMinutes: 60
+      retentionInBytes: 1024
   - name: max-vehicles
-    persisted: true
+    persisted: false
     configuration:
-      partitions: 2
+      partitions: 1
       replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
+      retentionInMinutes: 60
+      retentionInBytes: 1024
   - name: image-raw
-    persisted: true
+    persisted: false
     configuration:
-      partitions: 2
+      partitions: 1
       replicationFactor: 2
-      retentionInMinutes: 4380
-      retentionInBytes: 262144000
+      retentionInMinutes: 60
+      retentionInBytes: 1024
   - name: tfl-cameras
-    persisted: true
+    persisted: false
     configuration:
-      partitions: 2
+      partitions: 1
       replicationFactor: 2
-      retentionInMinutes: 5760
-      retentionInBytes: 262144000
+      retentionInMinutes: 60
+      retentionInBytes: 1024
   - name: buffered-data
-    persisted: true
+    persisted: false
     configuration:
-      partitions: 2
+      partitions: 1
       replicationFactor: 2
-      retentionInMinutes: 5760
-      retentionInBytes: 262144000
+      retentionInMinutes: 60
+      retentionInBytes: 1024

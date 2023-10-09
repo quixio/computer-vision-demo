@@ -50,7 +50,7 @@ buffered_stream_data = client.get_topic_consumer(
     auto_offset_reset=qx.AutoOffsetReset.Earliest)
 
 
-def load_state(state_object, in_memory_object_name):
+def load_state(in_memory_object_name):
 
     loaded_state = {}
 
@@ -81,10 +81,7 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
             if stream_consumer.stream_id == 'buffered_processed_images':
                 print("Processing images")
 
-                # get the appropriate values from state, return {} if not found
-                detected_objects_state = stream_consumer.get_scalar_state("detected_objects", lambda: {})
-                image_state = stream_consumer.get_scalar_state("detected_objects_images", lambda: {})
-
+                # iterrate over the rows in the DataFrame
                 for i, row in df.iterrows():
 
                     camera = row["TAG__camera"]
@@ -93,24 +90,12 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
 
                     # if state hasn't been loaded into local variables yet:
                     if not state_loaded["detected_objects"]:
-                        # do it now!
-                        detected_objects = load_state(detected_objects_state, "detected_objects")
-                        
+                        # load from state, or default to {}
+                        detected_objects = load_state("detected_objects")
 
                     if not state_loaded["detected_objects_img"]:
-                        # detected_objects_img = load_state(image_state, "detected_objects_img")
-                        #detected_objects_img = db["images"]
-                        #state_loaded["detected_objects_img"] = True
-
-                        print(db.key_may_exist("images"))
-                        if "images" in db.keys():
-                            # if found load from db
-                            detected_objects = db["images"]
-                        else:
-                            # else init db to empty
-                            db["images"] = detected_objects_img
-                        state_loaded["detected_objects_img"] = True
-
+                        # load from state, or default to {}
+                        detected_objects_img = load_state("detected_objects_img")
 
                     # update the local variable
                     # convert the image to base64 and string in readiness for json encoding
@@ -126,21 +111,10 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
                     # we don't want the image in these for performance reasons
                     detected_objects[camera] = row.to_dict()
 
-                    print(str(row.to_dict()))
-
-
-                    # update state with the latest values
-                    # update state with the latest values
-                    # detected_objects_state.value = json.dumps(detected_objects)
-                    # image_state.value = json.dumps(detected_objects_img)
-                    
                     # update rocksDb state database with latest values
                     db["images"] = json.dumps(detected_objects_img)
                     db["objects"] = json.dumps(detected_objects)
 
-
-                detected_objects_state.flush()
-                image_state.flush()
 
             elif stream_consumer.stream_id == 'buffered_vehicle_counts':
                 print("Processing vehicles")
@@ -150,7 +124,8 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
 
                 # if state hasn't been loaded into local variables yet:
                 if not state_loaded["vehicles"]:
-                    vehicles = load_state(vehicles_state, "vehicles")
+                    # load from state, or default to {}
+                    vehicles = load_state("vehicles")
 
                 for i, row in df.iterrows():
                     camera = row["TAG__camera"]
@@ -169,7 +144,8 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
 
                 # if state hasn't been loaded into local variables yet:
                 if not state_loaded["max_vehicles"]:
-                    max_vehicles = load_state(max_vehicles_state, "max_vehicles")
+                    # load from state, or default to {}
+                    max_vehicles = load_state("max_vehicles")
 
                 for i, row in df.iterrows():
                     camera = row["TAG__camera"]

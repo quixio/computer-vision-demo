@@ -79,13 +79,23 @@ deployments:
   - name: Cam Vehicles
     application: TotalVehicles
     deploymentType: Service
-    version: 11ea0c4a4289ea09bea5096d2a2f46c3debf3aef
+    version: ab973784588f693d123fd8722e5158f42cbd9c52
     resources:
       cpu: 4000
       memory: 2000
       replicas: 1
     desiredStatus: Stopped
-    variables: []
+    variables:
+      - name: input
+        inputType: InputTopic
+        description: This is the input topic to read data from
+        required: true
+        value: image-processed
+      - name: output
+        inputType: OutputTopic
+        description: This is the output topic to write data to
+        required: true
+        value: image-vehicles
   - name: Max Vehicle Window
     application: Max Vehicles
     deploymentType: Service

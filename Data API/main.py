@@ -56,7 +56,7 @@ def load_state(in_memory_object_name):
     else:
         # else init db to empty
         db[in_memory_object_name] = {}
-        print(f"No state loaded for {in_memory_object_name}, Init to {}")
+        print(f"No state loaded for {in_memory_object_name}. Init to empty dictionary.")
 
     state_loaded[in_memory_object_name] = True
 

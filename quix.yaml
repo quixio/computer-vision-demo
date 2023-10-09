@@ -6,26 +6,6 @@ metadata:
 
 # This section describes the Deployments of the data pipeline
 deployments:
-  - name: Stream merge
-    application: Stream merge
-    deploymentType: Service
-    version: v1.2
-    resources:
-      cpu: 2000
-      memory: 1000
-      replicas: 2
-    desiredStatus: Stopped
-    variables:
-      - name: input
-        inputType: InputTopic
-        description: Name of the source topic
-        required: true
-        value: image-processed
-      - name: output
-        inputType: OutputTopic
-        description: Name of the destination topic
-        required: true
-        value: image-processed-merged
   - name: S3 new
     application: S3
     deploymentType: Service

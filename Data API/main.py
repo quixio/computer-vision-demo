@@ -7,15 +7,21 @@ from threading import Lock
 import datetime
 import json
 import base64
-from rocksdict import Rdict
+from rocksdict import Rdict, Options
 
 
 # make sure the state dir exists
 if not os.path.exists("state"):
     os.makedirs("state")
 
+def db_options():
+    opt = Options()
+    # create table
+    opt.create_if_missing(True)
+    return opt
+
 # init the rocks db
-db = Rdict("state.dict")
+db = Rdict("state.dict", db_options())
 
 # stores for various data needed for this API
 detected_objects = {}

@@ -59,7 +59,6 @@ export class AppComponent implements AfterViewInit {
   private _maxVehicles: { [key: string]: number } = {};
   private _topicName: string;
   private _topicId: string;
-  private _streamId: string = 'image-feed';
   private _parameterDataReceived$ = new Subject<ParameterData>();
 
   constructor(private quixService: QuixService, private dataService: DataService) {}
@@ -217,9 +216,9 @@ export class AppComponent implements AfterViewInit {
    */
   subscribeToData() {
 
-    this.connection.invoke('SubscribeToParameter', this._topicId, this._streamId, 'image');
-    this.connection.invoke('SubscribeToParameter', this._topicId, this._streamId, 'lat');
-    this.connection.invoke('SubscribeToParameter', this._topicId, this._streamId, 'lon');
+    this.connection.invoke('SubscribeToParameter', this._topicId, '*', 'image');
+    this.connection.invoke('SubscribeToParameter', this._topicId, '*', 'lat');
+    this.connection.invoke('SubscribeToParameter', this._topicId, '*', 'lon');
     this.connection.invoke('SubscribeToParameter', 'max-vehicles', '*', 'max_vehicles');
     this.connection.invoke('SubscribeToParameter', 'image-vehicles', '*', '*');
   }
@@ -238,8 +237,8 @@ export class AppComponent implements AfterViewInit {
     this.selectedMarker = undefined;
 
     // Unsubscribe from previous parameter and subscribe to new one
-    if (this.parameterId) this.connection?.invoke('UnsubscribeFromParameter', this._topicId, this._streamId, this.parameterId);
-    if (parameterId) this.connection?.invoke('SubscribeToParameter', this._topicId, this._streamId, parameterId);
+    if (this.parameterId) this.connection?.invoke('UnsubscribeFromParameter', this._topicId, '*', this.parameterId);
+    if (parameterId) this.connection?.invoke('SubscribeToParameter', this._topicId, '*', parameterId);
 
     this.parameterId = parameterId;
     this.getInitialData();
@@ -254,7 +253,7 @@ export class AppComponent implements AfterViewInit {
   toggleFeed() {
     this.showImages = !this.showImages;
     const methodName: string = this.showImages ? 'SubscribeToParameter' : 'UnsubscribeFromParameter';
-    this.connection.invoke(methodName, this._topicId, this._streamId, 'image');
+    this.connection.invoke(methodName, this._topicId, '*', 'image');
   }
 
   //Calculate Function - to show image em formatted text

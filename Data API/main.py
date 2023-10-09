@@ -7,6 +7,7 @@ from threading import Lock
 import datetime
 import json
 import base64
+from rocksdict import Rdict
 
 
 # stores for various data needed for this API

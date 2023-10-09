@@ -325,14 +325,14 @@ topics:
       partitions: 1
       replicationFactor: 2
       retentionInMinutes: 60
-      retentionInBytes: 1024
+      retentionInBytes: 51200
   - name: image-processed-merged
     persisted: false
     configuration:
       partitions: 1
       replicationFactor: 2
       retentionInMinutes: 60
-      retentionInBytes: 1024
+      retentionInBytes: 51200
   - name: image-vehicles
     persisted: false
     configuration:
@@ -360,7 +360,7 @@ topics:
       partitions: 1
       replicationFactor: 2
       retentionInMinutes: 60
-      retentionInBytes: 1024
+      retentionInBytes: 51200
   - name: tfl-cameras
     persisted: false
     configuration:
@@ -374,4 +374,4 @@ topics:
       partitions: 1
       replicationFactor: 2
       retentionInMinutes: 60
-      retentionInBytes: 1024
+      retentionInBytes: 51200

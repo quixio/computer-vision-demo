@@ -29,7 +29,7 @@ detected_objects_img = {}
 vehicles = {}
 max_vehicles = {}
 
-# track which state objects have been loaded to prevent reloading
+# track which state has been loaded to prevent reloading
 state_loaded = {
     'detected_objects': False,
     'detected_objects_img': False,
@@ -119,28 +119,23 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
             elif stream_consumer.stream_id == 'buffered_vehicle_counts':
                 print("Processing vehicles")
 
-                # get the appropriate value from state, return {} if not found
-                vehicles_state = stream_consumer.get_scalar_state("vehicles", lambda: {})
-
                 # if state hasn't been loaded into local variables yet:
                 if not state_loaded["vehicles"]:
                     # load from state, or default to {}
                     vehicles = load_state("vehicles")
 
+                # iterrate over the rows in the DataFrame
                 for i, row in df.iterrows():
                     camera = row["TAG__camera"]
                     # add this vehicle count to the dictionary
                     vehicles[camera] = row["vehicles"]
 
-                # update the state for vehicles with the latest values
-                vehicles_state.value = json.dumps(vehicles)
-                vehicles_state.flush()
+                # update rocksDb state database with latest values
+                db["vehicles"] = json.dumps(vehicles)
+
 
             elif stream_consumer.stream_id == 'buffered_max_vehicles':
                 print("Processing max_vehicles")
-
-                # get the appropriate value from state, return {} if not found
-                max_vehicles_state = stream_consumer.get_scalar_state("max_vehicles", lambda: {})
 
                 # if state hasn't been loaded into local variables yet:
                 if not state_loaded["max_vehicles"]:
@@ -151,8 +146,8 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
                     camera = row["TAG__camera"]
                     max_vehicles[camera] = row["max_vehicles"]
 
-                max_vehicles_state.value = json.dumps(max_vehicles)
-                max_vehicles_state.flush()
+                # update rocksDb state database with latest values
+                db["vehicles"] = json.dumps(max_vehicles)
 
             else:
                 print("Ignoring unknown Stream Id.")

@@ -84,7 +84,7 @@ deployments:
       cpu: 4000
       memory: 2000
       replicas: 1
-    desiredStatus: Running
+    desiredStatus: Stopped
     variables: []
   - name: Max Vehicle Window
     application: Max Vehicles

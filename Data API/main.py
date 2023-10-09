@@ -14,7 +14,8 @@ from rocksdict import Rdict, Options
 if not os.path.exists("state"):
     os.makedirs("state")
 
-# init the rocks db
+# rocksDb is used to hold state, state.dict is in the `state` folder which is maintained for us by Quix
+# so we just init the rocks db using `state.dict` which will be loaded from the file system if it exists
 db = Rdict("state.dict")
 
 # stores for various data needed for this API

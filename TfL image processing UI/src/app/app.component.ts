@@ -99,7 +99,7 @@ export class AppComponent implements AfterViewInit {
           let key: string | undefined;
 
           if (data.topicName === this._topicName) {
-            key = data.tagValues['parent_streamId'][0];
+            key = data.streamId;
             if (data.numericValues['lat']) markerData.latitude = +data.numericValues['lat'][0];
             if (data.numericValues['lon']) markerData.longitude = +data.numericValues['lon'][0];
             if (data.stringValues['image']) markerData.image = data.stringValues['image'][0];
@@ -148,7 +148,7 @@ export class AppComponent implements AfterViewInit {
 
             // Filter markers by bounds
             const latLng = new google.maps.LatLng(data.lat, data.lon);
-            if (!this.bounds?.contains(latLng)) return;
+            if (this.bounds !== undefined && !this.bounds?.contains(latLng)) return;
 
             const markerData: MarkerData = {
               title: key,

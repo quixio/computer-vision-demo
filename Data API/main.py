@@ -57,6 +57,7 @@ def load_state(state_object, in_memory_object_name):
     if in_memory_object_name in db.keys():
         # if found load from db
         loaded_state = db[in_memory_object_name]
+        print(f"State loaded for {in_memory_object_name}")
     else:
         # else init db to empty
         db[in_memory_object_name] = {}
@@ -64,15 +65,6 @@ def load_state(state_object, in_memory_object_name):
 
     state_loaded[in_memory_object_name] = True
 
-
-
-    if state_object.value == {}:
-        # it's ok if there is nothing to load
-    else:
-        loaded_state = json.loads(state_object.value)
-        print(f"State loaded for {in_memory_object_name}")
-
-    state_loaded[in_memory_object_name] = True
     return loaded_state
 
 def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsumer):

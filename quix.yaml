@@ -228,7 +228,7 @@ deployments:
   - name: Project Front End
     application: TfL image processing UI
     deploymentType: Service
-    version: fa82962e006a44cbcb6d04a9b2ecf52163b6e73d
+    version: b4b6d01de403f4eabefbd1f8ddd42be1ea0f4935
     resources:
       cpu: 900
       memory: 200
@@ -242,7 +242,7 @@ deployments:
         inputType: InputTopic
         description: The topic to read from
         required: true
-        value: image-processed-merged
+        value: image-processed
       - name: GoogleMapsApiKey
         inputType: Secret
         description: ''

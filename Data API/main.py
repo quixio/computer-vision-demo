@@ -17,7 +17,7 @@ if not os.path.exists("state"):
 def db_options():
     opt = Options()
     # create table
-    opt.create_if_missing(True)
+    #opt.create_if_missing(True)
     return opt
 
 # init the rocks db
@@ -92,7 +92,13 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
                     if not state_loaded["detected_objects"]:
                         # do it now!
                         # detected_objects = load_state(detected_objects_state, "detected_objects")
-                        detected_objects = db["objects"]
+                        print(db.key_may_exist("objects"))
+                        if "objects" in db.keys():
+                            # if found load from db
+                            detected_objects = db["objects"]
+                        else:
+                            # else init db to empty
+                            db["objects"] = detected_objects
                         state_loaded["detected_objects"] = True
 
 

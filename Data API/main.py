@@ -62,8 +62,7 @@ def load_state(state_object, in_memory_object_name):
         db[in_memory_object_name] = {}
         print(f"No state loaded for {in_memory_object_name}, Init to {}")
 
-
-    state_loaded["detected_objects"] = True
+    state_loaded[in_memory_object_name] = True
 
 
 

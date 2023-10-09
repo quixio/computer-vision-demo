@@ -104,7 +104,16 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
 
                     if not state_loaded["detected_objects_img"]:
                         # detected_objects_img = load_state(image_state, "detected_objects_img")
-                        detected_objects_img = db["images"]
+                        #detected_objects_img = db["images"]
+                        #state_loaded["detected_objects_img"] = True
+
+                        print(db.key_may_exist("images"))
+                        if "images" in db.keys():
+                            # if found load from db
+                            detected_objects = db["images"]
+                        else:
+                            # else init db to empty
+                            db["images"] = detected_objects_img
                         state_loaded["detected_objects_img"] = True
 
 

@@ -10,6 +10,13 @@ import base64
 from rocksdict import Rdict
 
 
+# make sure the state dir exists
+if not os.path.exists("state"):
+    os.makedirs("state")
+
+# init the rocks db
+db = Rdict("state.dict")
+
 # stores for various data needed for this API
 detected_objects = {}
 detected_objects_img = {}
@@ -104,6 +111,11 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
                     # update state with the latest values
                     detected_objects_state.value = json.dumps(detected_objects)
                     image_state.value = json.dumps(detected_objects_img)
+                    
+                    # update rocksDb state database with latest values
+                    db["images"] = json.dumps(detected_objects_img)
+                    db["objects"] = json.dumps(detected_objects)
+
 
                 detected_objects_state.flush()
                 image_state.flush()

@@ -14,14 +14,8 @@ from rocksdict import Rdict, Options
 if not os.path.exists("state"):
     os.makedirs("state")
 
-def db_options():
-    opt = Options()
-    # create table
-    #opt.create_if_missing(True)
-    return opt
-
 # init the rocks db
-db = Rdict("state.dict", db_options())
+db = Rdict("state.dict")
 
 # stores for various data needed for this API
 detected_objects = {}

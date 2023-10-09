@@ -296,6 +296,46 @@ deployments:
         description: ''
         required: true
         value: 100
+  - name: TfL image processing UI
+    application: TfL image processing UI
+    deploymentType: Service
+    version: 2459b08c17e37f564cab60088777b7e01ca9714f
+    resources:
+      cpu: 200
+      memory: 500
+      replicas: 1
+    desiredStatus: Running
+    variables:
+      - name: processed
+        inputType: InputTopic
+        description: The topic to read from
+        required: true
+        value: image-processed-merged
+      - name: GoogleMapsApiKey
+        inputType: Secret
+        description: ''
+        required: true
+        value: GoogleMapsApiKey
+      - name: bearerToken
+        inputType: Secret
+        description: ''
+        required: true
+        value: bearerToken
+      - name: maxVehicleWindowProjectDeploymentId
+        inputType: Secret
+        description: ''
+        required: false
+        value: maxVehicleWindowProjectDeploymentId
+      - name: uiProjectDeploymentId
+        inputType: Secret
+        description: ''
+        required: false
+        value: uiProjectDeploymentId
+      - name: computerVisionProjectDeploymentId
+        inputType: Secret
+        description: ''
+        required: false
+        value: computerVisionProjectDeploymentId
 
 # This section describes the Topics of the data pipeline
 topics:

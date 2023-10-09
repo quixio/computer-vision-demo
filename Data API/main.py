@@ -85,10 +85,16 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
                     # if state hasn't been loaded into local variables yet:
                     if not state_loaded["detected_objects"]:
                         # do it now!
-                        detected_objects = load_state(detected_objects_state, "detected_objects")
+                        # detected_objects = load_state(detected_objects_state, "detected_objects")
+                        detected_objects = db["objects"]
+                        state_loaded["detected_objects"] = True
+
 
                     if not state_loaded["detected_objects_img"]:
-                        detected_objects_img = load_state(image_state, "detected_objects_img")
+                        # detected_objects_img = load_state(image_state, "detected_objects_img")
+                        detected_objects_img = db["images"]
+                        state_loaded["detected_objects_img"] = True
+
 
                     # update the local variable
                     # convert the image to base64 and string in readiness for json encoding
@@ -109,8 +115,8 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
 
                     # update state with the latest values
                     # update state with the latest values
-                    detected_objects_state.value = json.dumps(detected_objects)
-                    image_state.value = json.dumps(detected_objects_img)
+                    # detected_objects_state.value = json.dumps(detected_objects)
+                    # image_state.value = json.dumps(detected_objects_img)
                     
                     # update rocksDb state database with latest values
                     db["images"] = json.dumps(detected_objects_img)

@@ -19,7 +19,7 @@ interface MarkerData {
   value?: number;
   max?: number;
   count?: number;
-  image?: string;
+  image?: number;
 }
 
 interface Marker extends MarkerData {
@@ -102,7 +102,7 @@ export class AppComponent implements AfterViewInit {
             key = data.streamId;
             if (data.numericValues['lat']) markerData.latitude = +data.numericValues['lat'][0];
             if (data.numericValues['lon']) markerData.longitude = +data.numericValues['lon'][0];
-            if (data.stringValues['image']) markerData.image = data.stringValues['image'][0];
+            if (data.binaryValues['image']) markerData.image = data.binaryValues['image'][0];
             if (data.numericValues[this.parameterId]) markerData.value = data.numericValues[this.parameterId][0];
           }
 
@@ -217,10 +217,10 @@ export class AppComponent implements AfterViewInit {
   subscribeToData() {
 
     this.connection.invoke('SubscribeToParameter', this._topicId, '*', 'image');
-    this.connection.invoke('SubscribeToParameter', this._topicId, '*', 'lat');
-    this.connection.invoke('SubscribeToParameter', this._topicId, '*', 'lon');
-    this.connection.invoke('SubscribeToParameter', 'max-vehicles', '*', 'max_vehicles');
-    this.connection.invoke('SubscribeToParameter', 'image-vehicles', '*', '*');
+    //this.connection.invoke('SubscribeToParameter', this._topicId, '*', 'lat');
+    //this.connection.invoke('SubscribeToParameter', this._topicId, '*', 'lon');
+    //this.connection.invoke('SubscribeToParameter', 'max-vehicles', '*', 'max_vehicles');
+    //this.connection.invoke('SubscribeToParameter', 'image-vehicles', '*', '*');
   }
 
   /**

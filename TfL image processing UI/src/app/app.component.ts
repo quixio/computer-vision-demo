@@ -217,10 +217,10 @@ export class AppComponent implements AfterViewInit {
   subscribeToData() {
 
     this.connection.invoke('SubscribeToParameter', this._topicId, '*', 'image');
-    //this.connection.invoke('SubscribeToParameter', this._topicId, '*', 'lat');
-    //this.connection.invoke('SubscribeToParameter', this._topicId, '*', 'lon');
-    //this.connection.invoke('SubscribeToParameter', 'max-vehicles', '*', 'max_vehicles');
-    //this.connection.invoke('SubscribeToParameter', 'image-vehicles', '*', '*');
+    this.connection.invoke('SubscribeToParameter', this._topicId, '*', 'lat');
+    this.connection.invoke('SubscribeToParameter', this._topicId, '*', 'lon');
+    this.connection.invoke('SubscribeToParameter', 'max-vehicles', '*', 'max_vehicles');
+    this.connection.invoke('SubscribeToParameter', 'image-vehicles', '*', '*');
   }
 
   /**

@@ -6,122 +6,6 @@ metadata:
 
 # This section describes the Deployments of the data pipeline
 deployments:
-  - name: Object Detection
-    application: Computer vision object detection
-    deploymentType: Service
-    version: baf9f6d196cbade0c9635ce18b185adcbd0f4c0b
-    resources:
-      cpu: 4000
-      memory: 2000
-      replicas: 4
-    desiredStatus: Running
-    variables:
-      - name: input
-        inputType: InputTopic
-        description: This is the input topic for raw images
-        required: true
-        value: image-raw
-      - name: output
-        inputType: OutputTopic
-        description: This is the output for images augmented with the recognized objects
-        required: true
-        value: image-processed
-      - name: yolo_model
-        inputType: FreeText
-        description: ''
-        required: false
-        value: yolov8n.pt
-  - name: Stream merge
-    application: Stream merge
-    deploymentType: Service
-    version: v1.2
-    resources:
-      cpu: 2000
-      memory: 1000
-      replicas: 2
-    desiredStatus: Running
-    variables:
-      - name: input
-        inputType: InputTopic
-        description: Name of the source topic
-        required: true
-        value: image-processed
-      - name: output
-        inputType: OutputTopic
-        description: Name of the destination topic
-        required: true
-        value: image-processed-merged
-  - name: Project Front End
-    application: TfL image processing UI
-    deploymentType: Service
-    version: fa82962e006a44cbcb6d04a9b2ecf52163b6e73d
-    resources:
-      cpu: 900
-      memory: 200
-      replicas: 1
-    publicAccess:
-      enabled: true
-      urlPrefix: app
-    desiredStatus: Running
-    variables:
-      - name: processed
-        inputType: InputTopic
-        description: The topic to read from
-        required: true
-        value: image-processed-merged
-      - name: GoogleMapsApiKey
-        inputType: Secret
-        description: ''
-        required: true
-        value: GoogleMapsApiKey
-      - name: bearerToken
-        inputType: Secret
-        description: ''
-        required: true
-        value: bearerToken
-      - name: maxVehicleWindowProjectDeploymentId
-        inputType: Secret
-        description: ''
-        required: false
-        value: maxVehicleWindowProjectDeploymentId
-      - name: uiProjectDeploymentId
-        inputType: Secret
-        description: ''
-        required: false
-        value: uiProjectDeploymentId
-      - name: computerVisionProjectDeploymentId
-        inputType: Secret
-        description: ''
-        required: false
-        value: computerVisionProjectDeploymentId
-  - name: Frame Grabber
-    application: TfL traffic camera frame grabber
-    deploymentType: Service
-    version: e87e6d7b4d4a54c49f9ef0f4f7a747b3045ce2bd
-    resources:
-      cpu: 2000
-      memory: 500
-      replicas: 4
-    state:
-      enabled: true
-      size: 1
-    desiredStatus: Running
-    variables:
-      - name: input
-        inputType: InputTopic
-        description: ''
-        required: true
-        value: tfl-cameras
-      - name: output
-        inputType: OutputTopic
-        description: ''
-        required: true
-        value: image-raw
-      - name: frame_rate
-        inputType: FreeText
-        description: ''
-        required: true
-        value: 100
   - name: S3 new
     application: S3
     deploymentType: Service
@@ -130,7 +14,7 @@ deployments:
       cpu: 200
       memory: 500
       replicas: 1
-    desiredStatus: Running
+    desiredStatus: Stopped
     variables:
       - name: input
         inputType: InputTopic
@@ -195,10 +79,10 @@ deployments:
   - name: Cam Vehicles
     application: TotalVehicles
     deploymentType: Service
-    version: e6bb005ff21552be9b0cf2482ea95ad6350abf68
+    version: ab973784588f693d123fd8722e5158f42cbd9c52
     resources:
-      cpu: 4000
-      memory: 2000
+      cpu: 500
+      memory: 2100
       replicas: 1
     desiredStatus: Running
     variables:
@@ -215,7 +99,7 @@ deployments:
   - name: Max Vehicle Window
     application: Max Vehicles
     deploymentType: Service
-    version: 595b8500e9b572abf15a35f80180cb60e71521c4
+    version: d36e40e514be409114da3c1ce5bc812975aeda22
     resources:
       cpu: 1000
       memory: 2000
@@ -238,7 +122,7 @@ deployments:
   - name: Data Buffer
     application: Data Buffer
     deploymentType: Service
-    version: f65c0aba9bb38288051bb7a7cdc46d253b819847
+    version: b4b6d01de403f4eabefbd1f8ddd42be1ea0f4935
     resources:
       cpu: 1000
       memory: 1100
@@ -268,7 +152,7 @@ deployments:
   - name: Data API
     application: Data API
     deploymentType: Service
-    version: 6e4ba5b9db470bd90991083ee5db84c0e85c1252
+    version: f346e78255ceae7b79b23873bb55eedf8b63edab
     resources:
       cpu: 2000
       memory: 4000
@@ -289,7 +173,7 @@ deployments:
   - name: TFL Camera Feed
     application: TFL Camera Feed
     deploymentType: Service
-    version: 69bd8892f540cc573ea0245a0dc59856a5beb6ef
+    version: b9273ce6038a307ba546907c22db8a47587b7e70
     resources:
       cpu: 200
       memory: 500
@@ -316,18 +200,107 @@ deployments:
         description: Geofence coordinates. e.g. [(LAT1,LON1),(LAT2,LON2),(LAT3,LON3)]
         required: false
         value: ''
+  - name: Object Detection
+    application: Computer vision object detection
+    deploymentType: Service
+    version: d36e40e514be409114da3c1ce5bc812975aeda22
+    resources:
+      cpu: 1400
+      memory: 2000
+      replicas: 4
+    desiredStatus: Running
+    variables:
+      - name: input
+        inputType: InputTopic
+        description: This is the input topic for raw images
+        required: true
+        value: image-raw
+      - name: output
+        inputType: OutputTopic
+        description: This is the output for images augmented with the recognized objects
+        required: true
+        value: image-processed
+      - name: yolo_model
+        inputType: FreeText
+        description: ''
+        required: false
+        value: yolov8n.pt
+  - name: Project Front End
+    application: TfL image processing UI
+    deploymentType: Service
+    version: 7180ccf111ad1e81fc143d024208a3771a53788e
+    resources:
+      cpu: 900
+      memory: 200
+      replicas: 1
+    publicAccess:
+      enabled: true
+      urlPrefix: app
+    desiredStatus: Running
+    variables:
+      - name: processed
+        inputType: InputTopic
+        description: The topic to read from
+        required: true
+        value: image-processed
+      - name: GoogleMapsApiKey
+        inputType: Secret
+        description: ''
+        required: true
+        value: GoogleMapsApiKey
+      - name: bearerToken
+        inputType: Secret
+        description: ''
+        required: true
+        value: bearerToken
+      - name: maxVehicleWindowProjectDeploymentId
+        inputType: Secret
+        description: ''
+        required: false
+        value: maxVehicleWindowProjectDeploymentId
+      - name: uiProjectDeploymentId
+        inputType: Secret
+        description: ''
+        required: false
+        value: uiProjectDeploymentId
+      - name: computerVisionProjectDeploymentId
+        inputType: Secret
+        description: ''
+        required: false
+        value: computerVisionProjectDeploymentId
+  - name: Frame Grabber
+    application: TfL traffic camera frame grabber
+    deploymentType: Service
+    version: b5b9dabef56f0b2a30801e327f704cfb495ebc37
+    resources:
+      cpu: 2000
+      memory: 500
+      replicas: 4
+    state:
+      enabled: true
+      size: 1
+    desiredStatus: Running
+    variables:
+      - name: input
+        inputType: InputTopic
+        description: ''
+        required: true
+        value: tfl-cameras
+      - name: output
+        inputType: OutputTopic
+        description: ''
+        required: true
+        value: image-raw
+      - name: frame_rate
+        inputType: FreeText
+        description: ''
+        required: true
+        value: 100
 
 # This section describes the Topics of the data pipeline
 topics:
   - name: image-processed
     persisted: true
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
-  - name: image-processed-merged
-    persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2
@@ -357,14 +330,14 @@ topics:
   - name: image-raw
     persisted: true
     configuration:
-      partitions: 2
+      partitions: 16
       replicationFactor: 2
       retentionInMinutes: 4380
       retentionInBytes: 262144000
   - name: tfl-cameras
     persisted: true
     configuration:
-      partitions: 2
+      partitions: 15
       replicationFactor: 2
       retentionInMinutes: 5760
       retentionInBytes: 262144000

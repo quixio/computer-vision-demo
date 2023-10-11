@@ -173,7 +173,7 @@ deployments:
   - name: TFL Camera Feed
     application: TFL Camera Feed
     deploymentType: Service
-    version: b9273ce6038a307ba546907c22db8a47587b7e70
+    version: 6c54caac45769bae5836178724edd096044de793
     resources:
       cpu: 200
       memory: 500
@@ -203,7 +203,7 @@ deployments:
   - name: Object Detection
     application: Computer vision object detection
     deploymentType: Service
-    version: d36e40e514be409114da3c1ce5bc812975aeda22
+    version: baf9f6d196cbade0c9635ce18b185adcbd0f4c0b
     resources:
       cpu: 1400
       memory: 2000
@@ -228,7 +228,7 @@ deployments:
   - name: Project Front End
     application: TfL image processing UI
     deploymentType: Service
-    version: 7180ccf111ad1e81fc143d024208a3771a53788e
+    version: fa82962e006a44cbcb6d04a9b2ecf52163b6e73d
     resources:
       cpu: 900
       memory: 200
@@ -271,7 +271,7 @@ deployments:
   - name: Frame Grabber
     application: TfL traffic camera frame grabber
     deploymentType: Service
-    version: b5b9dabef56f0b2a30801e327f704cfb495ebc37
+    version: e87e6d7b4d4a54c49f9ef0f4f7a747b3045ce2bd
     resources:
       cpu: 2000
       memory: 500
@@ -296,6 +296,7 @@ deployments:
         description: ''
         required: true
         value: 100
+
 
 # This section describes the Topics of the data pipeline
 topics:

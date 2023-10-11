@@ -16,7 +16,7 @@ if not os.path.exists("state"):
 
 # rocksDb is used to hold state, state.dict is in the `state` folder which is maintained for us by Quix
 # so we just init the rocks db using `state.dict` which will be loaded from the file system if it exists
-db = Rdict("state\state.dict")
+db = Rdict("state/state.dict")
 
 # stores for various data needed for this API
 detected_objects = {}

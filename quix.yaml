@@ -205,7 +205,7 @@ deployments:
     deploymentType: Service
     version: baf9f6d196cbade0c9635ce18b185adcbd0f4c0b
     resources:
-      cpu: 4000
+      cpu: 1400
       memory: 2000
       replicas: 4
     desiredStatus: Running
@@ -242,7 +242,7 @@ deployments:
         inputType: InputTopic
         description: The topic to read from
         required: true
-        value: image-processed-merged
+        value: image-processed
       - name: GoogleMapsApiKey
         inputType: Secret
         description: ''
@@ -296,26 +296,7 @@ deployments:
         description: ''
         required: true
         value: 100
-  - name: Stream merge
-    application: Stream merge
-    deploymentType: Service
-    version: v1.2
-    resources:
-      cpu: 2000
-      memory: 1000
-      replicas: 2
-    desiredStatus: Running
-    variables:
-      - name: input
-        inputType: InputTopic
-        description: Name of the source topic
-        required: true
-        value: image-processed
-      - name: output
-        inputType: OutputTopic
-        description: Name of the destination topic
-        required: true
-        value: image-processed-merged
+
 
 # This section describes the Topics of the data pipeline
 topics:
@@ -367,11 +348,4 @@ topics:
       partitions: 2
       replicationFactor: 2
       retentionInMinutes: 5760
-      retentionInBytes: 262144000
-  - name: image-processed-merged
-    persisted: false
-    configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
       retentionInBytes: 262144000

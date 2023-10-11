@@ -14,7 +14,7 @@ deployments:
       cpu: 200
       memory: 500
       replicas: 1
-    desiredStatus: Running
+    desiredStatus: Stopped
     variables:
       - name: input
         inputType: InputTopic
@@ -79,10 +79,10 @@ deployments:
   - name: Cam Vehicles
     application: TotalVehicles
     deploymentType: Service
-    version: e6bb005ff21552be9b0cf2482ea95ad6350abf68
+    version: ab973784588f693d123fd8722e5158f42cbd9c52
     resources:
-      cpu: 4000
-      memory: 2000
+      cpu: 500
+      memory: 2100
       replicas: 1
     desiredStatus: Running
     variables:
@@ -99,7 +99,7 @@ deployments:
   - name: Max Vehicle Window
     application: Max Vehicles
     deploymentType: Service
-    version: 595b8500e9b572abf15a35f80180cb60e71521c4
+    version: d36e40e514be409114da3c1ce5bc812975aeda22
     resources:
       cpu: 1000
       memory: 2000
@@ -122,7 +122,7 @@ deployments:
   - name: Data Buffer
     application: Data Buffer
     deploymentType: Service
-    version: f65c0aba9bb38288051bb7a7cdc46d253b819847
+    version: b4b6d01de403f4eabefbd1f8ddd42be1ea0f4935
     resources:
       cpu: 1000
       memory: 1100
@@ -152,7 +152,7 @@ deployments:
   - name: Data API
     application: Data API
     deploymentType: Service
-    version: 6e4ba5b9db470bd90991083ee5db84c0e85c1252
+    version: f346e78255ceae7b79b23873bb55eedf8b63edab
     resources:
       cpu: 2000
       memory: 4000

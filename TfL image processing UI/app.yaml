@@ -4,32 +4,12 @@ variables:
   - name: processed
     inputType: InputTopic
     description: The topic to read from
-    defaultValue: image-processed-merged
-    required: true
-  - name: GoogleMapsApiKey
-    inputType: Secret
-    description: ''
-    defaultValue: GoogleMapsApiKey
+    defaultValue: image-processed
     required: true
   - name: bearerToken
     inputType: Secret
     description: ''
     defaultValue: bearerToken
-    required: true
-  - name: maxVehicleWindowProjectDeploymentId
-    inputType: Secret
-    description: ''
-    defaultValue: maxVehicleWindowProjectDeploymentId
-    required: false
-  - name: uiProjectDeploymentId
-    inputType: Secret
-    description: ''
-    defaultValue: uiProjectDeploymentId
-    required: false
-  - name: computerVisionProjectDeploymentId
-    inputType: Secret
-    description: ''
-    defaultValue: computerVisionProjectDeploymentId
     required: false
 dockerfile: src/build/dockerfile
 defaultFile: src/app/services/quix.service.ts

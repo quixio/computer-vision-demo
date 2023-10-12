@@ -56,7 +56,14 @@ def get_data():
         start = time.time()
         print("Loading new data.")
 
-        resp = requests.get("https://s3-eu-west-1.amazonaws.com/jamcams.tfl.gov.uk/")
+        try:
+            resp = requests.get("https://s3-eu-west-1.amazonaws.com/jamcams.tfl.gov.uk/", timeout=60)
+        except Exception as ex:
+            print("An error occurred while trying to call the JamCam endpoint.")
+            print("Error:")
+            print(ex)
+            time.sleep(10)
+            continue
 
         with open('jamcams.xml', 'wb') as f:
             f.write(resp.content)
@@ -72,8 +79,9 @@ def get_data():
 
         try:
             cameras = requests.get(
-                "https://api.tfl.gov.uk/Place/Type/JamCam/?app_id=QuixFeed&app_key={}".format(api_key))
-            
+                "https://api.tfl.gov.uk/Place/Type/JamCam/?app_id=QuixFeed&app_key={}".format(api_key),
+                timeout=60)
+
             print(f"Got {cameras.status_code} status code.")
 
             # if TfL returns a 429 (too many requests) then we need to back off a bit

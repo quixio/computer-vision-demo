@@ -19,13 +19,12 @@ export class QuixService {
   private token: string = ""; // Create a token in the Tokens menu and paste it here
   public workspaceId: string = ""; // Look in the URL for the Quix Portal. Your workspace ID is after 'workspace='
   public topicName: string = ""; // get topic name from the Topics page in the Quix portal
-  
-  /* optional */
-  public uiProjectDeploymentId: string = ""; // links from the info text in the left hand panel use this to link you to the project in the platform. Easier to leave it blank.
-  public computerVisionProjectDeploymentId: string = ""; // links from the info text in the left hand panel use this to link you to the project in the platform. Easier to leave it blank.
-  public maxVehicleWindowProjectDeploymentId: string = ""; // links from the info text in the left hand panel use this to link you to the project in the platform. Easier to leave it blank.
   /*~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
 
+  public uiProjectDeploymentId: string = "48366730-b6d7-4332-bd5e-3f4deb7c4d6a"; // links from the info text in the left hand panel use this to link you to the project in the platform. Easier to leave it blank or leave as is.
+  public computerVisionProjectDeploymentId: string = "595c5d92-93d0-4ef5-9121-34f0d7750a6d"; // links from the info text in the left hand panel use this to link you to the project in the platform. Easier to leave it blank or leave as is.
+  public maxVehicleWindowProjectDeploymentId: string = "513fc1a7-d58e-492e-813e-a931c5255d3f"; // links from the info text in the left hand panel use this to link you to the project in the platform. Easier to leave it blank or leave as is.
+  
   private domain = "platform";
   readonly server = ""; // leave blank
 
@@ -55,30 +54,15 @@ export class QuixService {
     let workspaceId$ = this.httpClient.get(this.server + "workspace_id", { headers, responseType: 'text' });
     let portalApi$ = this.httpClient.get(this.server + "portal_api", { headers, responseType: 'text' })
 
-    // if the solution is deployed in the platform. as part of the ungated / demo experience, set these so the links work correctly.
-    // if running locally or cloned to another repo then these aren't important and the solution will still run
-    let uiProjectDeploymentId$ = this.httpClient.get(this.server + "uiProjectDeploymentId", { headers, responseType: 'text' })
-    let computerVisionProjectDeploymentId$ = this.httpClient.get(this.server + "computerVisionProjectDeploymentId", { headers, responseType: 'text' })
-    let maxVehicleWindowProjectDeploymentId$ = this.httpClient.get(this.server + "maxVehicleWindowProjectDeploymentId", { headers, responseType: 'text' })
-
     combineLatest([
       bearerToken$,
       topic$,
       workspaceId$,
-      portalApi$,
-      uiProjectDeploymentId$,
-      computerVisionProjectDeploymentId$,
-      maxVehicleWindowProjectDeploymentId$
-    ]).subscribe(([bearerToken, topic, workspaceId, portalApi, uiProjectDeploymentId, computerVisionProjectDeploymentId, maxVehicleWindowProjectDeploymentId]) => {
+      portalApi$
+    ]).subscribe(([bearerToken, topic, workspaceId, portalApi]) => {
       this.token = (bearerToken).replace("\n", "");
       this.workspaceId = (workspaceId).replace("\n", "");
       this.topicName = (topic).replace("\n", "");
-
-      // if the solution is deployed in the platform. as part of the ungated / demo experience, set these so the links work correctly.
-      // if running locally or cloned to another repo then these aren't important and the solution will still run
-      this.uiProjectDeploymentId = uiProjectDeploymentId.replace("\n", "");
-      this.computerVisionProjectDeploymentId = computerVisionProjectDeploymentId.replace("\n", "");
-      this.maxVehicleWindowProjectDeploymentId = maxVehicleWindowProjectDeploymentId.replace("\n", "");
 
       // work out what domain the portal api is on:
       let matches = portalApi.replace("\n", "").match(this.domainRegex);

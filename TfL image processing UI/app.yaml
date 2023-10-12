@@ -6,11 +6,6 @@ variables:
     description: The topic to read from
     defaultValue: image-processed
     required: true
-  - name: GoogleMapsApiKey
-    inputType: Secret
-    description: ''
-    defaultValue: GoogleMapsApiKey
-    required: true
   - name: bearerToken
     inputType: Secret
     description: ''

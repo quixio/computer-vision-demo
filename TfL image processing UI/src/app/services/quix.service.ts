@@ -25,6 +25,7 @@ export class QuixService {
   public computerVisionProjectDeploymentId: string = "2a5f5e00-31a7-48ce-8d6f-0ddf257cce69"; // links from the info text in the left hand panel use this to link you to the project in the platform. Easier to leave it blank or leave as is.
   public maxVehicleWindowProjectDeploymentId: string = "c8ef68fd-f3da-468a-814e-62edeafd810a"; // links from the info text in the left hand panel use this to link you to the project in the platform. Easier to leave it blank or leave as is.
   
+  public deepLinkWorkspaceId: string = "demo-computervisiondemo-prod";
   public quixDeploymentId: string = ""; // the deployment ID of the host running this code in Quix. Not nessecarily the same as uiProjectDeploymentId (depending on environment)
 
   private domain = "platform";

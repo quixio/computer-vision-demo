@@ -1,24 +1,46 @@
-# Real-time image processing
+# Computer vision
 
-Real-time image processing pipeline template project.
+Real-time computer vision template project.
 
-The pipeline uses the Transport for London (TfL) traffic cameras, known as Jam Cams, as the video input. The [YOLO v8](https://docs.ultralytics.com/) machine learning model is used to identify various objects such as types of vehicles. Additional services count the vehicles and finally the data is displayed on a map which is part of the web UI that has been creatde specially for this project. 
+The pipeline uses the Transport for London (TfL) traffic cameras, known as Jam Cams, as the video input. The [YOLO v8](https://docs.ultralytics.com/) machine learning model is used to identify various objects such as types of vehicles. Additional services count the vehicles and finally the data is displayed on a map which is part of the web UI that has been created for this project. 
 
-## Live demo
+* [See the deployed project](https://app-demo-computervisiondemo-prod.deployments.quix.ai/)
+* [See the project running in Quix](https://portal.platform.quix.ai/pipeline?workspace=demo-computervisiondemo-prod&token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1qVTBRVE01TmtJNVJqSTNOVEpFUlVSRFF6WXdRVFF4TjBSRk56SkNNekpFUWpBNFFqazBSUSJ9.eyJodHRwczovL3F1aXguYWkvb3JnX2lkIjoiZGVtbyIsImh0dHBzOi8vcXVpeC5haS9vd25lcl9pZCI6ImF1dGgwfDI4YWQ4NWE4LWY1YjctNGFjNC1hZTVkLTVjYjY3OGIxYjA1MiIsImh0dHBzOi8vcXVpeC5haS90b2tlbl9pZCI6ImMzNzljNmVlLWNkMmYtNDExZC1iOGYyLTMyMDU0ZDc5MTY2YSIsImh0dHBzOi8vcXVpeC5haS9leHAiOiIxNzM3ODI5NDc5LjIyMyIsImlzcyI6Imh0dHBzOi8vYXV0aC5xdWl4LmFpLyIsInN1YiI6ImtyMXU4MGRqRllvUUZlb01nMGhqcXZia29lRkxFRDVBQGNsaWVudHMiLCJhdWQiOiJxdWl4IiwiaWF0IjoxNjk1NzE2MDI4LCJleHAiOjE2OTgzMDgwMjgsImF6cCI6ImtyMXU4MGRqRllvUUZlb01nMGhqcXZia29lRkxFRDVBIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIiwicGVybWlzc2lvbnMiOltdfQ.Ndm0K2iNHPxDq1ohF-yb-6LzIqx_UY8Ptcq0kAwSNye12S3deX_eDkC4XqZqW2NoSLd3GsmWV9PZGetGGp2IlqshQFZtUMp6WP6hq917ZC1i8JFx93PAbY7NT_88nFDovVlaRcoTpWvI-03KbryLkAoB28c6qb3EFwjCWFBuy_yA4yjQ8uF0-AZ0R9Qi4IBaekXWqcgO0a91gVRg0oA_hnzJFoR-EnZ2G1ZSxtuVgnyyPuQTMUvzJuUT_IJTLzEB_kejX0pcXRZBIwHP8MWLB4mE5DtIdz4jm8WIA4eZJZ7ZCG4dk-adQwZ2BdkNknV5eEwRgRJL4ybaplkaDlR-dg)
 
-You can see the project running live on [Quix](https://app-demo-computervisiondemo-prod.deployments.quix.ai/).
+## Technologies used
 
-## The pipeline
+Some of the technologies used by this template project are listed here.
 
-The following screenshots show the pipeline you build in this tutorial.
+**Infrastructure:** 
 
-The first part of the pipeline is:
+* [Quix](https://quix.io/)
+* [Docker](https://www.docker.com/)
+* [Kubernetes](https://kubernetes.io/)
 
-![pipeline overview](./images/pipeline-overview-1.png)
+**Backend:** 
 
-The second part of the pipeline is:
+* [Confluent Cloud](https://www.confluent.io/confluent-cloud/)
+* [Quix Streams](https://github.com/quixio/quix-streams)
+* [Flask](https://flask.palletsprojects.com/en/2.3.x/#)
+* [pandas](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html)
 
-![pipeline overview](./images/pipeline-overview-2.png)
+**Video capture:**
+
+* [TfL API](https://api-portal.tfl.gov.uk)
+* [OpenCV](https://opencv.org/)
+
+**Object detection:**
+
+* [YOLOv8](https://github.com/ultralytics/ultralytics)
+
+**Frontend:** 
+
+* [Angular](https://angular.io/)
+* [Typescript](https://www.typescriptlang.org/)
+* [Microsoft SignalR](https://learn.microsoft.com/en-us/aspnet/signalr/)
+* [Google Maps](https://developers.google.com/maps)
+
+## The project pipeline
 
 There are several *main* stages in the pipeline:
 
@@ -44,44 +66,7 @@ There are also some additional services in the pipeline:
 
 5. *S3* - stores objects in Amazon Web Services (AWS) S3. This service enables you to persist any data or results you might like to keep more permanently.
 
-More details are provided on all these services in the [tutorial](https://quix.io/docs/platform/tutorials/image-processing/index.html).
-
-## See the pipeline running
-
-See the [pipeline running](https://portal.platform.quix.ai/pipeline?workspace=demo-computervisiondemo-prod&token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1qVTBRVE01TmtJNVJqSTNOVEpFUlVSRFF6WXdRVFF4TjBSRk56SkNNekpFUWpBNFFqazBSUSJ9.eyJodHRwczovL3F1aXguYWkvb3JnX2lkIjoiZGVtbyIsImh0dHBzOi8vcXVpeC5haS9vd25lcl9pZCI6ImF1dGgwfDI4YWQ4NWE4LWY1YjctNGFjNC1hZTVkLTVjYjY3OGIxYjA1MiIsImh0dHBzOi8vcXVpeC5haS90b2tlbl9pZCI6ImMzNzljNmVlLWNkMmYtNDExZC1iOGYyLTMyMDU0ZDc5MTY2YSIsImh0dHBzOi8vcXVpeC5haS9leHAiOiIxNzM3ODI5NDc5LjIyMyIsImlzcyI6Imh0dHBzOi8vYXV0aC5xdWl4LmFpLyIsInN1YiI6ImtyMXU4MGRqRllvUUZlb01nMGhqcXZia29lRkxFRDVBQGNsaWVudHMiLCJhdWQiOiJxdWl4IiwiaWF0IjoxNjk1NzE2MDI4LCJleHAiOjE2OTgzMDgwMjgsImF6cCI6ImtyMXU4MGRqRllvUUZlb01nMGhqcXZia29lRkxFRDVBIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIiwicGVybWlzc2lvbnMiOltdfQ.Ndm0K2iNHPxDq1ohF-yb-6LzIqx_UY8Ptcq0kAwSNye12S3deX_eDkC4XqZqW2NoSLd3GsmWV9PZGetGGp2IlqshQFZtUMp6WP6hq917ZC1i8JFx93PAbY7NT_88nFDovVlaRcoTpWvI-03KbryLkAoB28c6qb3EFwjCWFBuy_yA4yjQ8uF0-AZ0R9Qi4IBaekXWqcgO0a91gVRg0oA_hnzJFoR-EnZ2G1ZSxtuVgnyyPuQTMUvzJuUT_IJTLzEB_kejX0pcXRZBIwHP8MWLB4mE5DtIdz4jm8WIA4eZJZ7ZCG4dk-adQwZ2BdkNknV5eEwRgRJL4ybaplkaDlR-dg) without needing to sign up to Quix.
-
-## Technologies used
-
-Some of the technologies used by this template project are listed here.
-
-**Infrastructure:** 
-
-* [Quix](https://quix.io/)
-* [Docker](https://www.docker.com/)
-* [Kubernetes](https://kubernetes.io/)
-
-**Backend:** 
-
-* [Apache Kafka](https://kafka.apache.org/)
-* [Quix Streams](https://github.com/quixio/quix-streams)
-* [Flask](https://flask.palletsprojects.com/en/2.3.x/#)
-* [pandas](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html)
-
-**Video capture:**
-
-* [TfL API](https://api-portal.tfl.gov.uk)
-* [OpenCV](https://opencv.org/)
-
-**Object detection:**
-
-* [YOLOv8](https://github.com/ultralytics/ultralytics)
-
-**Frontend:** 
-
-* [Angular](https://angular.io/)
-* [Typescript](https://www.typescriptlang.org/)
-* [Microsoft SignalR](https://learn.microsoft.com/en-us/aspnet/signalr/)
-* [Google Maps](https://developers.google.com/maps)
+More details are provided on all these services in the [tutorial](https://quix.io/docs/platform/tutorials/computer-vision/index.html).
 
 ## Prerequisites
 
@@ -133,7 +118,7 @@ If you want to use the Quix AWS S3 service (optional), you'll need to provide yo
 
 ## Tutorial
 
-Work through the [tutorial](https://quix.io/docs/platform/tutorials/image-processing/index.html).
+Work through the [tutorial](https://quix.io/docs/platform/tutorials/computer-vision/index.html).
 
 ## Getting help
 

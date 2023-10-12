@@ -1,6 +1,6 @@
 import { LazyMapsAPILoaderConfigLiteral } from '@agm/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { QuixService } from './quix.service';
 
 @Injectable()
@@ -20,10 +20,18 @@ export class AppInitService {
     }
 
     try {
-      // Business logic to inject the API key is for you to fill in.
       const headers = new HttpHeaders().set('Content-Type', 'text/plain; charset=utf-8');
-      const resolve = await http.get(server + 'GoogleMapsApiKey', { headers, responseType: 'text' }).toPromise();
-      googleMapsConfig.apiKey = resolve;
+
+      const uiProjectDeploymentId: string = "48366730-b6d7-4332-bd5e-3f4deb7c4d6a"; // prod deployment id
+      const quixDeploymentId = await http.get("Quix__Deployment__Id", { headers, responseType: 'text' }).toPromise();
+
+      if(quixDeploymentId === uiProjectDeploymentId){
+        const resolvedMapsApiKey = await http.get('GoogleMapsApiKey', { headers, responseType: 'text' }).toPromise();
+        googleMapsConfig.apiKey = resolvedMapsApiKey;
+      }
+      else{
+        googleMapsConfig.apiKey = ''; // if you want to use your own Google Maps API key, insert it here.
+      }
     } catch (e) {
       console.error(e);
     }

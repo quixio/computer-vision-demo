@@ -228,7 +228,7 @@ deployments:
   - name: Project Front End
     application: TfL image processing UI
     deploymentType: Service
-    version: 85b984403cd5d5f5da966871b377969192a83d76
+    version: 42d59287facc03418b4b47080dc757acceb8f151
     resources:
       cpu: 900
       memory: 200
@@ -236,7 +236,7 @@ deployments:
     publicAccess:
       enabled: true
       urlPrefix: app
-    desiredStatus: Running
+    desiredStatus: Stopped
     variables:
       - name: processed
         inputType: InputTopic

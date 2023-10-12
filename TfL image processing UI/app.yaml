@@ -6,11 +6,6 @@ variables:
     description: The topic to read from
     defaultValue: image-processed
     required: true
-  - name: uiProjectDeploymentId
-    inputType: Secret
-    description: ''
-    defaultValue: uiProjectDeploymentId
-    required: false
   - name: computerVisionProjectDeploymentId
     inputType: Secret
     description: ''

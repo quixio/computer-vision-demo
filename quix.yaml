@@ -228,7 +228,7 @@ deployments:
   - name: Project Front End
     application: TfL image processing UI
     deploymentType: Service
-    version: d97b63463552e5c3cf662211de5fe04e22407948
+    version: 32862b44fd76652baeb204663fd7a1709db156b0
     resources:
       cpu: 900
       memory: 200
@@ -243,6 +243,11 @@ deployments:
         description: The topic to read from
         required: true
         value: image-processed
+      - name: bearerToken
+        inputType: Secret
+        description: ''
+        required: false
+        value: bearerToken
   - name: Frame Grabber
     application: TfL traffic camera frame grabber
     deploymentType: Service

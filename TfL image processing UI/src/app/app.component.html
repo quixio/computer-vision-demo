@@ -10,7 +10,7 @@
         </div>
         <div fxLayout="row" fxHide.xs>
           <a mat-raised-button color="primary" class="small me-2" fxLayout="row" fxLayoutAlign="center center"
-            [href]="'https://portal.platform.quix.ai/pipeline?workspace=' + workspaceId + '&token=' + ungatedToken"
+            [href]="'https://portal.platform.quix.ai/pipeline?workspace=' + deepLinkWorkspaceId + '&token=' + ungatedToken"
             target="_blank">
             <img src="assets/quix.svg" alt="Quix" height="12" class="me-2" />
             <span>Look under the hood</span>
@@ -29,10 +29,10 @@
         <div class="mb-5">
           <h1 class="mb-1">Computer vision</h1>
           <p class="mb-3 text-body text-uppercase">Project template</p>
-          <p class="mat-body">Uses object detection to visualize London’s traffic density in real time.</p>
+          <p class="mat-body">Uses object detection to visualize London's traffic density in real time.</p>
           <div fxLayout="row">
             <a mat-raised-button color="primary" class="small me-2" fxLayout="row" fxLayoutAlign="center center"
-              [href]="'https://portal.platform.quix.ai/pipeline?workspace=' + workspaceId + '&token=' + ungatedToken"
+              [href]="'https://portal.platform.quix.ai/pipeline?workspace=' + deepLinkWorkspaceId + '&token=' + ungatedToken"
               target="_blank">
               <img src="assets/quix.svg" alt="Quix" height="12" class="me-2" />
               <span>Look under the hood</span>
@@ -46,13 +46,13 @@
         </div>
 
         <div class="mb-5">
-          <h4 class="mb-2">Live data from London’s traffic cameras</h4>
+          <h4 class="mb-2">Live data from London's traffic cameras</h4>
           <p class="text-body mb-3">
             Every 20 seconds, this project <a
-              [href]="'https://portal.platform.quix.ai/pipeline/deployments/' + uiProjectDeploymentId + '?workspace=' + workspaceId + '&token=' + ungatedToken"
+              [href]="'https://portal.platform.quix.ai/pipeline/deployments/' + uiProjectDeploymentId + '?workspace=' + deepLinkWorkspaceId + '&token=' + ungatedToken"
               target="_blank">ingests video frames</a> from Transport for London (TfL) traffic cameras and
             detects the vehicles in each frame. Vehicle detection is powered by the <a
-              [href]="'https://portal.platform.quix.ai/pipeline/deployments/' + computerVisionProjectDeploymentId + '?workspace=' + workspaceId + '&token=' + ungatedToken"
+              [href]="'https://portal.platform.quix.ai/pipeline/deployments/' + computerVisionProjectDeploymentId + '?workspace=' + deepLinkWorkspaceId + '&token=' + ungatedToken"
               target="_blank">YOLO v8 ML model</a>.
             To preserve resources only 1 every 100 frames is extracted for processing. These are the latest (try
             clicking on one):
@@ -64,7 +64,7 @@
                 <img *ngIf="m.image" [src]="'data:image/png;base64,' + m.image" height="48" fxFlex role="button"
                   (click)="selectMarker(m.title!)" class="lastMarker">
                 <img *ngIf="!m.image"
-                  [src]="'https://data-api-' + workspaceId + '.deployments.quix.ai/detected_objects/' + m.title"
+                  [src]="'https://data-api-' + deepLinkWorkspaceId + '.deployments.quix.ai/detected_objects/' + m.title"
                   height="48" fxFlex role="button" (click)="selectMarker(m.title!)" class="lastMarker">
               </ng-container>
               <div *ngIf="!m" fxFlex class="lastMarker pe-none" [style.height.px]="48"></div>
@@ -76,7 +76,7 @@
           <h4 class="mb-2">Traffic density analysis</h4>
           <p class="text-body mb-3">
             For each traffic camera, a service
-            <a [href]="'https://portal.platform.quix.ai/pipeline/deployments/' + maxVehicleWindowProjectDeploymentId + '?workspace=' + workspaceId + '&token=' + ungatedToken"
+            <a [href]="'https://portal.platform.quix.ai/pipeline/deployments/' + maxVehicleWindowProjectDeploymentId + '?workspace=' + deepLinkWorkspaceId + '&token=' + ungatedToken"
               target="_blank">
               calculates the maximum number
             </a>
@@ -86,7 +86,7 @@
           </p>
           <p class="text-body mb-3">
             Use the following dropdown to count specific types of vehicles on the map. The
-            <a [href]="'https://portal.platform.quix.ai/applications/ide/Computer%20vision%20object%20detection?workspace=' + workspaceId + '&token=' + ungatedToken + '&branch=main'"
+            <a [href]="'https://portal.platform.quix.ai/applications/ide/TfL%20image%20processing%20UI?workspace=' + deepLinkWorkspaceId + '&token=' + ungatedToken + '&branch=main'"
               target="_blank">code can be customised</a>
             to identify other types of objects as well.
           </p>

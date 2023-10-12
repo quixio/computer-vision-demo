@@ -21,9 +21,9 @@ export class QuixService {
   public topicName: string = ""; // get topic name from the Topics page in the Quix portal
   /*~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
 
-  public uiProjectDeploymentId: string = "48366730-b6d7-4332-bd5e-3f4deb7c4d6a"; // links from the info text in the left hand panel use this to link you to the project in the platform. Easier to leave it blank or leave as is. (links to prod only)
-  public computerVisionProjectDeploymentId: string = "595c5d92-93d0-4ef5-9121-34f0d7750a6d"; // links from the info text in the left hand panel use this to link you to the project in the platform. Easier to leave it blank or leave as is.
-  public maxVehicleWindowProjectDeploymentId: string = "513fc1a7-d58e-492e-813e-a931c5255d3f"; // links from the info text in the left hand panel use this to link you to the project in the platform. Easier to leave it blank or leave as is.
+  public uiProjectDeploymentId: string = "260917e8-83eb-4f28-a89d-5db406a91023"; // links from the info text in the left hand panel use this to link you to the project in the platform. Easier to leave it blank or leave as is. (links to prod only)
+  public computerVisionProjectDeploymentId: string = "2a5f5e00-31a7-48ce-8d6f-0ddf257cce69"; // links from the info text in the left hand panel use this to link you to the project in the platform. Easier to leave it blank or leave as is.
+  public maxVehicleWindowProjectDeploymentId: string = "c8ef68fd-f3da-468a-814e-62edeafd810a"; // links from the info text in the left hand panel use this to link you to the project in the platform. Easier to leave it blank or leave as is.
   
   public quixDeploymentId: string = ""; // the deployment ID of the host running this code in Quix. Not nessecarily the same as uiProjectDeploymentId (depending on environment)
 

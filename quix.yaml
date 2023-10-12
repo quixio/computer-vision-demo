@@ -228,7 +228,7 @@ deployments:
   - name: Project Front End
     application: TfL image processing UI
     deploymentType: Service
-    version: 32862b44fd76652baeb204663fd7a1709db156b0
+    version: 4e6a7d7228d41d7275ed93d9b446c26f5d7dc192
     resources:
       cpu: 900
       memory: 200

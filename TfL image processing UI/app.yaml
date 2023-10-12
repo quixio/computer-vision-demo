@@ -6,5 +6,10 @@ variables:
     description: The topic to read from
     defaultValue: image-processed
     required: true
+  - name: bearerToken
+    inputType: Secret
+    description: ''
+    defaultValue: bearerToken
+    required: false
 dockerfile: src/build/dockerfile
 defaultFile: src/app/services/quix.service.ts

@@ -6,11 +6,6 @@ variables:
     description: The topic to read from
     defaultValue: image-processed
     required: true
-  - name: maxVehicleWindowProjectDeploymentId
-    inputType: Secret
-    description: ''
-    defaultValue: maxVehicleWindowProjectDeploymentId
-    required: false
   - name: uiProjectDeploymentId
     inputType: Secret
     description: ''

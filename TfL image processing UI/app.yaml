@@ -6,10 +6,5 @@ variables:
     description: The topic to read from
     defaultValue: image-processed
     required: true
-  - name: computerVisionProjectDeploymentId
-    inputType: Secret
-    description: ''
-    defaultValue: computerVisionProjectDeploymentId
-    required: false
 dockerfile: src/build/dockerfile
 defaultFile: src/app/services/quix.service.ts

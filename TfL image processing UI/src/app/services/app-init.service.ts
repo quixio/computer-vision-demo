@@ -20,10 +20,24 @@ export class AppInitService {
     }
 
     try {
-      // Business logic to inject the API key is for you to fill in.
       const headers = new HttpHeaders().set('Content-Type', 'text/plain; charset=utf-8');
-      const resolve = await http.get(server + 'GoogleMapsApiKey', { headers, responseType: 'text' }).toPromise();
-      googleMapsConfig.apiKey = resolve;
+
+      // the ID of this UI deployed to production
+      const uiProjectDeploymentId: string = "48366730-b6d7-4332-bd5e-3f4deb7c4d6a"; // prod deployment id
+
+      // get the ID of this deployment, so we can compare and determine if this is the prod deployment or not.
+      const quixDeploymentId = await http.get("Quix__Deployment__Id", { headers, responseType: 'text' }).toPromise();
+
+      // if this is the prod deployment in the Quix demo account then:
+      if(quixDeploymentId === uiProjectDeploymentId){
+        // use the Google Maps API key retrieved from environment variables
+        const resolvedMapsApiKey = await http.get('GoogleMapsApiKey', { headers, responseType: 'text' }).toPromise();
+        googleMapsConfig.apiKey = resolvedMapsApiKey;
+      }
+      else{
+        // else blank the api key so users will see "developer mode" instead of no map at all.
+        googleMapsConfig.apiKey = ''; // if you want to use your own Google Maps API key, insert it here.
+      }
     } catch (e) {
       console.error(e);
     }

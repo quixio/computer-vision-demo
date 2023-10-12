@@ -52,6 +52,7 @@ export class AppComponent implements AfterViewInit {
   connection: HubConnection;
   parameterId: string = '';
   workspaceId: string;
+  deepLinkWorkspaceId: string;
   ungatedToken: string;
   uiProjectDeploymentId: string;
   computerVisionProjectDeploymentId: string;
@@ -70,6 +71,7 @@ export class AppComponent implements AfterViewInit {
       this._topicName = this.quixService.topicName;
       this._topicId = this.quixService.workspaceId + '-' + this.quixService.topicName;
       this.workspaceId = this.quixService.workspaceId;
+      this.deepLinkWorkspaceId = this.quixService.deepLinkWorkspaceId;
       this.ungatedToken = this.quixService.ungatedToken;
       this.uiProjectDeploymentId = this.quixService.uiProjectDeploymentId;
       this.computerVisionProjectDeploymentId = this.quixService.computerVisionProjectDeploymentId;

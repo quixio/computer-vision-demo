@@ -6,11 +6,6 @@ variables:
     description: The topic to read from
     defaultValue: image-processed
     required: true
-  - name: bearerToken
-    inputType: Secret
-    description: ''
-    defaultValue: bearerToken
-    required: true
   - name: maxVehicleWindowProjectDeploymentId
     inputType: Secret
     description: ''

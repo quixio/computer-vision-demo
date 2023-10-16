@@ -10,7 +10,7 @@ export class AppInitService {
     /*~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
     /*WORKING LOCALLY? UPDATE THESE!*/
     const workingLocally = false; // set to true if working locally and populate the values below
-    const googleMapsApiKey = 'AIzaSyC1CrTo8kSg9BLrU2fIrKHOC5oZCWFwyZ8'; // change this to your API key or leave blank.
+    const googleMapsApiKey = ''; // change this to your API key or leave blank.
     /*~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
     const server = ""; // leave blank
 
@@ -28,10 +28,14 @@ export class AppInitService {
       // get the ID of this deployment, so we can compare and determine if this is the prod deployment or not.
       const quixDeploymentId = await http.get("Quix__Deployment__Id", { headers, responseType: 'text' }).toPromise();
 
+      console.log("quixDeploymentId=" + quixDeploymentId)
+      console.log("uiProjectDeploymentId=" + uiProjectDeploymentId)
+      console.log("quixDeploymentId===uiProjectDeploymentId = " + quixDeploymentId === uiProjectDeploymentId)
+
       // if this is the prod deployment in the Quix demo account then:
       if(quixDeploymentId === uiProjectDeploymentId){
         // use the Google Maps API key retrieved from environment variables
-        googleMapsConfig.apiKey = googleMapsApiKey;
+        googleMapsConfig.apiKey = "AIzaSyC1CrTo8kSg9BLrU2fIrKHOC5oZCWFwyZ8";
       }
       else{
         // else blank the api key so users will see "developer mode" instead of no map at all.

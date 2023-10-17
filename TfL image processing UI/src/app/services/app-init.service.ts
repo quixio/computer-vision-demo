@@ -26,7 +26,7 @@ export class AppInitService {
       const uiProjectDeploymentId: string = "5473832d-b340-40bf-832f-20b5549b1db5"; // prod deployment id
 
       // get the ID of this deployment, so we can compare and determine if this is the prod deployment or not.
-      const quixDeploymentId = await http.get("Quix__Deployment__Id", { headers, responseType: 'text' }).toPromise();
+      const quixDeploymentId = (await http.get("Quix__Deployment__Id", { headers, responseType: 'text' }).toPromise())?.replace("\n", "");
 
       console.log("quixDeploymentId=" + quixDeploymentId)
       console.log("uiProjectDeploymentId=" + uiProjectDeploymentId)

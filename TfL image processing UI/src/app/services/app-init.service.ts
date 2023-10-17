@@ -12,9 +12,9 @@ export class AppInitService {
     const workingLocally = false; // set to true if working locally and populate the values below
     const googleMapsApiKey = ''; // change this to your API key or leave blank.
     /*~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
-    const server = ""; // leave blank
 
     if (workingLocally || location.hostname === "localhost" || location.hostname === "127.0.0.1") {
+      console.log("Using LocalHost or WorkingLocally. Maps API Key='" + googleMapsApiKey + "'")
       googleMapsConfig.apiKey = googleMapsApiKey;
       return;
     }
@@ -30,16 +30,18 @@ export class AppInitService {
 
       console.log("quixDeploymentId=" + quixDeploymentId)
       console.log("uiProjectDeploymentId=" + uiProjectDeploymentId)
-      console.log("quixDeploymentId===uiProjectDeploymentId = " + quixDeploymentId === uiProjectDeploymentId)
+      console.log("quixDeploymentId===uiProjectDeploymentId = " + (quixDeploymentId === uiProjectDeploymentId))
 
       // if this is the prod deployment in the Quix demo account then:
       if(quixDeploymentId === uiProjectDeploymentId){
         // use the Google Maps API key retrieved from environment variables
         googleMapsConfig.apiKey = "AIzaSyC1CrTo8kSg9BLrU2fIrKHOC5oZCWFwyZ8";
+        console.log("Using prod Maps API Key")
       }
       else{
         // else blank the api key so users will see "developer mode" instead of no map at all.
         googleMapsConfig.apiKey = ''; // if you want to use your own Google Maps API key, insert it here.
+        console.log("Using empty Maps API Key")
       }
     } catch (e) {
       console.error(e);

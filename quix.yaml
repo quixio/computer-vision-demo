@@ -250,27 +250,6 @@ deployments:
         description: ''
         required: false
         value: yolov8n.pt
-  - name: Project Front End
-    application: TfL image processing UI
-    deploymentType: Service
-    version: 84ba77f9c46b428cdfe5ae85c86a25fd1857b116
-    resources:
-      cpu: 900
-      memory: 200
-      replicas: 1
-    publicAccess:
-      enabled: true
-      urlPrefix: data-api
-    state:
-      enabled: true
-      size: 11
-    desiredStatus: Running
-    variables:
-      - name: buffered_stream
-        inputType: InputTopic
-        description: The output from the Image Processing stage
-        required: false
-        value: buffered-data
   - name: TFL Camera Feed
     application: TFL Camera Feed
     deploymentType: Service

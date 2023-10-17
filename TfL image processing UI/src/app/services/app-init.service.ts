@@ -23,7 +23,7 @@ export class AppInitService {
       const headers = new HttpHeaders().set('Content-Type', 'text/plain; charset=utf-8');
 
       // the ID of this UI deployed to production
-      const uiProjectDeploymentId: string = "260917e8-83eb-4f28-a89d-5db406a91023"; // prod deployment id
+      const uiProjectDeploymentId: string = "5473832d-b340-40bf-832f-20b5549b1db5"; // prod deployment id
 
       // get the ID of this deployment, so we can compare and determine if this is the prod deployment or not.
       const quixDeploymentId = await http.get("Quix__Deployment__Id", { headers, responseType: 'text' }).toPromise();

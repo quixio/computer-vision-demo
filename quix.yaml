@@ -79,21 +79,6 @@ deployments:
         description: ''
         required: true
         value: bearerToken
-      - name: maxVehicleWindowProjectDeploymentId
-        inputType: Secret
-        description: ''
-        required: false
-        value: maxVehicleWindowProjectDeploymentId
-      - name: uiProjectDeploymentId
-        inputType: Secret
-        description: ''
-        required: false
-        value: uiProjectDeploymentId
-      - name: computerVisionProjectDeploymentId
-        inputType: Secret
-        description: ''
-        required: false
-        value: computerVisionProjectDeploymentId
   - name: Frame Grabber
     application: TfL traffic camera frame grabber
     deploymentType: Service

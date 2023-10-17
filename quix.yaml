@@ -280,28 +280,28 @@ deployments:
 # This section describes the Topics of the data pipeline
 topics:
   - name: image-processed
-    persisted: true
+    persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
   - name: image-raw
-    persisted: true
+    persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
   - name: tfl-cameras
-    persisted: true
+    persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
   - name: image-vehicles
-    persisted: true
+    persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2
@@ -315,14 +315,14 @@ topics:
       retentionInMinutes: -1
       retentionInBytes: 262144000
   - name: max-vehicles
-    persisted: true
+    persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2
       retentionInMinutes: -1
       retentionInBytes: 262144000
   - name: buffered-data
-    persisted: true
+    persisted: false
     configuration:
       partitions: 2
       replicationFactor: 2

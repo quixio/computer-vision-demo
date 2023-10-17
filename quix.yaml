@@ -230,8 +230,33 @@ deployments:
     deploymentType: Service
     version: f346e78255ceae7b79b23873bb55eedf8b63edab
     resources:
-      cpu: 2000
-      memory: 4000
+      cpu: 1400
+      memory: 2000
+      replicas: 4
+    desiredStatus: Running
+    variables:
+      - name: input
+        inputType: InputTopic
+        description: This is the input topic for raw images
+        required: true
+        value: image-raw
+      - name: output
+        inputType: OutputTopic
+        description: This is the output for images augmented with the recognized objects
+        required: true
+        value: image-processed
+      - name: yolo_model
+        inputType: FreeText
+        description: ''
+        required: false
+        value: yolov8n.pt
+  - name: Project Front End
+    application: TfL image processing UI
+    deploymentType: Service
+    version: 84ba77f9c46b428cdfe5ae85c86a25fd1857b116
+    resources:
+      cpu: 900
+      memory: 200
       replicas: 1
     publicAccess:
       enabled: true

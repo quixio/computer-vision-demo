@@ -7,6 +7,7 @@ from ultralytics import YOLO
 import cv2
 
 
+
 client = qx.QuixStreamingClient()
 
 topic_consumer = client.get_topic_consumer(os.environ["input"], consumer_group = "empty-transformation")

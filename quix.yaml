@@ -25,7 +25,7 @@ deployments:
         inputType: Secret
         description: Your TfL API key
         required: false
-        value: tfl_api_key
+        secretKey: tfl_api_key
       - name: sleep_interval
         inputType: FreeText
         description: ''
@@ -203,7 +203,7 @@ deployments:
   - name: Object Detection
     application: Computer vision object detection
     deploymentType: Service
-    version: baf9f6d196cbade0c9635ce18b185adcbd0f4c0b
+    version: d36e40e514be409114da3c1ce5bc812975aeda22
     resources:
       cpu: 1400
       memory: 2000
@@ -247,7 +247,7 @@ deployments:
         inputType: Secret
         description: ''
         required: false
-        value: bearerToken
+        secretKey: bearerToken
   - name: Frame Grabber
     application: TfL traffic camera frame grabber
     deploymentType: Service

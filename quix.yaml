@@ -150,7 +150,7 @@ deployments:
   - name: Max Vehicle Window
     application: Max Vehicles
     deploymentType: Service
-    version: d36e40e514be409114da3c1ce5bc812975aeda22
+    version: 3cf8546619ab367f6e39efca048581107d752152
     resources:
       cpu: 1000
       memory: 2000

@@ -80,7 +80,7 @@ deployments:
   - name: S3 new
     application: S3
     deploymentType: Service
-    version: 75b6abfe2842349b1fc13453e07bc30e4d7a2747
+    version: 3cf8546619ab367f6e39efca048581107d752152
     resources:
       cpu: 200
       memory: 500

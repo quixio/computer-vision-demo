@@ -25,7 +25,7 @@ deployments:
         inputType: Secret
         description: Your TfL API key
         required: false
-        value: tfl_api_key
+        secretKey: tfl_api_key
       - name: sleep_interval
         inputType: FreeText
         description: ''
@@ -59,7 +59,7 @@ deployments:
   - name: Data API
     application: Data API
     deploymentType: Service
-    version: f346e78255ceae7b79b23873bb55eedf8b63edab
+    version: 17bb0c2f4245844f4a36c283c44a5aef96d3fe13
     resources:
       cpu: 2000
       memory: 4000
@@ -247,7 +247,7 @@ deployments:
         inputType: Secret
         description: ''
         required: false
-        value: bearerToken
+        secretKey: bearerToken
   - name: Frame Grabber
     application: TfL traffic camera frame grabber
     deploymentType: Service

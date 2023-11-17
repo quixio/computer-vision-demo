@@ -229,7 +229,7 @@ deployments:
         inputType: FreeText
         description: Confidence level of object detection, min = 0, max = 1.0.
         required: true
-        value: 0.70
+        value: 0.55
   - name: Project Front End
     application: TfL image processing UI
     deploymentType: Service

@@ -98,6 +98,7 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
 
                     # delete the image from the row
                     del row["image"]
+                    del row["classified_frame"]
 
                     # update the datetime with a readable datetime
                     row["datetime"] = str(datetime.datetime.fromtimestamp(row["timestamp"]/1000000000))

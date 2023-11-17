@@ -31,7 +31,7 @@ export class QuixService {
   private domain = "platform";
   readonly server = ""; // leave blank
 
-  private domainRegex = new RegExp("^https:\\/\\/portal-api\\.([a-zA-Z]+)\\.quix\\.ai")
+  private domainRegex = new RegExp("^https:\\/\\/portal-api\\.([a-zA-Z]+)\\.quix\\.io")
   private baseReaderUrl: string;
   private connection: HubConnection;
   private initCompleted: Subject<void> = new Subject<void>();
@@ -45,7 +45,7 @@ export class QuixService {
     if (this.workingLocally || location.hostname === "localhost" || location.hostname === "127.0.0.1") {
       // use the config hard coded above
       this.domain = "platform"; // default to prod
-      this.baseReaderUrl = "https://reader-" + this.workspaceId + "." + this.domain + ".quix.ai/hub";
+      this.baseReaderUrl = "https://reader-" + this.workspaceId + "." + this.domain + ".quix.io/hub";
       setTimeout(() => this.initCompleted.next());
       return;
     }
@@ -72,7 +72,7 @@ export class QuixService {
       if (matches) this.domain = matches[1];
       else this.domain = "platform"; // default to prod
       // don't change this
-      this.baseReaderUrl = "https://reader-" + this.workspaceId + "." + this.domain + ".quix.ai/hub";
+      this.baseReaderUrl = "https://reader-" + this.workspaceId + "." + this.domain + ".quix.io/hub";
 
       this.initCompleted.next();
     });

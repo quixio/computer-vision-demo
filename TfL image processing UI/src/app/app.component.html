@@ -10,7 +10,7 @@
         </div>
         <div fxLayout="row" fxHide.xs>
           <a mat-raised-button color="primary" class="small me-2" fxLayout="row" fxLayoutAlign="center center"
-            [href]="'https://portal.platform.quix.ai/pipeline?workspace=' + deepLinkWorkspaceId + '&token=' + ungatedToken"
+            [href]="'https://portal.platform.quix.io/pipeline?workspace=' + deepLinkWorkspaceId + '&token=' + ungatedToken"
             target="_blank">
             <img src="assets/quix.svg" alt="Quix" height="12" class="me-2" />
             <span>Look under the hood</span>
@@ -32,7 +32,7 @@
           <p class="mat-body">Uses object detection to visualize London's traffic density in real time.</p>
           <div fxLayout="row">
             <a mat-raised-button color="primary" class="small me-2" fxLayout="row" fxLayoutAlign="center center"
-              [href]="'https://portal.platform.quix.ai/pipeline?workspace=' + deepLinkWorkspaceId + '&token=' + ungatedToken"
+              [href]="'https://portal.platform.quix.io/pipeline?workspace=' + deepLinkWorkspaceId + '&token=' + ungatedToken"
               target="_blank">
               <img src="assets/quix.svg" alt="Quix" height="12" class="me-2" />
               <span>Look under the hood</span>
@@ -58,10 +58,10 @@
           <h4 class="mb-2">Live data from London's traffic cameras</h4>
           <p class="text-body mb-3">
             Every 20 seconds, this project <a
-              [href]="'https://portal.platform.quix.ai/pipeline/deployments/' + uiProjectDeploymentId + '?workspace=' + deepLinkWorkspaceId + '&token=' + ungatedToken"
+              [href]="'https://portal.platform.quix.io/pipeline/deployments/' + uiProjectDeploymentId + '?workspace=' + deepLinkWorkspaceId + '&token=' + ungatedToken"
               target="_blank">ingests video frames</a> from Transport for London (TfL) traffic cameras and
             detects the vehicles in each frame. Vehicle detection is powered by the <a
-              [href]="'https://portal.platform.quix.ai/pipeline/deployments/' + computerVisionProjectDeploymentId + '?workspace=' + deepLinkWorkspaceId + '&token=' + ungatedToken"
+              [href]="'https://portal.platform.quix.io/pipeline/deployments/' + computerVisionProjectDeploymentId + '?workspace=' + deepLinkWorkspaceId + '&token=' + ungatedToken"
               target="_blank">YOLO v8 ML model</a>.
             To preserve resources only 1 every 100 frames is extracted for processing. These are the latest (try
             clicking on one):
@@ -73,7 +73,7 @@
                 <img *ngIf="m.image" [src]="'data:image/png;base64,' + m.image" height="48" fxFlex role="button"
                   (click)="selectMarker(m.title!)" class="lastMarker">
                 <img *ngIf="!m.image"
-                  [src]="'https://data-api-' + deepLinkWorkspaceId + '.deployments.quix.ai/detected_objects/' + m.title"
+                  [src]="'https://data-api-' + deepLinkWorkspaceId + '.deployments.quix.io/detected_objects/' + m.title"
                   height="48" fxFlex role="button" (click)="selectMarker(m.title!)" class="lastMarker">
               </ng-container>
               <div *ngIf="!m" fxFlex class="lastMarker pe-none" [style.height.px]="48"></div>
@@ -85,7 +85,7 @@
           <h4 class="mb-2">Traffic density analysis</h4>
           <p class="text-body mb-3">
             For each traffic camera, a service
-            <a [href]="'https://portal.platform.quix.ai/pipeline/deployments/' + maxVehicleWindowProjectDeploymentId + '?workspace=' + deepLinkWorkspaceId + '&token=' + ungatedToken"
+            <a [href]="'https://portal.platform.quix.io/pipeline/deployments/' + maxVehicleWindowProjectDeploymentId + '?workspace=' + deepLinkWorkspaceId + '&token=' + ungatedToken"
               target="_blank">
               calculates the maximum number
             </a>
@@ -95,7 +95,7 @@
           </p>
           <p class="text-body mb-3">
             Use the following dropdown to count specific types of vehicles on the map. The
-            <a [href]="'https://portal.platform.quix.ai/applications/ide/TfL%20image%20processing%20UI?workspace=' + deepLinkWorkspaceId + '&token=' + ungatedToken + '&branch=main'"
+            <a [href]="'https://portal.platform.quix.io/applications/ide/TfL%20image%20processing%20UI?workspace=' + deepLinkWorkspaceId + '&token=' + ungatedToken + '&branch=main'"
               target="_blank">code can be customised</a>
             to identify other types of objects as well.
           </p>
@@ -143,7 +143,7 @@
           </p>
           <div fxLayout="row">
             <a mat-raised-button color="primary" class="small me-2" fxLayout="row" fxLayoutAlign="center center"
-              href="https://portal.platform.quix.ai/self-sign-up" target="_blank">
+              href="https://portal.platform.quix.io/self-sign-up" target="_blank">
               <span>Sign up for free</span>
             </a>
             <a href="https://quix.io/templates" target="_blank" mat-raised-button color="accent" class="small"
@@ -176,7 +176,7 @@
                 class="position-relative border">
                 <img *ngIf="m.image" [src]="'data:image/png;base64,' + m.image" width="100%" height="100%">
                 <img *ngIf="!m.image" [hidden]="isLoadingImage" (load)="isLoadingImage = false"
-                  [src]="'https://data-api-' + workspaceId + '.deployments.quix.ai/detected_objects/' + m.title"
+                  [src]="'https://data-api-' + workspaceId + '.deployments.quix.io/detected_objects/' + m.title"
                   width="100%" height="100%">
                 <mat-spinner diameter="20" *ngIf="isLoadingImage"></mat-spinner>
               </div>

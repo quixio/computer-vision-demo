@@ -14,7 +14,7 @@ topic_consumer = client.get_topic_consumer(os.environ["input"], consumer_group =
 topic_producer_vehicles = client.get_topic_producer(os.environ["output"])
 
 yolo_8 = YOLO(os.environ["yolo_model"])
-
+confidence = float(os.environ["confidence"])
 
 def n_vehicles_from_result(res, df: pd.DataFrame):
     count = {
@@ -51,7 +51,7 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
 
     ti = time.time()
     # Classify video with model
-    classification_results = yolo_8(source = image_file, conf = 0.15, iou = 0.5) #Check device arg https://docs.ultralytics.com/modes/predict/#sources
+    classification_results = yolo_8(source = image_file, conf = confidence, iou = 0.5) #Check device arg https://docs.ultralytics.com/modes/predict/#sources
     
     tj = time.time()
     # Iterate over frames to format as binary

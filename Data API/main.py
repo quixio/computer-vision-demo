@@ -154,7 +154,7 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
 
 # init the flask app
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins='*')
 
 # create the default route
 @app.route("/")

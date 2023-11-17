@@ -94,11 +94,10 @@ def on_buffered_stream_received_handler(handler_stream_consumer: qx.StreamConsum
 
                     # update the local variable
                     # convert the image to base64 and string in readiness for json encoding
-                    detected_objects_img[camera] = str(base64.b64encode(row["classified_frame"]), encoding = "utf_8")
+                    detected_objects_img[camera] = str(base64.b64encode(row["image"]), encoding = "utf_8")
 
                     # delete the image from the row
                     del row["image"]
-                    del row["classified_frame"]
 
                     # update the datetime with a readable datetime
                     row["datetime"] = str(datetime.datetime.fromtimestamp(row["timestamp"]/1000000000))

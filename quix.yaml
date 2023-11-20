@@ -59,7 +59,7 @@ deployments:
   - name: Data API
     application: Data API
     deploymentType: Service
-    version: 17bb0c2f4245844f4a36c283c44a5aef96d3fe13
+    version: f8b6bea4c21c71bdf06ddc4c0228244c4f63c2c0
     resources:
       cpu: 2000
       memory: 4000
@@ -203,7 +203,7 @@ deployments:
   - name: Object Detection
     application: Computer vision object detection
     deploymentType: Service
-    version: 3cf8546619ab367f6e39efca048581107d752152
+    version: 36c2388458c3321aeb6484078b59dea4ea442f7c
     resources:
       cpu: 1400
       memory: 2000
@@ -225,10 +225,15 @@ deployments:
         description: ''
         required: false
         value: yolov8n.pt
+      - name: confidence
+        inputType: FreeText
+        description: Confidence level of object detection, min = 0, max = 1.0.
+        required: true
+        value: 0.55
   - name: Project Front End
     application: TfL image processing UI
     deploymentType: Service
-    version: 66d21a8cbca9f1a06122946eed940b8cc68d9dc1
+    version: 29a4ae11280a0f8bd08ff9f1cbf3b682890d1d3b
     resources:
       cpu: 900
       memory: 200

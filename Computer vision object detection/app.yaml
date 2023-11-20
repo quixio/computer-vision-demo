@@ -16,6 +16,11 @@ variables:
     description: ''
     defaultValue: yolov8n.pt
     required: false
+  - name: confidence
+    inputType: FreeText
+    description: Confidence level of object detection, min = 0, max = 1.0.
+    defaultValue: 0.70
+    required: true
 dockerfile: build/dockerfile
 runEntryPoint: main.py
 defaultFile: main.py

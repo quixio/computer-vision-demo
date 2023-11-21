@@ -11,9 +11,9 @@ deployments:
     deploymentType: Service
     version: 20b99d2908afdf36313c1882d07083640f1ce245
     resources:
-      cpu: 200
-      memory: 500
-      replicas: 1
+      cpu: {{ tfl_camera_feed_cpu }}
+      memory: {{ tfl_camera_feed_memory }}
+      replicas: {{ tfl_camera_feed_replicas }}
     desiredStatus: Running
     variables:
       - name: output
@@ -41,9 +41,9 @@ deployments:
     deploymentType: Service
     version: ab973784588f693d123fd8722e5158f42cbd9c52
     resources:
-      cpu: 500
-      memory: 2100
-      replicas: 1
+      cpu: {{ cam_vehicles_cpu }}
+      memory: {{ cam_vehicles_memory }}
+      replicas: {{ cam_vehicles_replicas }}
     desiredStatus: Running
     variables:
       - name: input
@@ -61,15 +61,15 @@ deployments:
     deploymentType: Service
     version: f8b6bea4c21c71bdf06ddc4c0228244c4f63c2c0
     resources:
-      cpu: 2000
-      memory: 4000
-      replicas: 1
+      cpu: {{ data_api_cpu }}
+      memory: {{ data_api_memory }}
+      replicas: {{ data_api_replicas }}
     publicAccess:
       enabled: true
       urlPrefix: data-api
     state:
       enabled: true
-      size: 11
+      size: {{ data_api_state_size }}
     desiredStatus: Running
     variables:
       - name: buffered_stream
@@ -82,9 +82,9 @@ deployments:
     deploymentType: Service
     version: 3cf8546619ab367f6e39efca048581107d752152
     resources:
-      cpu: 200
-      memory: 500
-      replicas: 1
+      cpu: {{ s3_new_cpu }}
+      memory: {{ s3_new_memory }}
+      replicas: {{ s3_new_replicas }}
     desiredStatus: Stopped
     variables:
       - name: input
@@ -152,12 +152,12 @@ deployments:
     deploymentType: Service
     version: 3cf8546619ab367f6e39efca048581107d752152
     resources:
-      cpu: 1000
-      memory: 2000
-      replicas: 2
+      cpu: {{ max_vehicle_window_cpu }}
+      memory: {{ max_vehicle_window_cpu }}
+      replicas: {{ max_vehicle_window_cpu }}
     state:
       enabled: true
-      size: 1
+      size: {{ max_vehicle_window_state_size }}
     desiredStatus: Running
     variables:
       - name: input
@@ -175,9 +175,9 @@ deployments:
     deploymentType: Service
     version: 3cf8546619ab367f6e39efca048581107d752152
     resources:
-      cpu: 1000
-      memory: 1100
-      replicas: 2
+      cpu: {{ data_buffer_cpu }}
+      memory: {{ data_buffer_memory }}
+      replicas: {{ data_buffer_replicas }}
     desiredStatus: Running
     variables:
       - name: max_vehicles
@@ -205,9 +205,9 @@ deployments:
     deploymentType: Service
     version: 36c2388458c3321aeb6484078b59dea4ea442f7c
     resources:
-      cpu: 1400
-      memory: 2000
-      replicas: 2
+      cpu: {{ object_detection_cpu }}
+      memory: {{ object_detection_memory }}
+      replicas: {{ object_detection_replicas }}
     desiredStatus: Running
     variables:
       - name: input
@@ -235,9 +235,9 @@ deployments:
     deploymentType: Service
     version: 29a4ae11280a0f8bd08ff9f1cbf3b682890d1d3b
     resources:
-      cpu: 900
-      memory: 200
-      replicas: 1
+      cpu: {{ project_front_end_cpu }}
+      memory: {{ project_front_end_memory }}
+      replicas: {{ project_front_end_replicas }}
     publicAccess:
       enabled: true
       urlPrefix: app
@@ -258,12 +258,12 @@ deployments:
     deploymentType: Service
     version: b5b9dabef56f0b2a30801e327f704cfb495ebc37
     resources:
-      cpu: 2000
-      memory: 500
-      replicas: 2
+      cpu: {{ frame_grabber_cpu }}
+      memory: {{ frame_grabber_memory }}
+      replicas: {{ frame_grabber_replicas }}
     state:
       enabled: true
-      size: 1
+      size: {{ frame_grabber_state_size }}
     desiredStatus: Running
     variables:
       - name: input

@@ -14,7 +14,7 @@ deployments:
       cpu: {{ tfl_camera_feed_cpu }}
       memory: {{ tfl_camera_feed_memory }}
       replicas: {{ tfl_camera_feed_replicas }}
-    desiredStatus: Stopped
+    desiredStatus: Running
     variables:
       - name: output
         inputType: OutputTopic

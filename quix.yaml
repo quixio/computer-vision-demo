@@ -287,49 +287,49 @@ topics:
   - name: image-processed
     persisted: false
     configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
+      partitions: {{ topic_image_processed_partitions }}
+      replicationFactor: {{ topic_image_processed_replication_factor }}
+      retentionInMinutes: {{ topic_image_processed_retention_mins }}
+      retentionInBytes: {{ topic_image_processed_retention_bytes }}
   - name: image-raw
     persisted: false
     configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
+      partitions: {{ topic_image_raw_partitions }}
+      replicationFactor: {{ topic_image_raw_replication_factor }}
+      retentionInMinutes: {{ topic_image_raw_retention_mins }}
+      retentionInBytes: {{ topic_image_raw_retention_bytes }}
   - name: tfl-cameras
     persisted: false
     configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
+      partitions: {{ topic_tfl_cameras_partitions }}
+      replicationFactor: {{ topic_tfl_cameras_replication_factor }}
+      retentionInMinutes: {{ topic_tfl_cameras_retention_mins }}
+      retentionInBytes: {{ topic_tfl_cameras_retention_bytes }}
   - name: image-vehicles
     persisted: false
     configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
+      partitions: {{ topic_image_vehicles_partitions }}
+      replicationFactor: {{ topic_image_vehicles_replication_factor }}
+      retentionInMinutes: {{ topic_image_vehicles_retention_mins }}
+      retentionInBytes: {{ topic_image_vehicles_retention_bytes }}
   - name: output-topic
     persisted: false
     configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
+      partitions: {{ topic_output_topic_partitions }}
+      replicationFactor: {{ topic_output_topic_replication_factor }}
+      retentionInMinutes: {{ topic_output_topic_retention_mins }}
+      retentionInBytes: {{ topic_output_topic_retention_bytes }}
   - name: max-vehicles
     persisted: false
     configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: -1
-      retentionInBytes: 262144000
+      partitions: {{ topic_max_vehicles_partitions }}
+      replicationFactor: {{ topic_max_vehicles_replication_factor }}
+      retentionInMinutes: {{ topic_max_vehicles_retention_mins }}
+      retentionInBytes: {{ topic_max_vehicles_retention_bytes }}
   - name: buffered-data
     persisted: false
     configuration:
-      partitions: 2
-      replicationFactor: 2
-      retentionInMinutes: 5760
-      retentionInBytes: 262144000
+      partitions: {{ topic_buffered_data_partitions }}
+      replicationFactor: {{ topic_buffered_data_replication_factor }}
+      retentionInMinutes: {{ topic_buffered_data_retention_mins }}
+      retentionInBytes: {{ topic_buffered_data_retention_bytes }}

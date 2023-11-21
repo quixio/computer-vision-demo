@@ -153,8 +153,8 @@ deployments:
     version: 3cf8546619ab367f6e39efca048581107d752152
     resources:
       cpu: {{ max_vehicle_window_cpu }}
-      memory: {{ max_vehicle_window_cpu }}
-      replicas: {{ max_vehicle_window_cpu }}
+      memory: {{ max_vehicle_window_memory }}
+      replicas: {{ max_vehicle_window_replicas }}
     state:
       enabled: true
       size: {{ max_vehicle_window_state_size }}

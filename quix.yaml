@@ -241,7 +241,7 @@ deployments:
     publicAccess:
       enabled: true
       urlPrefix: app
-    desiredStatus: Stopped
+    desiredStatus: Running
     variables:
       - name: processed
         inputType: InputTopic

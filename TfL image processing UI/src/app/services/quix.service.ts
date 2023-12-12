@@ -21,9 +21,9 @@ export class QuixService {
   public topicName: string = ""; // get topic name from the Topics page in the Quix portal
   /*~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
 
-  public uiProjectDeploymentId: string = "260917e8-83eb-4f28-a89d-5db406a91023"; // links from the info text in the left hand panel use this to link you to the project in the platform. Easier to leave it blank or leave as is. (links to prod only)
-  public computerVisionProjectDeploymentId: string = "2a5f5e00-31a7-48ce-8d6f-0ddf257cce69"; // links from the info text in the left hand panel use this to link you to the project in the platform. Easier to leave it blank or leave as is.
-  public maxVehicleWindowProjectDeploymentId: string = "c8ef68fd-f3da-468a-814e-62edeafd810a"; // links from the info text in the left hand panel use this to link you to the project in the platform. Easier to leave it blank or leave as is.
+  public uiProjectDeploymentId: string = "fc647b12-a828-47d3-b600-ddb5a5848805"; // links from the info text in the left hand panel use this to link you to the project in the platform. Easier to leave it blank or leave as is. (links to prod only)
+  public computerVisionProjectDeploymentId: string = "e174e2ed-e9b5-4f03-9172-3bc4104701ef"; // links from the info text in the left hand panel use this to link you to the project in the platform. Easier to leave it blank or leave as is.
+  public maxVehicleWindowProjectDeploymentId: string = "8695e43b-b0d4-4765-95cd-d632284efcea"; // links from the info text in the left hand panel use this to link you to the project in the platform. Easier to leave it blank or leave as is.
   
   public deepLinkWorkspaceId: string = "demo-computervisiondemo-prod";
   public quixDeploymentId: string = ""; // the deployment ID of the host running this code in Quix. Not nessecarily the same as uiProjectDeploymentId (depending on environment)

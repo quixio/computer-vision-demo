@@ -208,7 +208,7 @@ deployments:
       cpu: {{ object_detection_cpu }}
       memory: {{ object_detection_memory }}
       replicas: {{ object_detection_replicas }}
-    desiredStatus: Stopped
+    desiredStatus: Running
     variables:
       - name: input
         inputType: InputTopic
